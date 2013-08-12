@@ -29,4 +29,29 @@ function pied() {
 	echo '</body>';
 	echo '</html>';
 }
+
+function banniere() {
+	echo '<div id="header_conteneur"><div id="header">&nbsp;</div></div>';
+}
+
+function menu() {
+	echo '<div id="speedbar">
+	<ul>
+		<li><a href="#">Accueil</a></li>
+		<li><a href="#">Projet</a></li>
+		<li><a href="#">Équipe</a></li>
+		<li><a href="#">Contact</a></li>
+	</ul>
+	</div>';
+}
+
+function piedpage() {
+	echo '<div id="conteneur_footer">
+		<div id="footer">
+			<p><a href="#">Nous contacter</a><br />
+			Projet réalisé par des étudiants de l\'IUT-BM<br />
+			2012-2013</p>
+		</div>
+	</div>';
+}
 ?>
