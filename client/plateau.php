@@ -101,7 +101,7 @@ $coutsOp = 'jeu_couts = {'.implode($coutsOp, ',').'}';
 </div>
 
 
-<div id="conteneur_plateau"> style="display:none;">
+<div id="conteneur_plateau" style="display:none;">
 	<?php include 'plateau/plateau.php'; ?>
 </div>
 
