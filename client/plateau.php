@@ -3,6 +3,88 @@ include 'inclusions.php';
 include 'connexionSQL.php';
 
 entete('Plateau');
+
+$terrCases = array(); // JS
+$territoires = array(); // JS
+
+$contenuCases = array(); // data processing
+$typesCases = array(); // data processing
+$typesCases[0] = 'depart';
+
+$i = 0;
+$res = $mysqli->query('SELECT terr_id, terr_nom, terr_position FROM terr_territoire ORDER BY terr_position');
+while ($terr = $res->fetch_assoc())
+{
+	$contenuCases[$terr['terr_position']] = array('id' => $terr['terr_id'], 'nom' => $terr['terr_nom']);
+	$terrCases[] = $terr['terr_id'].':'.$terr['terr_position']; // terrCases {idTerr:idCase}
+	$territoires[] = $terr['terr_id'].':"'.$terr['terr_nom'].'"';
+	
+	++$i;
+	while ($terr['terr_position'] != $i)
+	{
+		$typesCases[$i] = 'evenement';
+		++$i;
+	}
+	
+	$typesCases[$i] = 'territoire';
+}
+
+// Si les dernières cases sont des événements, il faut alors l'indiquer en dehors de la requête
+for (; $i < 42 ; ++$i)
+	$typesCases[$i] = 'evenement';
+
+$terrCases = 'terrCases = {'.implode($terrCases, ',').'}';
+$territoires = 'territoires = {'.implode($territoires, ',').'}';
+
+$ideologies = array();
+$couleurs = array();
+$res = $mysqli->query('SELECT ideo_id, ideo_nom, ideo_couleur FROM ideo_ideologie ORDER BY ideo_id');
+while ($ideo = $res->fetch_assoc())
+{
+	$ideologies[] = '"'.$ideo['ideo_nom'].'"';
+	$couleurs[] = '"#'.$ideo['ideo_couleur'].'"';
+}
+
+$ideologies = 'ideologies = ['.implode($ideologies, ',').']';
+$couleurs = 'couleurs = ['.implode($couleurs, ',').']';
+
+$listeJauges = array();
+$jauges = array();
+$res = $mysqli->query('SELECT jauge_id, jauge_nom FROM ideo_jauge ORDER BY jauge_id');
+while ($jauge = $res->fetch_assoc())
+{
+	$listeJauges[$jauge['jauge_id']] = $jauge['jauge_nom'];
+	$jauges[] = '"'.$jauge['jauge_nom'].'"';
+}
+
+$jauges = 'jauges = ['.implode($jauges, ',').']';
+
+// Liste des événements
+$evenements = array();
+$res = $mysqli->query('SELECT eo_id, eo_nom, eo_description, eo_destination FROM ideo_evenement_operation ORDER BY eo_id');
+while ($ev = $res->fetch_assoc())
+	$evenements[] = $ev['eo_id'].':{"nom":"'.$ev['eo_nom'].'","desc":"'.$ev['eo_description'].'","dest":'.$ev['eo_destination'].'}';
+
+$evenements = 'jeu_evenements = {'.implode($evenements, ',').'}';
+
+// Liste des opérations
+$operations = array();
+$res = $mysqli->query('SELECT to_id, to_nom, to_description FROM ideo_territoire_operation ORDER BY to_id');
+while ($ev = $res->fetch_assoc())
+	$operations[] = $ev['to_id'].':{"nom":"'.$ev['to_nom'].'","desc":"'.$ev['to_description'].'"}';
+
+$operations = 'jeu_operations = {'.implode($operations, ',').'}';
+
+// Coûts des opérations par idéologie
+$coutsOp = array();
+$res = $mysqli->query('SELECT toc_operation_id, toc_ideologie_id, toc_cout FROM ideo_territoire_operation_cout ORDER BY toc_ideologie_id, toc_operation_id');
+while ($ev = $res->fetch_assoc())
+	$coutsOp[$ev['toc_ideologie_id']][] = $ev['toc_operation_id'].':'.$ev['toc_cout'];
+
+foreach ($coutsOp as $k => $v)
+	$coutsOp[$k] = $k.':{'.implode($coutsOp[$k], ',').'}';
+
+$coutsOp = 'jeu_couts = {'.implode($coutsOp, ',').'}';
 ?>
 
 <div id="conteneur_notification" onclick="fermer(this)">
@@ -19,7 +101,7 @@ entete('Plateau');
 </div>
 
 
-<div id="conteneur_plateau" style="display:none;">
+<div id="conteneur_plateau"> style="display:none;">
 	<?php include 'plateau/plateau.php'; ?>
 </div>
 
@@ -27,20 +109,25 @@ entete('Plateau');
 timer("timer");
 setTimer(30,0);
 
-<%= @terrCases.html_safe %> // terrCases {idTerr:idCase}
-<%= @ideologies.html_safe %>
-<%= @couleurs.html_safe %>
-<%= @jauges_js.html_safe %>
-<%= @listeTerritoires.html_safe %>
-<%= @listeEvenements.html_safe %>
-<%= @listeOperations.html_safe %>
-<%= @listeCoutOperations.html_safe %>
+
+<?php 
+echo $jauges."\n";
+echo $ideologies."\n";
+echo $couleurs."\n";
+echo "\n";
+echo $terrCases."\n";
+echo $territoires."\n";
+echo "\n";
+echo $evenements."\n";
+echo $operations."\n";
+echo $coutsOp."\n";
+?>
 
 var nbTerritoires = 32
 var nbJoueurs = 4;
 var nbJauges = 3;
 
-var pseudo = "<%= @pseudo %>";
+var pseudo = "<?php echo htmlentities($_POST['pseudo']); ?>";
 var ep_numJoueur = 0
 var ep_jc = 0
 var ep_partenaires = {}
@@ -51,7 +138,7 @@ var ep_fonds = 0
 var ep_listeTerritoires = {}
 var listenerActif = false;
 
-var socket = new WebsocketClass('ws://10.42.0.100:8888');
+var socket = new WebsocketClass('ws://127.0.0.1:8888');
 socket.initWebsocket();
 
 
