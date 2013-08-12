@@ -32,7 +32,7 @@ WebsocketClass.prototype = {
 	},
 	_onCloseEvent : function(){
 		this.console.innerHTML = this.console.innerHTML + 'websocket closed - server not running<br>';
-		document.location="./scores";
+		document.location="./scores.php";
 		//Affiche la fermeture de la socket
 	},
 	sendMessage : function(mess){
