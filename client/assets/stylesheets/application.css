@@ -25,7 +25,7 @@ body {
 	width:249px;
 	height:100%;
 	overflow:auto;
-	background:url('fond.png') repeat-x white;
+	background:url('../images/fond.png') repeat-x white;
 	box-shadow: inset 1px 0px 20px 1px #656565;
 	border-left:1px solid black;
 
