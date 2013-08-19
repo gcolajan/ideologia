@@ -1,7 +1,7 @@
 # Copyright: Hiroshi Ichikawa <http://gimite.net/en/>
 # Lincense: New BSD Lincense
 
-$LOAD_PATH << File.dirname(__FILE__) + "/bibliotheques"
+$LOAD_PATH << File.dirname(__FILE__)
 require "web_socket"
 
 if ARGV.size != 1
