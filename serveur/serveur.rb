@@ -63,8 +63,49 @@ server.run() do |ws| # ecoute des connexions
 
 			gestionJoueur.preparationClient(pseudo)
 
-			gestionJoueur.tourJoueur()
+			queue = Queue.new
+
+			semaphore = Mutex.new
+
+			communicationClient = Thread.new do
+				while 1
+					sleep(0.1)
+					transmission = nil
+					semaphore.synchronize{
+						transmission = queue.pop
+					}
+					if(transmission != "ping")
+						gestionJoueur.transmission = transmission
+					else
+						queue.push(transmission)
+				  	end
+				end
+			end
+
+			ping = Thread.new do
+				while 1
+					sleep(0.1)
+					transmission = nil
+					semaphore.synchronize{
+						transmission = queue.pop
+					}
+					if(transmission == "ping")
+						puts("ping recu")
+					else
+						queue.push(transmission)
+					end
+				end
+			end
+
+			threadGestionJoueur = Thread.new do
+				gestionJoueur.tourJoueur()
+			end
+
+			while partie.estDemarree
+				queue.push(ws.receive())
+			end
 			
+
 			# Fin de la partie
 			sem.synchronize{ # Le premier accès se fait en écriture
 				scores = partie.obtenirScores()

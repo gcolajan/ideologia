@@ -2,11 +2,14 @@ $LOAD_PATH << File.dirname(__FILE__) + "/jeu"
 
 class GestionJoueur
 
+	attr_writer :transmission
+
 	def initialize wsJoueur, instancePartie, instanceJoueur, instanceCoordinationClient
 		@ws = wsJoueur
 		@partie = instancePartie
 		@joueur = instanceJoueur
 		@coord = instanceCoordinationClient
+		@transmission = nil
 	end
 
 	def preparationClient pseudo
@@ -65,7 +68,12 @@ class GestionJoueur
 				envoieDonnees("operations", listeId)
 				
 				# Attente de l'action choisie
-				idActionChoisie = @ws.receive()
+				idActionChoisie = nil
+				while(idActionChoisie == nil)
+					idActionChoisie = @transmission
+					@transmission = nil
+				end
+
 				
 				# Vérification des données venant du client
 				if((idActionChoisie.to_i.integer?) && listeId.include?(idActionChoisie))
@@ -100,7 +108,9 @@ class GestionJoueur
 		puts @joueur.numJoueur.to_s+" joue"
 	  
 		# On attend le lance de des
-		@ws.receive()
+		while @transmission == nil
+		end
+		@transmission = nil
 	
 		# On calcule les des
 		de1, de2 = @partie.plateau.lanceDes()
