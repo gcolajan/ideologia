@@ -3,6 +3,7 @@ $LOAD_PATH << File.dirname(__FILE__) + "/jeu"
 class GestionJoueur
 
 	attr_writer :transmission
+	attr_accessor :dernierPing
 
 	def initialize wsJoueur, instancePartie, instanceJoueur, instanceCoordinationClient
 		@ws = wsJoueur
@@ -10,6 +11,7 @@ class GestionJoueur
 		@joueur = instanceJoueur
 		@coord = instanceCoordinationClient
 		@transmission = nil
+		@dernierPing = nil
 	end
 
 	def preparationClient pseudo

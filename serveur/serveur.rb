@@ -90,7 +90,13 @@ server.run() do |ws| # ecoute des connexions
 						transmission = queue.pop
 					}
 					if(transmission == "ping")
-						puts("ping recu")
+						pingRecu = Time.now.to_i
+						pingAncien = gestionJoueur.dernierPing
+						if(pingRecu - pingAncien > 30)
+							puts("ping trop vieux")
+						else
+							gestionJoueur.dernierPing = pingRecu
+						end
 					else
 						queue.push(transmission)
 					end
