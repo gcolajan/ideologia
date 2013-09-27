@@ -1,6 +1,7 @@
 require 'mysql'
 require 'Jauge'
 require 'ConnexionSQL'
+require 'Joueur'
 
 class Joueur
 
