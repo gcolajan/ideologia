@@ -61,7 +61,6 @@ class Partie
 	#Retourne la durée restante
 	def temps
 		if(Time.now > @heureDebut + $TEMPS_JEU)
-			@estDemarree=false
 			finPartie()
 		end
 		return $TEMPS_JEU - (Time.now - @heureDebut).round
@@ -125,8 +124,8 @@ class Partie
 	
 	
 		
-		
 	def finPartie
+		@estDemarree=false
 		@mutPEC.synchronize{
 			(@nbJoueurs-1).times {
 				@partieEnCours.signal
