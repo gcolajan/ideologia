@@ -82,9 +82,13 @@ server.run() do |ws| # ecoute des connexions
 				end
 			end
 			
+			# On ping le client toutes les X secondes pour vérifier sa présence
 			ping = Thread.new do
-				pingPrecedent = Time.now.to_i
-				ws.send("ping")
+				while partie.estDemarree
+					sleep($INTERVALLE_PING)
+					pingPrecedent = Time.now.to_i
+					ws.send("ping")
+				end
 			end
 
 			threadGestionJoueur = Thread.new do
