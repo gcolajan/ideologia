@@ -322,7 +322,6 @@ class Partie
 				finPartie() # Fin de partie, attention threadGestionJoueur peut dormir (sans incidence en théorie)
 			end
 		end
-		@estDemarree = false
 	end
 	
 	
