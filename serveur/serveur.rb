@@ -5,6 +5,7 @@ require "thread"
 require 'CoordinationClient'
 require 'Partie'
 require 'GestionJoueur'
+require 'conf'
 
 Thread.abort_on_exception = true
 
@@ -64,54 +65,35 @@ server.run() do |ws| # ecoute des connexions
 
 			gestionJoueur.preparationClient(pseudo)
 
-			queue = Queue.new
-
 			semaphore = Mutex.new
+			
+			pingPrecedent = Time.now.to_i
 
+			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
 			communicationClient = Thread.new do
-				while 1
-					sleep(0.1)
-					transmission = nil
-					semaphore.synchronize{
-						transmission = queue.pop
-					}
-					if(transmission != "ping")
+				
+				while partie.estDemarree
+					transmission = ws.receive()
+					
+					if (transmission != "pong")
 						gestionJoueur.transmission = transmission
 					else
-						queue.push(transmission)
+						if Time.now.to_i-pingPrecedent > $REPONSE_PING
+							# Aie: joueur trop long à répondre
+						end
 				  	end
 				end
 			end
-
+			
 			ping = Thread.new do
-				while 1
-					sleep(0.1)
-					transmission = nil
-					semaphore.synchronize{
-						transmission = queue.pop
-					}
-					if(transmission == "ping")
-						pingRecu = Time.now.to_i
-						pingAncien = gestionJoueur.dernierPing
-						if(pingRecu - pingAncien > 30)
-							partie.deconnexionJoueur(numJoueur)
-						else
-							gestionJoueur.dernierPing = pingRecu
-						end
-					else
-						queue.push(transmission)
-					end
-				end
+				pingPrecedent = Time.now.to_i
+				ws.send("ping");
 			end
 
 			threadGestionJoueur = Thread.new do
 				gestionJoueur.tourJoueur()
 			end
 
-			while partie.estDemarree
-				queue.push(ws.receive())
-			end
-			
 
 			# Fin de la partie
 			sem.synchronize{ # Le premier accès se fait en écriture
