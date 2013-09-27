@@ -77,7 +77,8 @@ server.run() do |ws| # ecoute des connexions
 					if (transmission != "pong")
 						gestionJoueur.transmission = transmission
 					elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
-						# Aie: joueur trop long à répondre
+						# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
+						partie.deconnexionJoueur(numJoueur)
 				  	end
 				end
 			end
