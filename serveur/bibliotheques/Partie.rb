@@ -296,7 +296,7 @@ class Partie
 	end
 	
 	def deconnexionJoueur numeroJoueurDeconnecte
-		for joueur in listeJoueurs
+		for joueur in @listeJoueurs
 			if(joueur.numJoueur != numeroJoueurDeconnecte)
 				joueur.direAGestionJoueurDeconnexionJoueur(numeroJoueurDeconnecte)
 			end
