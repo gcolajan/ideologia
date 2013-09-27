@@ -6,6 +6,7 @@ require 'Ideologie'
 require 'Joueur'
 require 'Plateau'
 require 'ConnexionSQL'
+require 'conf'
 
 class Partie
 
@@ -20,12 +21,14 @@ class Partie
 	
 		@nbJoueurs = 4
 		@nbTerritoires = 32
-		@dureePartie = 1800
 		
 		@evenement=nil
 		@estDemarree = true
 		@scores = nil
 		@listeJoueurs = []
+		
+		@mutPEC = Mutex.new
+		@partieEnCours = ConditionVariable.new
 		
 		@sem = Mutex.new # Sémaphore globale
 		@semFinTour = Mutex.new # Sémaphore fin de tour
@@ -57,10 +60,11 @@ class Partie
 	#Permet de savoir si le temps est dépassé
 	#Retourne la durée restante
 	def temps
-		if(Time.now > @heureDebut + @dureePartie)
+		if(Time.now > @heureDebut + $TEMPS_JEU)
 			@estDemarree=false
+			finPartie()
 		end
-		return @dureePartie - (Time.now - @heureDebut).round
+		return $TEMPS_JEU - (Time.now - @heureDebut).round
 	end
 	
 	
@@ -119,6 +123,22 @@ class Partie
 		}	
 	end
 	
+	
+		
+		
+	def finPartie
+		@mutPEC.synchronize{
+			(@nbJoueurs-1).times {
+				@partieEnCours.signal
+			}
+		}
+	end
+	
+	def endormirFinPartie
+		@mutPEC.synchronize{
+			@partieEnCours.wait(@mutPEC)
+		}
+	end
 	
 	
 	#Retourne 4 identifiants d'opération à choisir par le client
@@ -299,9 +319,11 @@ class Partie
 		for joueur in @listeJoueurs
 			if(joueur.numJoueur != numeroJoueurDeconnecte)
 				joueur.direAGestionJoueurDeconnexionJoueur(numeroJoueurDeconnecte)
+				finPartie() # Fin de partie, attention threadGestionJoueur peut dormir (sans incidence en théorie)
 			end
 		end
 	end
+	
 	
 	# --------------- méthodes privées
 	
@@ -353,9 +375,7 @@ class Partie
 	end
 	
 	
-		
 
-	
 	# Fonctionne seulement pour une division entière sans reste
 	#Permet de séparer les territoires en 4 listes
 	#Retourne une liste composée de ces 4 listes

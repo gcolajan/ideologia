@@ -1,4 +1,5 @@
-$ARGENT_DEPART = 1600 # Argent de départ
+$FONDS_INITIAUX = 2500 # Argent au début de la partie
+$ARGENT_CASE_DEPART = 1600 # Argent au passage sur la case départ
 $TEMPS_JEU = 300 # Temps d'une partie (en secondes)
 
 $INTERVALLE_PING = 30 # Temps entre deux ping envoyés au client (en secondes)
