@@ -14,6 +14,9 @@ puts("Connected")
 client.send("moi")
 Thread.new() do
   while data = client.receive()
+  	if data == "ping"
+  		client.send("pong")
+  	end
     printf("Received: %p\n", data)
   end
   #exit()
