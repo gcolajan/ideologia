@@ -301,6 +301,7 @@ class Partie
 				joueur.direAGestionJoueurDeconnexionJoueur(numeroJoueurDeconnecte)
 			end
 		end
+		@estDemarree = false
 	end
 	
 	# --------------- méthodes privées
