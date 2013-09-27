@@ -4,3 +4,7 @@ $TEMPS_JEU = 300 # Temps d'une partie (en secondes)
 
 $INTERVALLE_PING = 30 # Temps entre deux ping envoyés au client (en secondes)
 $REPONSE_PING = 10 # Temps maximal pour le client pour répondre au ping (en secondes)
+
+def tojson(transmission, contenu, delaiReponse=-1)
+	return {"transmission" => transmission, "contenu" => contenu, "delai" => delaiReponse}.to_s.gsub("=>", ':')
+end
