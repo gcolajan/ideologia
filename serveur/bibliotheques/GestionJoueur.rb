@@ -95,11 +95,9 @@ class GestionJoueur
 
 		# DEBUG
 		puts @joueur.numJoueur.to_s+" joue"
-	  
+
 		# On attend le lance de des
-		while @transmission == nil
-		end
-		@transmission = nil
+		attendreReponse(10)
 	
 		# On calcule les des
 		de1, de2 = @partie.plateau.lanceDes()
