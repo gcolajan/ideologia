@@ -1,9 +1,10 @@
 $LOAD_PATH << File.dirname(__FILE__) + "/jeu"
 
+require 'conf'
+
 class GestionJoueur
 
 	attr_writer :transmission
-	attr_accessor :dernierPing
 
 	def initialize wsJoueur, instancePartie, instanceJoueur, instanceCoordinationClient
 		@ws = wsJoueur
@@ -11,7 +12,6 @@ class GestionJoueur
 		@joueur = instanceJoueur
 		@coord = instanceCoordinationClient
 		@transmission = nil
-		@dernierPing = nil
 	end
 
 	def preparationClient pseudo
@@ -29,11 +29,6 @@ class GestionJoueur
 
 	end
 
-	def envoieDonnees identifiantCommunication, donnees
-		@transmission = nil
-		@ws.send(tojson(identifiantCommunication, donnees))
-
-	end
 
 	def miseAJour
 
@@ -66,12 +61,8 @@ class GestionJoueur
 				# Génération des opérations sur un territoire
 				listeId = @partie.genererIdOperationsProposees()
 				
-				# Transmission des identifiants d'opération possibles
-				envoieDonnees("operations", listeId)
-				
-				# Attente de l'action choisie
-				idActionChoisie = attendreReponse(30)
-
+				# Transmission des identifiants d'opération possibles et attente d'un choix
+				idActionChoisie = envoieDonneesAvecReponse("operations", listeId, 30)
 				
 				# Vérification des données venant du client
 				if((idActionChoisie.to_i.integer?) && listeId.include?(idActionChoisie))
@@ -168,6 +159,18 @@ class GestionJoueur
 			end
 		
 		end # Fin du while (partie.estDemarree)
+	end
+	
+	
+	def envoieDonnees identifiantCommunication, donnees
+		@transmission = nil
+		@ws.send(tojson(identifiantCommunication, donnees))
+	end
+	
+	def envoieDonneesAvecReponse identifiantCommunication, donnees, delai
+		@transmission = nil
+		@ws.send(tojson(identifiantCommunication, donnees, delai))
+		return attendreReponse(delai)
 	end
 
 	# Permet d'attendre une réponse pendant un temps donné
