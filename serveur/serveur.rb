@@ -72,17 +72,14 @@ server.run() do |ws| # ecoute des connexions
 			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
 			communicationClient = Thread.new do
 				
-				while partie.estDemarree
-					transmission = ws.receive()
-					
-					if (transmission != "pong")
-						gestionJoueur.transmission = transmission
-					else
-						if Time.now.to_i-pingPrecedent > $REPONSE_PING
-							# Aie: joueur trop long à répondre
-						end
-				  	end
-				end
+			while partie.estDemarree
+				transmission = ws.receive()
+				
+				if (transmission != "pong")
+					gestionJoueur.transmission = transmission
+				elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
+					# Aie: joueur trop long à répondre
+			  	end
 			end
 			
 			ping = Thread.new do
