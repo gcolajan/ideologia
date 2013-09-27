@@ -295,7 +295,13 @@ class Partie
 		return @scores
 	end
 	
-	
+	def deconnexionJoueur numeroJoueurDeconnecte
+		for(joueur in listeJoueurs)
+			if(joueur.numJoueur != numeroJoueurDeconnecte)
+				joueur.direAGestionJoueurDeconnexionJoueur(numeroJoueurDeconnecte)
+			end
+		end
+	end
 	
 	# --------------- méthodes privées
 	

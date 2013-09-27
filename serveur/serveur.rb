@@ -60,6 +60,7 @@ server.run() do |ws| # ecoute des connexions
 			joueur = partie.recupererInstanceJoueur(numJoueur)
 
 			gestionJoueur = GestionJoueur.new(ws, partie, joueur, coord)
+			joueur.instanceGestionJoueur = gestionJoueur
 
 			gestionJoueur.preparationClient(pseudo)
 
@@ -93,7 +94,7 @@ server.run() do |ws| # ecoute des connexions
 						pingRecu = Time.now.to_i
 						pingAncien = gestionJoueur.dernierPing
 						if(pingRecu - pingAncien > 30)
-							puts("ping trop vieux")
+							partie.deconnexionJoueur(numJoueur)
 						else
 							gestionJoueur.dernierPing = pingRecu
 						end

@@ -178,4 +178,7 @@ class GestionJoueur
 		return {"transmission" => transmission, "contenu" => contenu}.to_s.gsub("=>", ':')
 	end
 
+	def envoyerSignalDeconnexion numeroJoueurDeconnecte
+		envoieDonnees("deconnexion", numeroJoueurDeconnecte)
+	end
 end

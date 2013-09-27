@@ -9,6 +9,8 @@ class Joueur
 	attr_reader :ideologie
 	attr_reader :listeJaugesPourCopie
 	attr_reader :pseudo
+
+	attr_writer :instanceGestionJoueur
 	
 	attr_accessor :position
 	attr_accessor :listeTerritoires
@@ -23,6 +25,7 @@ class Joueur
 		@listeTerritoires=approprierTerritoires(territoires)
 		@fondsFinanciers=2500
 		@pseudo=""
+		@instanceGestionJoueur = nil
 		
 	end
 	
@@ -118,6 +121,14 @@ class Joueur
 			listeTerr.merge!({territoire.idTerritoire => territoire.calculerDecalage})
 		end
 		return listeTerr
+	end
+
+	def obtenirInstanceGestionJoueur gerantJoueur
+		@instanceGestionJoueur = gerantJoueur
+	end
+
+	def direAGestionJoueurDeconnexionJoueur numeroJoueurDeconnecte
+		@instanceGestionJoueur.envoyerSignalDeconnexion(numeroJoueurDeconnecte)
 	end
 	
 end
