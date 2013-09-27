@@ -9,10 +9,6 @@ require 'conf'
 
 Thread.abort_on_exception = true
 
-def tojson(transmission, contenu)
-	return {"transmission" => transmission, "contenu" => contenu}.to_s.gsub("=>", ':')
-end
-
 if ARGV.size != 2
 	$stderr.puts("Usage: ruby sample/chat_server.rb ACCEPTED_DOMAIN PORT")
 	exit(1)

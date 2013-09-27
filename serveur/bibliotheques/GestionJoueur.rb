@@ -30,7 +30,7 @@ class GestionJoueur
 	end
 
 	def envoieDonnees identifiantCommunication, donnees
-
+		@transmission = nil
 		@ws.send(tojson(identifiantCommunication, donnees))
 
 	end
@@ -70,11 +70,7 @@ class GestionJoueur
 				envoieDonnees("operations", listeId)
 				
 				# Attente de l'action choisie
-				idActionChoisie = nil
-				while(idActionChoisie == nil)
-					idActionChoisie = @transmission
-					@transmission = nil
-				end
+				idActionChoisie = attendreReponse(30)
 
 				
 				# Vérification des données venant du client
@@ -174,8 +170,18 @@ class GestionJoueur
 		end # Fin du while (partie.estDemarree)
 	end
 
-	def tojson(transmission, contenu)
-		return {"transmission" => transmission, "contenu" => contenu}.to_s.gsub("=>", ':')
+	# Permet d'attendre une réponse pendant un temps donné
+	def attendreReponse (delai)
+		tempsDebut = Time.now.to_i
+		
+		begin 
+			if @transmission != nil
+				reponse = @transmission
+			sleep(0.5)
+		end while (Time.now.to_i-tempsDebut <= delai or reponse != nil)
+		
+		@transmission = nil
+		return reponse
 	end
 
 	def envoyerSignalDeconnexion numeroJoueurDeconnecte
