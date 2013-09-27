@@ -83,16 +83,21 @@ server.run() do |ws| # ecoute des connexions
 			end
 			
 			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
-			while partie.estDemarree
-				transmission = ws.receive()
+			communications = Thread.new do
+				while partie.estDemarree
+					transmission = ws.receive()
 			
-				if (transmission != "pong")
-					gestionJoueur.transmission = transmission
-				elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
-					# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
-					partie.deconnexionJoueur(numJoueur)
-			  	end
+					if (transmission != "pong")
+						gestionJoueur.transmission = transmission
+					elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
+						# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
+						partie.deconnexionJoueur(numJoueur)
+				  	end
+				end
 			end
+			
+			# Endormir le thread principal (1 par joueur) tant que la partie est démarrée
+			partie.endormirFinPartie()
 
 
 			# Fin de la partie

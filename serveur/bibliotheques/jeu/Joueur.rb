@@ -2,6 +2,7 @@ require 'mysql'
 require 'Jauge'
 require 'ConnexionSQL'
 require 'Joueur'
+require 'conf'
 
 class Joueur
 
@@ -24,7 +25,7 @@ class Joueur
 		@ideologie=ideologie
 		@listeJaugesPourCopie=definirJauges()
 		@listeTerritoires=approprierTerritoires(territoires)
-		@fondsFinanciers=2500
+		@fondsFinanciers=$FONDS_INITIAUX
 		@pseudo=""
 		@instanceGestionJoueur = nil
 		
