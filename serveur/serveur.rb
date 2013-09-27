@@ -69,20 +69,6 @@ server.run() do |ws| # ecoute des connexions
 			
 			pingPrecedent = Time.now.to_i
 
-			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
-			communicationClient = Thread.new do
-				while partie.estDemarree
-					transmission = ws.receive()
-				
-					if (transmission != "pong")
-						gestionJoueur.transmission = transmission
-					elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
-						# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
-						partie.deconnexionJoueur(numJoueur)
-				  	end
-				end
-			end
-			
 			# On ping le client toutes les X secondes pour vérifier sa présence
 			ping = Thread.new do
 				while partie.estDemarree
@@ -94,6 +80,18 @@ server.run() do |ws| # ecoute des connexions
 
 			threadGestionJoueur = Thread.new do
 				gestionJoueur.tourJoueur()
+			end
+			
+			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
+			while partie.estDemarree
+				transmission = ws.receive()
+			
+				if (transmission != "pong")
+					gestionJoueur.transmission = transmission
+				elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
+					# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
+					partie.deconnexionJoueur(numJoueur)
+			  	end
 			end
 
 
