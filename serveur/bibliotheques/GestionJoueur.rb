@@ -176,7 +176,7 @@ class GestionJoueur
 		$mutexReception.synchronize {
 			$cvReception.wait($mutexReception,delai)
 		}
-	
+		
 		return @transmission
 	end
 
