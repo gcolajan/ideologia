@@ -135,3 +135,13 @@ function chercherProprietaire(terr) {
 				found = i
 	return found	
 }
+
+function chercherIdeologieParPosition(pos) {
+	territoire =  chercherTerritoire(pos)
+	if (territoire == -1)
+		console.log('Territoire introuvable');
+	proprio = chercherProprietaire(territoire)
+	if (proprio == -1)
+		console.log('Propriétaire introuvable'); 
+	return ep_partenaires[proprio]['ideologie'];
+}

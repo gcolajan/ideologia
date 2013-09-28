@@ -30,9 +30,14 @@ while ($terr = $res->fetch_assoc())
 }
 
 // Si les dernières cases sont des événements, il faut alors l'indiquer en dehors de la requête
-for (; $i < 42 ; ++$i)
+for (++$i ; $i < 42 ; ++$i)
 	$typesCases[$i] = 'evenement';
+	
+$typ = '';
+foreach ($typesCases as $pos => $type)
+	$typ .= $pos.':\''.$type.'\',';
 
+$typesCaseJS = 'typesCases = {'.substr($typ,0,-1).'}';
 $terrCases = 'terrCases = {'.implode($terrCases, ',').'}';
 $territoires = 'territoires = {'.implode($territoires, ',').'}';
 
@@ -101,7 +106,7 @@ $coutsOp = 'jeu_couts = {'.implode($coutsOp, ',').'}';
 </div>
 
 
-<div id="conteneur_plateau" style="display:none;">
+<div id="conteneur_plateau"> <!-- style="display:none;">-->
 	<?php include 'plateau/plateau.php'; ?>
 </div>
 
@@ -109,13 +114,13 @@ $coutsOp = 'jeu_couts = {'.implode($coutsOp, ',').'}';
 timer("timer");
 setTimer(30,0);
 
-
 <?php 
 echo $jauges."\n";
 echo $ideologies."\n";
 echo $couleurs."\n";
 echo "\n";
 echo $terrCases."\n";
+echo $typesCaseJS."\n";
 echo $territoires."\n";
 echo "\n";
 echo $evenements."\n";

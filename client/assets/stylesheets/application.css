@@ -11,12 +11,15 @@ body {
 	min-width:1000px;
 	min-height:650px;
 	position:absolute;
+
 	
 }
 
 #plateau {
 	margin-right:250px;
 	height:100%;
+		background:#caeeff;
+	box-shadow: inset 0px 0px 10px 2px #9b9b9b;
 }
 
 #menu {

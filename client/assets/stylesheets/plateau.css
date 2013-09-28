@@ -1,4 +1,4 @@
-#map {background:#caeeff; height:81.81%; width:83.33%; box-shadow: inset 0px 0px 10px 2px #9b9b9b; text-align:center; position:relative;}
+#map { height:81.81%; width:83.33%; text-align:center; position:relative;}
 path {stroke:#222;stroke-width:2px;}
 
 
@@ -15,11 +15,6 @@ span#etatTerritoires {position:absolute; bottom:10%; display:block; width:100%; 
 
 span.des {background:url('../images/des.png') white; width:33px; height:33px; border:1px solid black; border-radius:8px; display:block; margin:2px; background-position:0 -165px;}
 
-.territoire, .evenement, .depart {}
-.territoire {background-image:url("../images/continent.jpg");}
-.evenement {background-image:url("../images/dilemme.jpg");}
-.depart {background-image:url("../images/monnaie.jpg");}
-
 div#plateau div#cases_horizontales {margin:0 8.33%; width:100%; height:100%;}
 div#plateau div#cases_gauche {width:8.33%; height:100%; float:left;}
 div#plateau div#cases_droite {width:8.33%; height:100%; float:right;}
@@ -33,21 +28,25 @@ div#plateau div#cases_horizontales div#cases_sup div {width:8.33%; height:100%; 
 div#plateau div#cases_horizontales div#cases_inf {height:9.09%;}
 div#plateau div#cases_horizontales div#cases_inf div {width:8.33%; height:100%; display:block; float:left;}
 
-div#plateau div#cases_horizontales div div, div#plateau div#cases_droite div, div#plateau div#cases_gauche div {background:url('../images/fond_case.png') center; font-size:85%; text-align:center; overflow:hidden; line-height:30px;}
+div#plateau div#cases_horizontales div div, div#plateau div#cases_droite div, div#plateau div#cases_gauche div {background:url('../images/territoires/logo_ideo0.png') no-repeat center; font-size:85%; text-align:center; overflow:hidden; line-height:30px;}
 
-div#plateau div#cases_horizontales div div span, div#plateau div#cases_droite div span, div#plateau div#cases_gauche div span {border:1px solid #333; display:block; width:100%; height:100%; text-shadow: white 0px 0px 2px; font-weight:bold; letter-spacing:-1px;}
+div#plateau div#cases_horizontales div div span, div#plateau div#cases_droite div span, div#plateau div#cases_gauche div span {display:block; width:100%; height:100%; text-shadow: white 0px 0px 2px; font-weight:bold; letter-spacing:-1px;}
 
-div#plateau div#cases_horizontales div div.case_evenement, div#plateau div#cases_droite div.case_evenement, div#plateau div#cases_gauche div.case_evenement{background-color:maroon; background-image: url('../images/case_evenement.png'); background-position:center; line-height:60px;}
+div#plateau div#cases_horizontales div div.case_evenement, div#plateau div#cases_droite div.case_evenement, div#plateau div#cases_gauche div.case_evenement{line-height:60px; background:none;}
 div#plateau div#cases_gauche div#case0 {background:url('../images/case_depart.png') center;}
 
 div.case_plateau {
 	position:absolute;
 	display:inline-block;
 	padding:0;
-	border:1px solid black;
 }
 
 div.case_horizontale {width:8.33%; height:10.3%;}
 div.case_verticale {height:9.09%; width:7.3%;}
 
 div.case_angle {width:7.3%; height:10.4%; color:green;}
+
+
+div#selecteurJoueur {width:200px; height:200px; margin:auto; background:url('../images/selecteurJoueur.png');}
+div#selecteurJoueurBis {width:200px; height:200px; background: url('../images/indicateur.png') no-repeat center; float:left; position:absolute; transform: rotate(45deg);}
+div#selecteurJoueur span {width:100px; height:100px; margin:auto; display:inline-block; margin:0; padding:0; line-height:100px; text-align:center; font-weight:bold; font-size:115%;}

@@ -4,19 +4,18 @@ banniere();
 
 <div id="conteneur">
 <div id="corps">
-	<h1>Les règles</h1>
-	<p>Le but d'Ideologia est de gagner en respectant les trois jauges représentant la santé 
-	de chaque territoire en accord avec l'idéologie incarnée.</p>
-	<p>Vous aurez la possibilité d'agir différemment sur les jauges du territoire (Environnement, Finance et Sociale) sur lequel vous vous trouvez, 
-	qu'il soit ami ou ennemi. Le but étant de garder en équilibre les vôtres vis-à-vis de vos idéaux, 
-	ou d'écarter le plus possible de l'équilibre les territoires de vos ennemis afin de les récupérer.</p>
-	<p>Vous gagnerez en fonction du nombre de territoires possédés, ou du bon respect de votre idéologie sur chacun des territoires.</p>
+	<h1>Nouveaux joueurs en attente</h1>
+
 	<span class="chargement">
+		Joueurs présents :
+		<ol>
+			<li><span id="j1"><em>en attente...</em></span></li>
+			<li><span id="j2"><em>en attente...</em></span></li>
+			<li><span id="j3"><em>en attente...</em></span></li>
+			<li><span id="j4"><em>en attente...</em></span></li>
+		</ol>
 		En attente de joueurs...<br /><br />
-		<img src="/assets/chargement.gif" />
+		<img src="/assets/images/chargement.gif" />
 	</span>
 </div>
 </div>
-
-<?php
-piedpage();

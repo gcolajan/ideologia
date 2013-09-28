@@ -3,8 +3,8 @@ function showCase($posCase, $typeCase, &$contenuCases) {
 	switch ($typeCase) {
 		case 'depart':
 			$case = '
-		<div id="case'.$posCase.'" class="case_'.$typeCase.'">
-			<span id="case_s'.$posCase.'">Départ</span>
+		<div id="case'.$posCase.'" class="case_'.$typeCase.'" title="Case départ">
+			<span id="case_s'.$posCase.'"></span>
 		</div>';
 		break;
 		case 'evenement':
@@ -18,8 +18,9 @@ function showCase($posCase, $typeCase, &$contenuCases) {
 			$case = '
 		<div id="case'.$posCase.'" class="case_'.$typeCase.'"
 		onmouseover="highlightTerr('.$contenu['id'].')"
-		onmouseout="highlightTerrOver('.$contenu['id'].')">
-			<span id="case_s'.$posCase.'">'.$contenu['nom'].'</span>
+		onmouseout="highlightTerrOver('.$contenu['id'].')"
+		title="'.$contenu['nom'].'">
+			<span id="case_s'.$posCase.'"></span>
 		</div>';
 	}
 	
@@ -29,16 +30,12 @@ function showCase($posCase, $typeCase, &$contenuCases) {
 
 
 	<div id="menu">
-		<p style="text-align:center;"><img src="/assets/logo.png" alt="Ideologia" title="Ideologia" /></p>
+		<p style="text-align:center;"><img src="/assets/images/logo.png" alt="Ideologia" title="Ideologia" width="200" /></p>
 		
 			<div id="panel_general">
 			<h2>Joueurs</h2>
-				<div id="joueurs">
-					<!-- remplir le title avec le pseudo -->
-					<span class="jj"><span id="jj0">J1</span><span id="joueur_pseudo0">-</span></span>
-					<span class="jj"><span id="jj1">J2</span><span id="joueur_pseudo1">-</span></span>
-					<span class="jj"><span id="jj2">J3</span><span id="joueur_pseudo2">-</span></span>
-					<span class="jj"><span id="jj3">J4</span><span id="joueur_pseudo3">-</span></span>
+				<div id="selecteurJoueur"><div id="selecteurJoueurBis"></div>
+					<span id="joueur_pseudo3">J4</span><span id="joueur_pseudo0">J1</span><span id="joueur_pseudo2">J3</span><span id="joueur_pseudo1">J2</span>
 				</div>
 			</div>
 

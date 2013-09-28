@@ -1,24 +1,13 @@
-#header_conteneur
-{
-	font-size : 3em;
-	font-weight : bold;
-	color : tomato;
-	text-align : center;
-	line-height : 150px;
-	height : 150px;
-	background-color : white;
-}
-
 #header
 {
-	background : url('../images/logo.png') no-repeat center ;
-	position : relative;
-	left : 0;
+	background : #b9e9ff url('../images/logo.png') no-repeat center ;
+	height:220px;
 }
 
 #speedbar {
 	height:35px;
 	background:url('../images/speed.png') repeat-x;
+	border-bottom:1px solid white;
 }
 
 #speedbar ul {
@@ -38,29 +27,25 @@
 }
 
 #speedbar a {font-weight:bold; color:white; text-decoration:none; display:block;}
-#speedbar a:hover {text-decoration:underline;}
+#speedbar a:hover {font-style:italic;}
 
 #corps h1 {text-align : center;}
 
 #conteneur {
+	min-height:600px;
 	background:url('../images/fond.png') repeat-x white;
-	padding-top:70px;
-	padding-bottom:60px;
 }
 
 #corps
 {
-	padding:5px;
-	border-radius : 50px;
-	box-shadow:3px 3px 20px #555;
-	background-color : #7885ff;
-	margin-left : 20%;
-	width : 60%;	
-	color:white;
+	width:650px;	
+	padding:30px 0;
+	margin:auto;
+	color:#444;
 }
 
 #corps p {
-	width:90%;
+	width:95%;
 	margin:10px auto;
 	text-align:justify;
 }
@@ -107,5 +92,6 @@ fieldset.connexion label {display:inline-block; width:120px; padding-right:20px;
 #footer a {color:black;}
 #footer a:hover {text-decoration:none;}
 
-table#scores {width:80%; margin:auto;}
-table#scores, table#scores tr, table#scores tr td, table#scores tr th  {border:1px solid white; border-collapse:collapse; text-align:center;}
+table#scores {width:100%; margin:auto;}
+table#scores th {background:white;}
+table#scores, table#scores tr, table#scores tr td, table#scores tr th  {border:1px solid #444; border-collapse:collapse; text-align:center;}
