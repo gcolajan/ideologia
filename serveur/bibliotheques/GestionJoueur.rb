@@ -173,17 +173,11 @@ class GestionJoueur
 
 	# Permet d'attendre une réponse pendant un temps donné
 	def attendreReponse (delai)
-		tempsDebut = Time.now.to_i
-		
-		begin 
-			if @transmission != nil
-				reponse = @transmission
-			end
-			sleep(0.5)
-		end while (Time.now.to_i-tempsDebut <= delai or reponse != nil)
-		
-		@transmission = nil
-		return reponse
+		$mutexReception.synchronize {
+			$cvReception.wait($mutexReception,delai)
+		}
+	
+		return @transmission
 	end
 
 	def envoyerSignalDeconnexion numeroJoueurDeconnecte

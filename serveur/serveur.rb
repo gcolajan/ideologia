@@ -29,6 +29,10 @@ server.run() do |ws| # ecoute des connexions
 		puts "connexion acceptee"
 		ws.handshake()
 		
+		# On initialise nos mutex/cv pour les communications
+		$mutexReception = Mutex.new
+		$cvReception = ConditionVariable.new
+		
 		# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
 		numJoueur = coord.nouveauJoueur()
 		
@@ -85,6 +89,9 @@ server.run() do |ws| # ecoute des connexions
 			
 					if (transmission != "pong")
 						gestionJoueur.transmission = transmission
+						$mutexReception.synchronize {
+							$cvReception.signal
+						}
 					elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
 						# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
 						partie.deconnexionJoueur(numJoueur)
