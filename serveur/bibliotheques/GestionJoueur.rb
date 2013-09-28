@@ -1,9 +1,10 @@
 $LOAD_PATH << File.dirname(__FILE__) + "/jeu"
 
+require 'conf'
+
 class GestionJoueur
 
 	attr_writer :transmission
-	attr_accessor :dernierPing
 
 	def initialize wsJoueur, instancePartie, instanceJoueur, instanceCoordinationClient
 		@ws = wsJoueur
@@ -11,7 +12,6 @@ class GestionJoueur
 		@joueur = instanceJoueur
 		@coord = instanceCoordinationClient
 		@transmission = nil
-		@dernierPing = nil
 	end
 
 	def preparationClient pseudo
@@ -29,11 +29,6 @@ class GestionJoueur
 
 	end
 
-	def envoieDonnees identifiantCommunication, donnees
-
-		@ws.send(tojson(identifiantCommunication, donnees))
-
-	end
 
 	def miseAJour
 
@@ -66,16 +61,8 @@ class GestionJoueur
 				# Génération des opérations sur un territoire
 				listeId = @partie.genererIdOperationsProposees()
 				
-				# Transmission des identifiants d'opération possibles
-				envoieDonnees("operations", listeId)
-				
-				# Attente de l'action choisie
-				idActionChoisie = nil
-				while(idActionChoisie == nil)
-					idActionChoisie = @transmission
-					@transmission = nil
-				end
-
+				# Transmission des identifiants d'opération possibles et attente d'un choix
+				idActionChoisie = envoieDonneesAvecReponse("operations", listeId, 30)
 				
 				# Vérification des données venant du client
 				if((idActionChoisie.to_i.integer?) && listeId.include?(idActionChoisie))
@@ -108,11 +95,9 @@ class GestionJoueur
 
 		# DEBUG
 		puts @joueur.numJoueur.to_s+" joue"
-	  
+
 		# On attend le lance de des
-		while @transmission == nil
-		end
-		@transmission = nil
+		attendreReponse(10)
 	
 		# On calcule les des
 		de1, de2 = @partie.plateau.lanceDes()
@@ -173,9 +158,32 @@ class GestionJoueur
 		
 		end # Fin du while (partie.estDemarree)
 	end
+	
+	
+	def envoieDonnees identifiantCommunication, donnees
+		@transmission = nil
+		@ws.send(tojson(identifiantCommunication, donnees))
+	end
+	
+	def envoieDonneesAvecReponse identifiantCommunication, donnees, delai
+		@transmission = nil
+		@ws.send(tojson(identifiantCommunication, donnees, delai))
+		return attendreReponse(delai)
+	end
 
-	def tojson(transmission, contenu)
-		return {"transmission" => transmission, "contenu" => contenu}.to_s.gsub("=>", ':')
+	# Permet d'attendre une réponse pendant un temps donné
+	def attendreReponse (delai)
+		tempsDebut = Time.now.to_i
+		
+		begin 
+			if @transmission != nil
+				reponse = @transmission
+			end
+			sleep(0.5)
+		end while (Time.now.to_i-tempsDebut <= delai or reponse != nil)
+		
+		@transmission = nil
+		return reponse
 	end
 
 	def envoyerSignalDeconnexion numeroJoueurDeconnecte

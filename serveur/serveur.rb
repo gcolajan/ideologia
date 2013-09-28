@@ -5,12 +5,9 @@ require "thread"
 require 'CoordinationClient'
 require 'Partie'
 require 'GestionJoueur'
+require 'conf'
 
 Thread.abort_on_exception = true
-
-def tojson(transmission, contenu)
-	return {"transmission" => transmission, "contenu" => contenu}.to_s.gsub("=>", ':')
-end
 
 if ARGV.size != 2
 	$stderr.puts("Usage: ruby sample/chat_server.rb ACCEPTED_DOMAIN PORT")
@@ -64,54 +61,40 @@ server.run() do |ws| # ecoute des connexions
 
 			gestionJoueur.preparationClient(pseudo)
 
-			queue = Queue.new
-
 			semaphore = Mutex.new
+			
+			pingPrecedent = Time.now.to_i
 
-			communicationClient = Thread.new do
-				while 1
-					sleep(0.1)
-					transmission = nil
-					semaphore.synchronize{
-						transmission = queue.pop
-					}
-					if(transmission != "ping")
-						gestionJoueur.transmission = transmission
-					else
-						queue.push(transmission)
-				  	end
-				end
-			end
-
+			# On ping le client toutes les X secondes pour vérifier sa présence
 			ping = Thread.new do
-				while 1
-					sleep(0.1)
-					transmission = nil
-					semaphore.synchronize{
-						transmission = queue.pop
-					}
-					if(transmission == "ping")
-						pingRecu = Time.now.to_i
-						pingAncien = gestionJoueur.dernierPing
-						if(pingRecu - pingAncien > 30)
-							partie.deconnexionJoueur(numJoueur)
-						else
-							gestionJoueur.dernierPing = pingRecu
-						end
-					else
-						queue.push(transmission)
-					end
+				while partie.estDemarree
+					sleep($INTERVALLE_PING)
+					pingPrecedent = Time.now.to_i
+					ws.send("ping")
 				end
 			end
 
 			threadGestionJoueur = Thread.new do
 				gestionJoueur.tourJoueur()
 			end
-
-			while partie.estDemarree
-				queue.push(ws.receive())
+			
+			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
+			communications = Thread.new do
+				while partie.estDemarree
+					transmission = ws.receive()
+			
+					if (transmission != "pong")
+						gestionJoueur.transmission = transmission
+					elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
+						# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
+						partie.deconnexionJoueur(numJoueur)
+				  	end
+				end
 			end
 			
+			# Endormir le thread principal (1 par joueur) tant que la partie est démarrée
+			partie.endormirFinPartie()
+
 
 			# Fin de la partie
 			sem.synchronize{ # Le premier accès se fait en écriture
