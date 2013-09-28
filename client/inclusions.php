@@ -31,27 +31,16 @@ function pied() {
 }
 
 function banniere() {
-	echo '<div id="header_conteneur"><div id="header">&nbsp;</div></div>';
+	echo '<div id="header" title="Ideologia"></div>';
 }
 
 function menu() {
 	echo '<div id="speedbar">
 	<ul>
-		<li><a href="#">Accueil</a></li>
-		<li><a href="#">Projet</a></li>
-		<li><a href="#">Équipe</a></li>
-		<li><a href="#">Contact</a></li>
+		<li><a href="./" title="Ideologia">Accueil</a></li>
+		<li><a href="./demo.php" title="Démonstration et règles du jeu">Démo & Règles</a></li>
+		<li><a href="./scores.php" title="Meilleurs scores">Scores</a></li>
+		<li><a href="./apropos.php" title="Apprenez-en plus sur ce projet">À Propos</a></li>
 	</ul>
 	</div>';
 }
-
-function piedpage() {
-	echo '<div id="conteneur_footer">
-		<div id="footer">
-			<p><a href="#">Nous contacter</a><br />
-			Projet réalisé par des étudiants de l\'IUT-BM<br />
-			2012-2013</p>
-		</div>
-	</div>';
-}
-?>

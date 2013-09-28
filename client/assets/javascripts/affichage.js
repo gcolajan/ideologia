@@ -6,8 +6,7 @@ function affichage_pseudo(joueur, pseudo) {
 
 // Affichage des idéologies (couleur et title)
 function affichage_ideologie(joueur, ideologie) {
-	document.getElementById('jj'+joueur).style.background = couleurs[ideologie-1]
-	document.getElementById('jj'+joueur).title = ideologies[ideologie-1]
+	document.getElementById('joueur_pseudo'+joueur).title = ideologies[ideologie-1]
 }
 
 
@@ -21,62 +20,48 @@ function affichage_niveauIdeal(jauge, niveau) {
 function affichage_pion(position, joueurs) {
 
 	element = 'case_s'+position;
-	if (position == 0)
-		element = 'case0';
 		
 	casePos = document.getElementById(element)
 	
-	fondCase = "fond_case.png"
-	if (position == 0)
-		fondCase = "case_depart.png"
-	else if (chercherTerritoire(position) == -1)
-		fondCase = "case_evenement.png"
-
-	if (joueurs == -1) {
-		casePos.style.backgroundImage = "url('/assets/"+fondCase+"')"
-		casePos.style.backgroundPosition = "center"
-	}
-	else {
-		j0I = "url('/assets/pions/p1.png')"
-		j0P = "left top"
-		j1I = "url('/assets/pions/p2.png')"
-		j1P = "right top"
-		j2I = "url('/assets/pions/p3.png')"
-		j2P = "left bottom"
-		j3I = "url('/assets/pions/p4.png')"
-		j3P = "right bottom"
-		
-		bi = ""
-		bp = ""
-		
-		for (var it = 0 ; it < joueurs.length ; it++)
-		{
-			switch (joueurs[it]) {
-				case 0:
-					bi += j0I+", "
-					bp += j0P+", "
-				break;
-				case 1:
-					bi += j1I+", "
-					bp += j1P+", "				
-				break;
-				case 2:
-					bi += j2I+", "
-					bp += j2P+", "
-				break;
-				case 3:
-					bi += j3I+", "
-					bp += j3P+", "
-				break;
-			}
-			
-			bp
+	j0I = "url('/assets/images/pions/p1.png')"
+	j0P = "left top"
+	j1I = "url('/assets/images/pions/p2.png')"
+	j1P = "right top"
+	j2I = "url('/assets/images/pions/p3.png')"
+	j2P = "left bottom"
+	j3I = "url('/assets/images/pions/p4.png')"
+	j3P = "right bottom"
+	
+	bi = ""
+	bp = ""
+	
+	for (var it = 0 ; it < joueurs.length ; it++)
+	{
+		switch (joueurs[it]) {
+			case 0:
+				bi += j0I+", "
+				bp += j0P+", "
+			break;
+			case 1:
+				bi += j1I+", "
+				bp += j1P+", "				
+			break;
+			case 2:
+				bi += j2I+", "
+				bp += j2P+", "
+			break;
+			case 3:
+				bi += j3I+", "
+				bp += j3P+", "
+			break;
 		}
 		
-		casePos.style.backgroundImage = bi+"url('/assets/"+fondCase+"')"
-		casePos.style.backgroundPosition = bp+"center"
-		casePos.style.backgroundRepeat = "no-repeat"
+		bp
 	}
+	
+	casePos.style.backgroundImage = bi.substr(0,bi.length-2)
+	casePos.style.backgroundPosition = bp.substr(0,bp.length-2)
+	casePos.style.backgroundRepeat = "no-repeat"
 }
 
 
@@ -105,9 +90,8 @@ function affichage_nbTerritoires(nb) {
 
 // Coloration des cases en fonction du propriétaire
 function affichage_cases(ideologie, territoire) {
-	couleur = couleurs[ideologie-1]
 	caseSelectionnee = terrCases[territoire]
-	document.getElementById('case'+caseSelectionnee).style.backgroundColor = couleur
+	document.getElementById('case'+caseSelectionnee).style.backgroundImage = "url('/assets/images/territoires/logo_ideo"+ideologie+".png')"
 }
 
 
@@ -178,12 +162,8 @@ function affichage_indicateurSante(territoire, decalage) {
 
 // Affiche le joueur courant (fait clignoter et ajoute un log)
 function affichage_jc(jc) {
-	
-	for (i = 0 ; i < nbJoueurs; i ++)
-	{
-		if (i == jc) document.getElementById('jj'+i).style.textDecoration = "blink"
-		else document.getElementById('jj'+i).style.textDecoration = "none"
-	}
+	rotation = jc*90+45;
+	document.getElementById('selecteurJoueurBis').style.transform='rotate('+rotation+'deg)';
 
 	ecrire_log(ep_partenaires[jc]['pseudo']+" (J"+(jc+1)+") joue")
 }

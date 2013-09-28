@@ -178,6 +178,7 @@ class GestionJoueur
 		begin 
 			if @transmission != nil
 				reponse = @transmission
+			end
 			sleep(0.5)
 		end while (Time.now.to_i-tempsDebut <= delai or reponse != nil)
 		

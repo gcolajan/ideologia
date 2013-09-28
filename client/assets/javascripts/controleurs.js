@@ -11,8 +11,7 @@ function controleur_numeroJoueur(num) {
 	document.getElementById('attente').style.display='none';document.getElementById('conteneur_plateau').style.display='block';
 	
 	// Mettre en gras le pseudo choisi par le joueur
-	document.getElementById('joueur_pseudo'+num).style.fontWeight = "bold";
-	document.getElementById('jj'+num).style.fontWeight = "bold";
+	document.getElementById('joueur_pseudo'+num).style.fontStyle = "italic";
 }
 
 
