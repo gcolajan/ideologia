@@ -102,6 +102,8 @@ server.run() do |ws| # ecoute des connexions
 			# Endormir le thread principal (1 par joueur) tant que la partie est démarrée
 			partie.endormirFinPartie()
 
+			ping.kill()
+			communications.kill()
 
 			# Fin de la partie
 			sem.synchronize{ # Le premier accès se fait en écriture

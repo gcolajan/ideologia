@@ -109,9 +109,7 @@ class Partie
 	#Réveil les threads qui ne jouaient pas pendant le tour
 	def reveilFinTour
 		@semFinTour.synchronize{
-			(@nbJoueurs-1).times {
-				@finTour.signal
-			}
+			@finTour.broadcast()
 		}
 	end
 	
@@ -127,9 +125,7 @@ class Partie
 	def finPartie
 		@estDemarree=false
 		@mutPEC.synchronize{
-			(@nbJoueurs-1).times {
-				@partieEnCours.signal
-			}
+			@partieEnCours.broadcast()
 		}
 	end
 	
