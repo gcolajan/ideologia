@@ -177,10 +177,7 @@ class GestionJoueur
 			$cvReception.wait($mutexReception,delai)
 		}
 		
-		reponse = @transmission
-		@transmission = nil
-		
-		return reponse
+		return @transmission
 	end
 
 	def envoyerSignalDeconnexion numeroJoueurDeconnecte
