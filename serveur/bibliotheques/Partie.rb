@@ -42,7 +42,7 @@ class Partie
 		portionsTerritoires = partageTerritoire(listeTerritoires)
 		
 		for i in (0..@nbJoueurs-1)
-			@listeJoueurs.push(Joueur.new(listeIdeologies[i],portionsTerritoires[i],i))
+			@listeJoueurs.push(Joueur.new(listeIdeologies[i], portionsTerritoires[i], i))
 		end
 		
 		@plateau = Plateau.new(listeTerritoires, popMondiale)
@@ -52,7 +52,7 @@ class Partie
 	
 	
 	# Retourne l'instance du joueur correspondant au thread appelant
-	def recupererInstanceJoueur numero
+	def recupererInstanceJoueur(numero)
 		return @listeJoueurs[numero]
 	end
 	
@@ -79,9 +79,9 @@ class Partie
 	
 	#Fais progresser le joueur de la somme des dés
 	#Retourne la case sur laquelle le joueur est tombé et 
-	def progression sommeDes
+	def progression(sommeDes)
 		# Plateau	va faire progresser le joueur de sommeDes
-		ancienneCase, nouvelleCase = @plateau.faireProgresser(@joueurCourant,sommeDes)
+		ancienneCase, nouvelleCase = @plateau.faireProgresser(@joueurCourant, sommeDes)
 		
 		passageDepart = false
 		if (nouvelleCase.numCase < ancienneCase.numCase) # On a passé la case départ
@@ -89,13 +89,13 @@ class Partie
 		end
 		
 		# On retourne la nouvelle case du joueur et un indicateur de passage
-		return nouvelleCase,passageDepart
+		return nouvelleCase, passageDepart
 	end
 	
 	
 	#Application du gain suivant si le joueur est passé sur la case départ ou non
 	#Retourne le gain du joueur pour afficher du côté du client
-	def recupererGain passageDepart
+	def recupererGain(passageDepart)
 		gain = 0
 		if (passageDepart)
 			gain = @plateau.listeCases[0].actionCaseDepart(@joueurCourant)
@@ -181,15 +181,15 @@ class Partie
 	
 	
 	# Applique le coût de l'opération sur le joueur et l'opération sur le territoire
-	def appliquerOperationTerritoire operation,territoire
+	def appliquerOperationTerritoire(operation, territoire)
 		@joueurCourant.fondsFinanciers -= operation.cout
-		territoire.recoitOperation(operation,@joueurCourant)
+		territoire.recoitOperation(operation, @joueurCourant)
 	end
 	
 	
 	
 	# Applique un événement (prise en charge de la destination)
-	def appliquerOperationEvenement operation
+	def appliquerOperationEvenement(operation)
 		destination = operation.destination
 		
 		case destination
@@ -197,20 +197,20 @@ class Partie
 				for joueur in @listeJoueurs
 					if (joueur != @joueurCourant)
 						for territoire in joueur.listeTerritoires
-							territoire.recoitOperation(operation,nil)
+							territoire.recoitOperation(operation, nil)
 						end
 					end
 				end
 				 
 			when 0 # Moi
 				for territoire in @joueurCourant.listeTerritoires
-					territoire.recoitOperation(operation,nil)
+					territoire.recoitOperation(operation, nil)
 				end
 				
 			when 1 # Tous
 				for joueur in @listeJoueurs
 					for territoire in joueur.listeTerritoires
-						territoire.recoitOperation(operation,nil)
+						territoire.recoitOperation(operation, nil)
 					end
 				end
 		end
@@ -310,7 +310,7 @@ class Partie
 		return @scores
 	end
 	
-	def deconnexionJoueur numeroJoueurDeconnecte
+	def deconnexionJoueur(numeroJoueurDeconnecte)
 		for joueur in @listeJoueurs
 			if(joueur.numJoueur != numeroJoueurDeconnecte)
 				joueur.direAGestionJoueurDeconnexionJoueur(numeroJoueurDeconnecte)
@@ -336,7 +336,7 @@ class Partie
 							FROM terr_territoire")
 			popMondiale = 0
 			while(data=res.fetch_hash())
-				listeTerritoireObtenus.push(Territoire.new(data["terr_id"].to_i,data["popTerritoire"].to_i,data["terr_position"].to_i))
+				listeTerritoireObtenus.push(Territoire.new(data["terr_id"].to_i, data["popTerritoire"].to_i, data["terr_position"].to_i))
 				popMondiale += data["popTerritoire"].to_i
 			end	
 		rescue Mysql::Error => e
@@ -374,7 +374,7 @@ class Partie
 	# Fonctionne seulement pour une division entière sans reste
 	#Permet de séparer les territoires en 4 listes
 	#Retourne une liste composée de ces 4 listes
-	def partageTerritoire territoire
+	def partageTerritoire(territoire)
 
 		nbTerritoiresTotal = territoire.length
 		nbTerritoiresJoueur = nbTerritoiresTotal/@nbJoueurs
@@ -400,13 +400,13 @@ class Partie
 		for joueur in @listeJoueurs
 			respectIdeo = joueur.calculerDecalage() # Faible = meilleur
 			dominationGeo = joueur.listeTerritoires.length/@nbTerritoires.to_f # Haut = meilleur
-			values += "('', NOW(), '"+joueur.pseudo+"', "+joueur.ideologie.numero.to_s+", "+respectIdeo.to_s+", "+dominationGeo.to_s+"),"
+			values += "('', NOW(), '"+joueur.pseudo+"', "+joueur.ideologie.numero.to_s+", "+respectIdeo.to_s+", "+dominationGeo.to_s+"), "
 			@scores.merge!(joueur.numJoueur => [respectIdeo, dominationGeo])
 		end
 		
 		begin
 			dbh=Mysql.new($host, $user, $mdp, $bdd)
-			values = values[0,values.length-1]
+			values = values[0, values.length-1]
 			res = dbh.query("INSERT INTO ideo_score (score_id, score_date, score_pseudo, score_ideologie_id, score_respect_ideologie, score_domination_geo) VALUES"+values)
 		rescue Mysql::Error => e
 			puts e

@@ -15,7 +15,7 @@ if ARGV.size != 2
 end
 
 server = WebSocketServer.new(
-  :accepted_domains => [ARGV[0]],
+  :accepted_domains => [ARGV[0]], 
   :port => ARGV[1].to_i())
   
 puts("Server is running at port %d" % server.port)

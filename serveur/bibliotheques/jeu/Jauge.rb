@@ -8,18 +8,18 @@ class Jauge
 	#Initialise la jauge en fonction des arguments passés
 	#Si il n'y a qu'un argument c'est qu'on cherche à créer la jauge par copie
 	#Sinon on cherche à créer la jauge modèle du joueur dans un des trois domaines
-	def initialize argument,coeffA=nil,coeffD=nil
+	def initialize(argument, coeffA=nil, coeffD=nil)
 		if(coeffA==nil||coeffD==nil)
 			constructeurCopie(argument)
 		else
-			constructeurComplet(argument,coeffA,coeffD)
+			constructeurComplet(argument, coeffA, coeffD)
 		end
 	end
 	
 
 	#Permet d'appliquer un effet sur une jauge en tenant compte des coefficients dûs à l'idéologie
 	#Permet d'empêcher que le niveau descend en dessous de 0 ou dépasse 100
-	def appliquerEffet effet
+	def appliquerEffet(effet)
 		effetAbsolu = effet.effetAbsolu
 		effetPourcentage = effet.effetPourcentage
 
@@ -49,7 +49,7 @@ class Jauge
 	
 	#Permet de copier la jauge générique du joueur
 # JAMAIS UTILISÉE
-#	def transfert jauge
+#	def transfert(jauge)
 #		@niveauIdeal=jauge.niveauIdeal
 #		@niveau=jauge.niveauIdeal
 #		@coeffAugmentation=jauge.coeffAugmentation
@@ -62,7 +62,7 @@ class Jauge
 
 	private
 	#Permet de d'instancier la jauge par copie
-	def constructeurCopie jauge
+	def constructeurCopie(jauge)
 		@niveauIdeal=jauge.niveauIdeal
 		@niveau=jauge.niveauIdeal
 		@coeffAugmentation=jauge.coeffAugmentation
@@ -70,7 +70,7 @@ class Jauge
 	end
 
 	#Permet d'instancier la jauge modèle d'un domaine
-	def constructeurComplet niveauIdeal,coeffA,coeffD
+	def constructeurComplet(niveauIdeal, coeffA, coeffD)
 		@niveauIdeal=niveauIdeal
 		@niveau=niveauIdeal
 		@coeffAugmentation=coeffA

@@ -2,7 +2,7 @@ class Ideologie
 
 	attr_reader :numero
 
-	def initialize numIdeo
+	def initialize(numIdeo)
 		@numero=numIdeo	
 	end
 	

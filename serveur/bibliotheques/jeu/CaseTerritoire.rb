@@ -4,7 +4,7 @@ class CaseTerritoire < Case
 
 	attr_reader :territoire
 
-	def initialize numCase,territoire
+	def initialize(numCase, territoire)
 		super(numCase)
 		@territoire=territoire
 	end

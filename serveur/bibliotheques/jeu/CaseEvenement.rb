@@ -3,7 +3,7 @@ require 'Operation'
 
 class CaseEvenement < Case
 
-	def initialize numCase
+	def initialize(numCase)
 		super(numCase)
 	end
 

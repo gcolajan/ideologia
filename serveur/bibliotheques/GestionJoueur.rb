@@ -6,7 +6,7 @@ class GestionJoueur
 
 	attr_writer :transmission
 
-	def initialize wsJoueur, instancePartie, instanceJoueur, instanceCoordinationClient
+	def initialize(wsJoueur, instancePartie, instanceJoueur, instanceCoordinationClient)
 		@ws = wsJoueur
 		@partie = instancePartie
 		@joueur = instanceJoueur
@@ -14,7 +14,7 @@ class GestionJoueur
 		@transmission = nil
 	end
 
-	def preparationClient pseudo
+	def preparationClient(pseudo)
 
 		@joueur.definirPseudo(pseudo)
 		@coord.transmissionPseudo()
@@ -52,7 +52,7 @@ class GestionJoueur
 
 	end
 
-	def actionJoueur caseCourante
+	def actionJoueur(caseCourante)
 
 		# Recuperation du type d'instance de case
 		type  = @partie.plateau.recupererTypeCase(caseCourante)
@@ -67,15 +67,15 @@ class GestionJoueur
 				# Vérification des données venant du client
 				if((idActionChoisie.to_i.integer?) && listeId.include?(idActionChoisie))
 					#Création de l'opération choisie
-					operation = Operation.new(idActionChoisie,@partie.joueurCourant.ideologie.numero)
+					operation = Operation.new(idActionChoisie, @partie.joueurCourant.ideologie.numero)
 					
 					# Repercussion du choix
-					@partie.appliquerOperationTerritoire(operation,caseCourante.territoire)
+					@partie.appliquerOperationTerritoire(operation, caseCourante.territoire)
 				else
-					operation = Operation.new(listeId[0],@partie.joueurCourant.ideologie.numero)
+					operation = Operation.new(listeId[0], @partie.joueurCourant.ideologie.numero)
 					
 					# Repercussion du choix
-					@partie.appliquerOperationTerritoire(operation,caseCourante.territoire)
+					@partie.appliquerOperationTerritoire(operation, caseCourante.territoire)
 				end
 
 						  
@@ -103,7 +103,7 @@ class GestionJoueur
 		de1, de2 = @partie.plateau.lanceDes()
 		
 		# Envoi du résultat obtenu
-		envoieDonnees("des", [de1,de2])
+		envoieDonnees("des", [de1, de2])
 	
 		# On fait progresser le joueur des des qu'il vient de lancer
 		caseCourante, passageDepart = @partie.progression(de1+de2)
@@ -160,27 +160,27 @@ class GestionJoueur
 	end
 	
 	
-	def envoieDonnees identifiantCommunication, donnees
+	def envoieDonnees(identifiantCommunication, donnees)
 		@transmission = nil
 		@ws.send(tojson(identifiantCommunication, donnees))
 	end
 	
-	def envoieDonneesAvecReponse identifiantCommunication, donnees, delai
+	def envoieDonneesAvecReponse(identifiantCommunication, donnees, delai)
 		@transmission = nil
 		@ws.send(tojson(identifiantCommunication, donnees, delai))
 		return attendreReponse(delai)
 	end
 
 	# Permet d'attendre une réponse pendant un temps donné
-	def attendreReponse (delai)
+	def attendreReponse((delai))
 		$mutexReception.synchronize {
-			$cvReception.wait($mutexReception,delai)
+			$cvReception.wait($mutexReception, delai)
 		}
 		
 		return @transmission
 	end
 
-	def envoyerSignalDeconnexion numeroJoueurDeconnecte
+	def envoyerSignalDeconnexion(numeroJoueurDeconnecte)
 		envoieDonnees("deconnexion", numeroJoueurDeconnecte)
 	end
 end

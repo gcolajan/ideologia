@@ -6,7 +6,7 @@ class Territoire
 	attr_reader :idTerritoire
 	attr_reader :positionTerritoire
 	
-	def initialize id,pop,pos
+	def initialize(id, pop, pos)
 		@listeJauges={}
 		@idTerritoire=id
 		@positionTerritoire=pos
@@ -15,7 +15,7 @@ class Territoire
 	end
 	
 	#Permet de définir les jauges et le joueur possesseur
-	def appropriationTerritoire joueur
+	def appropriationTerritoire(joueur)
 		@joueurPossesseur=joueur
 		@listeJauges={}
 		for i in (1..3)
@@ -25,15 +25,15 @@ class Territoire
 	
 	#Permet d'appliquer une opération à un territoire
 	#Si c'est une action et que le joueur n'est pas le joueur possesseur on transfère le territoire
-	def recoitOperation operation,joueur
-		operation.listeEffet.each{|key,value| @listeJauges[key.to_i].appliquerEffet(value)}
+	def recoitOperation(operation, joueur)
+		operation.listeEffet.each{|key, value| @listeJauges[key.to_i].appliquerEffet(value)}
 		if(calculerDecalage() > @seuil && joueur!=@joueurPossesseur && joueur !=nil)
 			transfert(joueur)
 		end
 	end
 	
 	#Permet le transfert d'un territoire à un autre joueur
-	def transfert joueur
+	def transfert(joueur)
 		puts @idTerritoire.to_s+" passe de "+@joueurPossesseur.numJoueur.to_s+" -> "+joueur.numJoueur.to_s
 		@joueurPossesseur.listeTerritoires.delete(self)
 		appropriationTerritoire(joueur)

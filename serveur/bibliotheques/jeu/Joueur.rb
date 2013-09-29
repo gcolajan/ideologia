@@ -19,7 +19,7 @@ class Joueur
 	attr_accessor :fondsFinanciers
 	
 	
-	def initialize ideologie,territoires,numJoueur
+	def initialize(ideologie, territoires, numJoueur)
 		@position=0
 		@numJoueur=numJoueur
 		@ideologie=ideologie
@@ -32,7 +32,7 @@ class Joueur
 	end
 	
 	#Permet de définir le pseudo du joueur suivant celui transmis par le client
-	def definirPseudo pseudo
+	def definirPseudo(pseudo)
 		@pseudo = pseudo
 	end
 	
@@ -47,7 +47,7 @@ class Joueur
 	
 	#Permet de donner le joueur instancié comme joueur possesseur d'un territoire
 	#Retourne les territoires qui sont possédés
-	def approprierTerritoires territoires
+	def approprierTerritoires(territoires)
 		for territoire in territoires
 			territoire.appropriationTerritoire(self)
 		end
@@ -125,11 +125,11 @@ class Joueur
 		return listeTerr
 	end
 
-	def obtenirInstanceGestionJoueur gerantJoueur
+	def obtenirInstanceGestionJoueur(gerantJoueur)
 		@instanceGestionJoueur = gerantJoueur
 	end
 
-	def direAGestionJoueurDeconnexionJoueur numeroJoueurDeconnecte
+	def direAGestionJoueurDeconnexionJoueur(numeroJoueurDeconnecte)
 		@instanceGestionJoueur.envoyerSignalDeconnexion(numeroJoueurDeconnecte)
 	end
 	

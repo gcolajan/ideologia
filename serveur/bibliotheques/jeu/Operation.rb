@@ -13,11 +13,11 @@ class Operation
 	#Permet d'initialiser une opération suivant si il s'agit d'un événement ou d'une action sur un territoire
 	#Aucun argument -> événement
 	#Deux argument -> action sur territoire
-	def initialize idOp=nil,numIdeo=nil
+	def initialize(idOp=nil, numIdeo=nil)
 		@listeEffet = Hash.new()
 		@joueur=joueur
 		if(idOp != nil) #territoire
-			genererEffetTerritoire(idOp,numIdeo)
+			genererEffetTerritoire(idOp, numIdeo)
 		else
 			genererEffetEvenement()
 		end
@@ -29,7 +29,7 @@ class Operation
 
 	private
 	#Permet de générer les effets qui sont dus à une action sur un territoire
-	def genererEffetTerritoire idOp ,numIdeo
+	def genererEffetTerritoire(idOp, numIdeo)
 		begin
 			dbh=Mysql.new($host, $user, $mdp, $bdd)
 			res = dbh.query("SELECT te_jauge_id, te_variation_absolue, te_variation_pourcentage, toc_cout
@@ -40,7 +40,7 @@ class Operation
 							AND toc_ideologie_id = te_ideologie_id")
 			while(data=res.fetch_hash())
 				@cout=data['toc_cout'].to_i
-				@listeEffet.merge!(data['te_jauge_id'] => Effet.new(data['te_variation_absolue'].to_i,data['te_variation_pourcentage'].to_f))
+				@listeEffet.merge!(data['te_jauge_id'] => Effet.new(data['te_variation_absolue'].to_i, data['te_variation_pourcentage'].to_f))
 			end
 		rescue Mysql::Error => e
 			puts e
@@ -61,7 +61,7 @@ class Operation
 			while(data=res.fetch_hash())
 				@idEvenement = data['ee_operation_id'].to_i
 				@destination = data['eo_destination'].to_i
-				@listeEffet.merge!(data['ee_jauge_id'] => Effet.new(data['ee_variation_absolue'].to_i,data['ee_variation_pourcentage'].to_f))
+				@listeEffet.merge!(data['ee_jauge_id'] => Effet.new(data['ee_variation_absolue'].to_i, data['ee_variation_pourcentage'].to_f))
 			end
 		rescue Mysql::Error => e
 			puts e

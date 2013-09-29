@@ -2,7 +2,7 @@ class Case
 
 	attr_reader :numCase
 
-	def initialize positionCase
+	def initialize(positionCase)
 		@numCase=positionCase
 	end
 

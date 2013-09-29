@@ -3,7 +3,7 @@ require 'conf'
 
 class CaseDepart < Case
 
-	def initialize popMonde
+	def initialize(popMonde)
 		super(0)
 		@popMondiale=popMonde
 		$ARGENT_CASE_DEPART=1600
@@ -11,7 +11,7 @@ class CaseDepart < Case
 
 	#Permet de calculer le gain lors du passage par la case départ
 	#Retourne le gain afin de l'afficher chez le client
-	def actionCaseDepart joueur
+	def actionCaseDepart(joueur)
 		popJoueur=joueur.calculerPopulation()
 		decalage = joueur.calculerDecalage()
 		gain=($ARGENT_CASE_DEPART+(($ARGENT_CASE_DEPART/2)*(1-(decalage/100))*(1+(popJoueur/@popMondiale)))).to_i
