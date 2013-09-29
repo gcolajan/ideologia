@@ -48,14 +48,14 @@ class GestionJoueur
 		envoieDonnees("pcases", @partie.presenceCases)
 		envoieDonnees("fonds", @joueur.fondsFinanciers)
 		envoieDonnees("jauges", @joueur.syntheseJauge)
-		#envoieDonnees("syntheseTerritoires", @joueur.syntheseTerritoire)
+		# envoieDonnees("syntheseTerritoires", @joueur.syntheseTerritoire)
 
 	end
 
 	def actionJoueur(caseCourante)
 
 		# Recuperation du type d'instance de case
-		type  = @partie.plateau.recupererTypeCase(caseCourante)
+		type = @partie.plateau.recupererTypeCase(caseCourante)
 		case type
 			when "caseTerritoire"
 				# Génération des opérations sur un territoire
@@ -66,7 +66,7 @@ class GestionJoueur
 				
 				# Vérification des données venant du client
 				if((idActionChoisie.to_i.integer?) && listeId.include?(idActionChoisie))
-					#Création de l'opération choisie
+					# Création de l'opération choisie
 					operation = Operation.new(idActionChoisie, @partie.joueurCourant.ideologie.numero)
 					
 					# Repercussion du choix
@@ -172,7 +172,7 @@ class GestionJoueur
 	end
 
 	# Permet d'attendre une réponse pendant un temps donné
-	def attendreReponse((delai))
+	def attendreReponse(delai)
 		$mutexReception.synchronize {
 			$cvReception.wait($mutexReception, delai)
 		}

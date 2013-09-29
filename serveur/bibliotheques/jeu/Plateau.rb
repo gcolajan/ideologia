@@ -9,12 +9,12 @@ class Plateau
 
 	def initialize(listeTerritoires, popMondiale)
 		@popMondiale = popMondiale
-		@listeCases=obtenirCases(listeTerritoires)
-		@listePositions=[0, 0, 0, 0]
+		@listeCases = obtenirCases(listeTerritoires)
+		@listePositions = [0, 0, 0, 0]
 	end
 	
-	#Permet de faire progresser le joueur sur le plateau
-	#Retourne l'ancienne et la nouvelle case du joueur pour que la partie sache si le joueur est passé par la case départ
+	# Permet de faire progresser le joueur sur le plateau
+	# Retourne l'ancienne et la nouvelle case du joueur pour que la partie sache si le joueur est passé par la case départ
 	def faireProgresser(joueurCourant, sommeDes)
 		ancienneCase = @listeCases[@listePositions[joueurCourant.numJoueur]] # récupération ancienne case
 		@listePositions[joueurCourant.numJoueur] = (@listePositions[joueurCourant.numJoueur] + sommeDes)%42
@@ -25,7 +25,7 @@ class Plateau
 	
 	
 	
-  	#Retournera le type de la case sur laquelle le joueur courant est.
+  	# Retournera le type de la case sur laquelle le joueur courant est.
 	def recupererTypeCase(caseCourante)
 		if (caseCourante.estTerritoire())
 			type = "caseTerritoire"
@@ -51,10 +51,10 @@ class Plateau
 	
 	
 	private
-	#Permet d'obtenir la liste des toutes les cases
-	#Retourne une liste de case
+	# Permet d'obtenir la liste des toutes les cases
+	# Retourne une liste de case
 	def obtenirCases(listeTerritoire)
-		listeCasesObtenues={}
+		listeCasesObtenues = {}
 		listeCasesObtenues.merge!(0 => CaseDepart.new(@popMondiale))
    
 		for territoire in listeTerritoire

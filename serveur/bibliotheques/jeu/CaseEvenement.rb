@@ -7,12 +7,12 @@ class CaseEvenement < Case
 		super(numCase)
 	end
 
-	#Retourne une opération choisie aléatoirement
+	# Retourne une opération choisie aléatoirement
 	def selectionnerOperation
 		return Operation.new()
 	end
 	
-	#Retourne true si la case courante est une case événement
+	# Retourne true si la case courante est une case événement
 	def estEvenement
 		return true
 	end

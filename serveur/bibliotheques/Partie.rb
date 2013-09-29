@@ -16,13 +16,13 @@ class Partie
 	attr_reader :plateau
 	attr_reader :nbJoueurs
 	
-	#Initialise une nouvelle partie de quatre joueurs et d'une durée de 30 minutes
+	# Initialise une nouvelle partie de quatre joueurs et d'une durée de 30 minutes
 	def initialize
 	
 		@nbJoueurs = 4
 		@nbTerritoires = 32
 		
-		@evenement=nil
+		@evenement = nil
 		@estDemarree = true
 		@scores = nil
 		@listeJoueurs = []
@@ -33,7 +33,7 @@ class Partie
 		@sem = Mutex.new # Sémaphore globale
 		@semFinTour = Mutex.new # Sémaphore fin de tour
 		@finTour = ConditionVariable.new
-		@heureDebut=Time.now
+		@heureDebut = Time.now
 		
 		@nbAppelObtenirEvenement = 0
 		
@@ -57,8 +57,8 @@ class Partie
 	end
 	
 	
-	#Permet de savoir si le temps est dépassé
-	#Retourne la durée restante
+	# Permet de savoir si le temps est dépassé
+	# Retourne la durée restante
 	def temps
 		if(Time.now > @heureDebut + $TEMPS_JEU)
 			finPartie()
@@ -77,8 +77,8 @@ class Partie
 	
 	
 	
-	#Fais progresser le joueur de la somme des dés
-	#Retourne la case sur laquelle le joueur est tombé et 
+	# Fais progresser le joueur de la somme des dés
+	# Retourne la case sur laquelle le joueur est tombé et 
 	def progression(sommeDes)
 		# Plateau	va faire progresser le joueur de sommeDes
 		ancienneCase, nouvelleCase = @plateau.faireProgresser(@joueurCourant, sommeDes)
@@ -93,8 +93,8 @@ class Partie
 	end
 	
 	
-	#Application du gain suivant si le joueur est passé sur la case départ ou non
-	#Retourne le gain du joueur pour afficher du côté du client
+	# Application du gain suivant si le joueur est passé sur la case départ ou non
+	# Retourne le gain du joueur pour afficher du côté du client
 	def recupererGain(passageDepart)
 		gain = 0
 		if (passageDepart)
@@ -106,14 +106,14 @@ class Partie
 	end
 
 	
-	#Réveil les threads qui ne jouaient pas pendant le tour
+	# Réveil les threads qui ne jouaient pas pendant le tour
 	def reveilFinTour
 		@semFinTour.synchronize{
 			@finTour.broadcast()
 		}
 	end
 	
-	#Endort les threads qui ne joue pas pendant le tour
+	# Endort les threads qui ne joue pas pendant le tour
 	def attendreFinTour
 		@semFinTour.synchronize{
 			 @finTour.wait(@semFinTour)
@@ -123,7 +123,7 @@ class Partie
 	
 		
 	def finPartie
-		@estDemarree=false
+		@estDemarree = false
 		@mutPEC.synchronize{
 			@partieEnCours.broadcast()
 		}
@@ -136,14 +136,14 @@ class Partie
 	end
 	
 	
-	#Retourne 4 identifiants d'opération à choisir par le client
-	#Une opération peut avoir un coût négatif qui va permettre au joueur de gagner de l'argent
+	# Retourne 4 identifiants d'opération à choisir par le client
+	# Une opération peut avoir un coût négatif qui va permettre au joueur de gagner de l'argent
 	def genererIdOperationsProposees
 		
 		listeIdObtenus = []
 		
 		begin
-			dbh=Mysql.new($host, $user, $mdp, $bdd)
+			dbh = Mysql.new($host, $user, $mdp, $bdd)
 			# On prend un nombre aléatoire entre 1 et 4
 			nb = rand(4)
 			if (nb == 0) # Dans ce cas, on choisi 3 opérations au coût positif et une opération au coût négatif
@@ -154,7 +154,7 @@ class Partie
 								AND toc_cout < 0
 								ORDER BY RAND()
 								LIMIT 1")
-				data=res.fetch_hash()
+				data = res.fetch_hash()
 				listeIdObtenus.push(data['toc_operation_id'])
 			else
 				nb = 4
@@ -166,7 +166,7 @@ class Partie
 							AND toc_cout BETWEEN 0 AND "+@joueurCourant.fondsFinanciers.to_s+"
 							ORDER BY RAND()
 							LIMIT "+nb.to_s)
-			while(data=res.fetch_hash())
+			while(data = res.fetch_hash())
 				listeIdObtenus.push(data['toc_operation_id'])
 			end
 		rescue Mysql::Error => e
@@ -219,21 +219,21 @@ class Partie
 	end
 	
 	
-	#Retourne l'identifiant de l'événement ainsi que le numéro du joueur courant pour savoir qui a causé l'événement
+	# Retourne l'identifiant de l'événement ainsi que le numéro du joueur courant pour savoir qui a causé l'événement
 	def obtenirEvenement
 		@sem.synchronize{
 			@nbAppelObtenirEvenement = @nbAppelObtenirEvenement + 1
 		}
 		ev = @evenement
-		if(@nbAppelObtenirEvenement==4)
+		if(@nbAppelObtenirEvenement == 4)
 			@evenement = nil
 			@nbAppelObtenirEvenement = 0
 		end
 		return ev
 	end
 	
-	#Permet de créer un dictionnaire contenant les pseudos et idéologies de chaque joueur
-	#Retourne le dictionnaire
+	# Permet de créer un dictionnaire contenant les pseudos et idéologies de chaque joueur
+	# Retourne le dictionnaire
 	def obtenirTableauPartenaires
 		partenaires = {}
 		for joueur in @listeJoueurs
@@ -244,7 +244,7 @@ class Partie
 	end
 	
 	
-	#Retourne un dictionnaire contenant toutes les positions des joueurs
+	# Retourne un dictionnaire contenant toutes les positions des joueurs
 	def positionsJoueurs
 		pos = {}
 		for joueur in @listeJoueurs
@@ -254,7 +254,7 @@ class Partie
 	end
 	
 	
-	#Retourne un dictionnaire donnant, pour chaque case les joueurs présents
+	# Retourne un dictionnaire donnant, pour chaque case les joueurs présents
 	def presenceCases
 		pCases = {}
 		for i in 0..41
@@ -286,8 +286,8 @@ class Partie
 	end
 	
 	
-	#Crée un dictionnaire contenant le numéro de chaque joueur et les territoires qu'il possède
-	#Retourne le dictionnaire
+	# Crée un dictionnaire contenant le numéro de chaque joueur et les territoires qu'il possède
+	# Retourne le dictionnaire
 	def territoiresPartenaires
 		terrPartenaires = {}
 		for joueur in @listeJoueurs
@@ -302,7 +302,7 @@ class Partie
 	end
 	
 	
-	#Permet d'obtenir les scores de la partie
+	# Permet d'obtenir les scores de la partie
 	def obtenirScores
 		if @scores == nil
 			calculerScores()
@@ -324,7 +324,7 @@ class Partie
 	
 	private
 	# Instanciation des territoires (pour Joueur et CaseTerritoire)
-	#Retourne la liste des territoires afin que Partie les répartissent et la population mondiale pour la case départ
+	# Retourne la liste des territoires afin que Partie les répartissent et la population mondiale pour la case départ
 	def obtenirTerritoires
 		listeTerritoireObtenus = []
 		begin
@@ -332,10 +332,10 @@ class Partie
 			res = dbh.query("SELECT terr_id, terr_position, 
 								(SELECT SUM(unite_population) 
 								FROM terr_unite 
-								WHERE unite_territoire=terr_id) AS popTerritoire 
+								WHERE unite_territoire = terr_id) AS popTerritoire 
 							FROM terr_territoire")
 			popMondiale = 0
-			while(data=res.fetch_hash())
+			while(data = res.fetch_hash())
 				listeTerritoireObtenus.push(Territoire.new(data["terr_id"].to_i, data["popTerritoire"].to_i, data["terr_position"].to_i))
 				popMondiale += data["popTerritoire"].to_i
 			end	
@@ -352,13 +352,13 @@ class Partie
 	
 	
 	# Instanciation des idéologies pour Joueur
-	#Retourne une liste de toutes les idéologies
+	# Retourne une liste de toutes les idéologies
 	def obtenirIdeologies
-		listeIdeologiesObtenues=[]
+		listeIdeologiesObtenues = []
 		begin
-			dbh=Mysql.new($host, $user, $mdp, $bdd)
+			dbh = Mysql.new($host, $user, $mdp, $bdd)
 			res = dbh.query("SELECT ideo_id FROM ideo_ideologie")
-			while(data=res.fetch_hash())
+			while(data = res.fetch_hash())
 				listeIdeologiesObtenues.push(Ideologie.new(data['ideo_id'].to_i))
 			end
 		rescue Mysql::Error => e
@@ -372,8 +372,8 @@ class Partie
 	
 
 	# Fonctionne seulement pour une division entière sans reste
-	#Permet de séparer les territoires en 4 listes
-	#Retourne une liste composée de ces 4 listes
+	# Permet de séparer les territoires en 4 listes
+	# Retourne une liste composée de ces 4 listes
 	def partageTerritoire(territoire)
 
 		nbTerritoiresTotal = territoire.length
@@ -392,8 +392,8 @@ class Partie
 	
 	
 	
-	#Crée un dictionnaire contenant tous les scores des joueurs
-	#Insère dans la base de données les résultats
+	# Crée un dictionnaire contenant tous les scores des joueurs
+	# Insère dans la base de données les résultats
 	def calculerScores
 		@scores = {}
 		values = ""
@@ -405,7 +405,7 @@ class Partie
 		end
 		
 		begin
-			dbh=Mysql.new($host, $user, $mdp, $bdd)
+			dbh = Mysql.new($host, $user, $mdp, $bdd)
 			values = values[0, values.length-1]
 			res = dbh.query("INSERT INTO ideo_score (score_id, score_date, score_pseudo, score_ideologie_id, score_respect_ideologie, score_domination_geo) VALUES"+values)
 		rescue Mysql::Error => e

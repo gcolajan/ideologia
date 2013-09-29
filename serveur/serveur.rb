@@ -22,7 +22,7 @@ puts("Server is running at port %d" % server.port)
 
 coord = CoordinationClient.new
 
-sem=Mutex.new
+sem = Mutex.new
 
 server.run() do |ws| # ecoute des connexions
 	begin # Code du thread joueur
@@ -37,7 +37,7 @@ server.run() do |ws| # ecoute des connexions
 		numJoueur = coord.nouveauJoueur()
 		
 		# Recuperation du pseudo
-		pseudo=ws.receive()
+		pseudo = ws.receive()
 		puts "Pseudo client = "+pseudo
 		
 		if (numJoueur < 0)

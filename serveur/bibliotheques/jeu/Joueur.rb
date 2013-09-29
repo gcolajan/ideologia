@@ -20,23 +20,23 @@ class Joueur
 	
 	
 	def initialize(ideologie, territoires, numJoueur)
-		@position=0
-		@numJoueur=numJoueur
-		@ideologie=ideologie
-		@listeJaugesPourCopie=definirJauges()
-		@listeTerritoires=approprierTerritoires(territoires)
-		@fondsFinanciers=$FONDS_INITIAUX
-		@pseudo=""
+		@position = 0
+		@numJoueur = numJoueur
+		@ideologie = ideologie
+		@listeJaugesPourCopie = definirJauges()
+		@listeTerritoires = approprierTerritoires(territoires)
+		@fondsFinanciers = $FONDS_INITIAUX
+		@pseudo = ""
 		@instanceGestionJoueur = nil
 		
 	end
 	
-	#Permet de définir le pseudo du joueur suivant celui transmis par le client
+	# Permet de définir le pseudo du joueur suivant celui transmis par le client
 	def definirPseudo(pseudo)
 		@pseudo = pseudo
 	end
 	
-	#Retourne les niveaux idéals pour chaque jauge
+	# Retourne les niveaux idéals pour chaque jauge
 	def niveauxIdeals
 		niveaux = {}
 		for i in (1..3)
@@ -45,8 +45,8 @@ class Joueur
 		return niveaux
 	end
 	
-	#Permet de donner le joueur instancié comme joueur possesseur d'un territoire
-	#Retourne les territoires qui sont possédés
+	# Permet de donner le joueur instancié comme joueur possesseur d'un territoire
+	# Retourne les territoires qui sont possédés
 	def approprierTerritoires(territoires)
 		for territoire in territoires
 			territoire.appropriationTerritoire(self)
@@ -54,41 +54,41 @@ class Joueur
 		return territoires
 	end
 
-	#Permet de calculer le décalage moyen de l'ensemble des jauges des territoires du joueur
-	#Retourne le décalage moyen
+	# Permet de calculer le décalage moyen de l'ensemble des jauges des territoires du joueur
+	# Retourne le décalage moyen
 	def calculerDecalage
 		somme = 0
 		for territoire in @listeTerritoires
-			somme+=territoire.calculerDecalage()
+			somme += territoire.calculerDecalage()
 		end
 		return somme/@listeTerritoires.length()
 	end
 
-	#Permet de connaître le nombre de territoires possédés par le joueur
-	#Retourne le nombre de territoires possédés
+	# Permet de connaître le nombre de territoires possédés par le joueur
+	# Retourne le nombre de territoires possédés
 	def calculerNombreTerritoires
 		return listeTerritoires.length
 	end
 
-	#Permet de calculer la population totale que le joueur possède
-	#Retourne la population possédée
+	# Permet de calculer la population totale que le joueur possède
+	# Retourne la population possédée
 	def calculerPopulation
-		pop=0
-		listeTerritoires.each{|territoire| pop+=territoire.population}
+		pop = 0
+		listeTerritoires.each{|territoire| pop += territoire.population}
 		return pop
 	end
 	
-	#Permet de créer les jauges modèles du joueur suivant la base de données
-	#Retourne un dictionnaire contenant les trois jauges
+	# Permet de créer les jauges modèles du joueur suivant la base de données
+	# Retourne un dictionnaire contenant les trois jauges
 	def definirJauges
 		begin
 			jauges = {}
-			dbh=Mysql.new($host, $user, $mdp, $bdd)
+			dbh = Mysql.new($host, $user, $mdp, $bdd)
 			res = dbh.query("SELECT caract_jauge_id, caract_coeff_diminution, caract_coeff_augmentation, caract_ideal
 							FROM ideo_jauge_caracteristique
 							WHERE caract_ideo_id = "+@ideologie.numero.to_s+"
 							ORDER BY caract_jauge_id")
-			while(data=res.fetch_hash())
+			while(data = res.fetch_hash())
 				jauge = Jauge.new(data['caract_ideal'].to_f*100, data['caract_coeff_augmentation'].to_f, data['caract_coeff_diminution'].to_f)
 				jauges.merge!(data['caract_jauge_id'] => jauge)
 			end
@@ -100,23 +100,23 @@ class Joueur
 		return jauges
 	end
 	
-	#Permet de synthétiser les jauges du joueur
-	#Retourne la synthèse des jauges
+	# Permet de synthétiser les jauges du joueur
+	# Retourne la synthèse des jauges
 	def syntheseJauge
-		synthJauge={}
+		synthJauge = {}
 		for i in (1..3)
-			somme=0
-			synthJauge[i]=0
+			somme = 0
+			synthJauge[i] = 0
 			for territoire in @listeTerritoires
-				somme+=territoire.listeJauges[i].niveau
+				somme += territoire.listeJauges[i].niveau
 			end
-		synthJauge[i]+=somme/@listeTerritoires.size()
+		synthJauge[i] += somme/@listeTerritoires.size()
 		end
   		return synthJauge
 	end
 	
-	#Permet de synthétiser chaque territoire
-	#Retourne la synthèse des territoires
+	# Permet de synthétiser chaque territoire
+	# Retourne la synthèse des territoires
 	def syntheseTerritoire
 		listeTerr = {}
 		for territoire in @listeTerritoires

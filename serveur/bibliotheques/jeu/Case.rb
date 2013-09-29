@@ -3,20 +3,20 @@ class Case
 	attr_reader :numCase
 
 	def initialize(positionCase)
-		@numCase=positionCase
+		@numCase = positionCase
 	end
 
-	#Retourne false si la case courante n'est pas une case territoire
+	# Retourne false si la case courante n'est pas une case territoire
 	def estTerritoire
 		return false
 	end
 
-	#Retourne false si la case courante n'est pas une case départ
+	# Retourne false si la case courante n'est pas une case départ
 	def estDepart
 		return false
 	end
 
-	#Retourne false si la case courante n'est pas une case événement
+	# Retourne false si la case courante n'est pas une case événement
 	def estEvenement
 		return false
 	end

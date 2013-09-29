@@ -9,13 +9,13 @@ class CoordinationClient
 		@condVariablePseudo = ConditionVariable.new
 		@debutPartie = false
 		@partie = nil
-		@transmissionPseudo=0
+		@transmissionPseudo = 0
 				
 	end
 	
 	
-	#Permet de créer une partie si quatre joueur sont présents
-	#Retourne un numéro pour le thread appelant
+	# Permet de créer une partie si quatre joueur sont présents
+	# Retourne un numéro pour le thread appelant
 	def nouveauJoueur
 		num = 0
 		@semaphore.synchronize{
@@ -35,7 +35,7 @@ class CoordinationClient
 		return num%4
 	end
 	
-	#Met les threads en attente du lancement de la partie
+	# Met les threads en attente du lancement de la partie
 	def attendreDebutPartie
 		@semaphore.synchronize{
 			while(!@debutPartie)
@@ -45,15 +45,15 @@ class CoordinationClient
 	end
 	
 	
-	#Permet de retourner à tous les threads appelant la partie qui vient d'être lancée
-	#Retourne l'instance de la partie
+	# Permet de retourner à tous les threads appelant la partie qui vient d'être lancée
+	# Retourne l'instance de la partie
 	def obtenirPartie
 		return @partie
 	end
 	
 	
-	#Attend 4 appels (un pour chaque thread) afin de réceptionner tous les pseudos des joueurs
-	#Réveil tous les threads quand il y a eu 4 appels
+	# Attend 4 appels (un pour chaque thread) afin de réceptionner tous les pseudos des joueurs
+	# Réveil tous les threads quand il y a eu 4 appels
 	def transmissionPseudo
 		@transmissionPseudo += 1
 		@semaphorePseudo.synchronize{
@@ -70,7 +70,7 @@ class CoordinationClient
 		puts "nouvelle partie"
 		@debutPartie = false
 		@partie = nil
-		@transmissionPseudo=0
+		@transmissionPseudo = 0
 		@nbJoueur = 0
 	end
 	

@@ -6,10 +6,10 @@ class CaseTerritoire < Case
 
 	def initialize(numCase, territoire)
 		super(numCase)
-		@territoire=territoire
+		@territoire = territoire
 	end
 
-	#Retourne true si la case courante est une case territoire
+	# Retourne true si la case courante est une case territoire
 	def estTerritoire
 		return true
 	end
