@@ -2,7 +2,6 @@
 require 'ressources/entetes.php';
 entete('Plateau');
 $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
-
 ?>
 
 	<div class="row">
@@ -27,6 +26,22 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 
 		<div class="large-8 columns" id="map">
 			<div class="mapel">
+
+				<div id="starting"><div class="conteneur">
+				<h1>Connexion</h1>
+					<div id="formPseudo">
+							<div class="row collapse">
+								<div class="columns medium-10 small-8">
+									<input type="text" name="pseudo" id="pseudo" placeholder="Pseudo" class="columns small-10" />
+								</div>
+								<div class="columns medium-2 small-4">
+									<input type="submit" value="Continuer" class="button postfix" />
+								</div>
+							</div>
+					</div>
+					<div id="rooms" style="display:none"></div>
+				</div></div>
+
 				<img src="carte.svg" /><br />
 				<h1>Ideologia</h1>
 			</div>
@@ -63,145 +78,21 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 
 	<div style="height:80px"></div>
 
+	<script src="assets/javascripts/main.js?<?php echo uniqid(); ?>"></script>
 
-
-		<script>
-
-		var ws = $.websocket("ws://localhost:8080/", {
-			events: {
-				ping: function(e) {
-					ws.send('pong', '');
-				},
-				status: function(e) {
-					console.log('Le serveur me donne le statut courant');
-					console.log(e.data);
-					ws.send('pseudo', 'MON PSEUDO !');
-				},
-				chans: function(e) {
-					console.log('Les salons disponibles');
-					console.log(e.data);
-				},
-				join: function(e) {e
-					// Je décide d'aller dans CE salon
-				},
-				numeroJoueur: function(e) {
-					console.log('Je suis le joueur '+e.data);
-				},
-				scores: function(e) {
-					console.log('Ci-après, les scores !');
-					console.log(e.data);
-				},
-				partenaires: function(e) {
-					console.log('Ci-après, partenaires :');
-					console.log(e.data);
-				},
-				jaugesIdeales: function(e) {
-					console.log('Ci-après, des données de config, mes jauges idéales');
-					console.log(e.data);
-				},
-				temps: function(e) {
-					console.log('Le temps restant jusqu\'à la fin de la partie');
-					console.log(e.data);
-				},
-				evenement: function(e) {
-					console.log('Un événèment est reçu');
-					console.log(e.data);
-				},
-				listeTerritoires: function(e) {
-					console.log('Un petit résumé des territoires: ');
-					console.log(e.data);
-				},
-				positions: function(e) {
-					console.log('Liste des positions');
-					console.log(e.data);
-				},
-				pcases: function(e) {
-					console.log('Qui est sur quelle case');
-					console.log(e.data);
-				},
-				fonds: function(e) {
-					console.log('Quels sont mes fonds disponibles ?');
-					console.log(e.data);
-				},
-				jauges: function(e) {
-					console.log('Et l\'état de mes jauges');
-					console.log(e.data);
-				},
-				operations: function(e) {
-					console.log('Je reçois une liste d\'opérations');
-					console.log(e.data);
-					console.log('Et je renvoie n\'importe quoi, le serveur se débrouillera (le serveur m\'attend 30s max)');
-					ws.send('operation', 0);
-				},
-				des: function(e) {
-					console.log('Le résultat de mon lancé de dés');
-					console.log(e.data);
-				},
-				position: function(e) {
-					console.log('');
-					console.log(e.data);
-				},
-				gain: function(e) {
-					console.log('');
-					console.log(e.data);
-				},
-				joueurCourant: function(e) {
-					console.log('Je reçois le joueur courant');
-					console.log(e.data);
-
-					console.log('Si c\'est à moi de jouer, faut lancer les dés !');
-					ws.send('des', '');
-				},
-				deconnexion: function(e) {
-					console.log('On me dit que quelqu\'un s\'est deconnecté...');
-					console.log(e.data);
-				},
-			}
-		});
-
-		$('#pseudo').change(function(){
-		  ws.send('pseudo', this.value);
-		  this.disabled = true;
-		  $('#message').removeAttr('disabled');
-		});
-
-		$('#message').change(function(){
-		  ws.send('chat', this.value);
-		  this.value = '';
-		});
-
-		$('#join').click(function(){
-		  ws.send('game', 'join');
-		});
-
-
-
-
-
-
-
-
-
+	<script>
 		function Equilibre(Indentifier){
-			 $(Indentifier).each(function(){
-		   var h=0;
-		   $(">*", this)
-		     $(Indentifier).each(function(){ h=Math.max(h,this.offsetHeight); })
-		     .css({'height': h+'px'});
-		 });
-		 }
-
+			$(Indentifier).each(function(){
+				var h=0;
+				$(">*", this);
+				$(Indentifier).each(function(){ h=Math.max(h,this.offsetHeight); }).css({'height': h+'px'});
+			});
+		}
 
 		$(document).ready(function() {
 			Equilibre(".mapel");
 		});
-		</script>
-
-		<div style="clear:both;"></div>
-
-		<div id="pied">-</div>
-
-
+	</script>
 
 <?php
 pied();

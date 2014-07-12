@@ -17,6 +17,8 @@ function entete($titre) {
 		<script>google.load("jquery", "1.3")</script>
 		<script src="http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
 		<script src="assets/javascripts/jquery.ws.js?'.uniqid().'"></script>
+		<script src="assets/javascripts/InteractionsSalons.js?'.uniqid().'"></script>
+
 
 		<link href="http://fonts.googleapis.com/css?family=Cabin:700|Electrolize" rel="stylesheet" type="text/css" />
 
