@@ -1,5 +1,4 @@
 require 'Case'
-require 'conf'
 
 class CaseDepart < Case
 

@@ -1,8 +1,5 @@
-require 'mysql'
 require 'Jauge'
-require 'ConnexionSQL'
 require 'Joueur'
-require 'conf'
 
 class Joueur
 

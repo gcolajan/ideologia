@@ -1,5 +1,3 @@
-require "thread"
-
 class Salon
 	
 	attr_reader :partie

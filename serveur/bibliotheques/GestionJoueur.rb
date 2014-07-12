@@ -1,7 +1,5 @@
 $LOAD_PATH << File.dirname(__FILE__) + "/jeu"
 
-require 'conf'
-
 class GestionJoueur
 
 	attr_writer :transmission

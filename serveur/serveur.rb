@@ -1,11 +1,4 @@
-$LOAD_PATH << File.dirname(__FILE__) + "/bibliotheques"
-
-require "web_socket"
-require "thread"
-require 'Salon'
-require 'Partie'
-require 'GestionJoueur'
-require 'conf'
+require './conf.rb'
 
 Thread.abort_on_exception = true
 

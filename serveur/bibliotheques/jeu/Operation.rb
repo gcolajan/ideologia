@@ -1,6 +1,4 @@
-require 'mysql'
 require 'Effet'
-require 'ConnexionSQL'
 
 class Operation
 

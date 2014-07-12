@@ -1,12 +1,9 @@
 $LOAD_PATH << File.dirname(__FILE__) + "/jeu"
 
-require 'mysql'
 require 'Territoire'
 require 'Ideologie'
 require 'Joueur'
 require 'Plateau'
-require 'ConnexionSQL'
-require 'conf'
 
 class Partie
 
