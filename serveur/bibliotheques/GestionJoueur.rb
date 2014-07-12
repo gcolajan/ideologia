@@ -62,7 +62,7 @@ class GestionJoueur
 				listeId = @partie.genererIdOperationsProposees()
 				
 				# Transmission des identifiants d'opération possibles et attente d'un choix
-				idActionChoisie = envoieDonneesAvecReponse("operations", listeId, 30)
+				idActionChoisie = todata(envoieDonneesAvecReponse("operations", listeId, 30))["data"]
 				
 				# Vérification des données venant du client
 				if((idActionChoisie.to_i.integer?) && listeId.include?(idActionChoisie))

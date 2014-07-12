@@ -7,7 +7,7 @@ require 'Partie'
 require 'GestionJoueur'
 require 'conf'
 
-Thread.abort_on_exception = true
+#Thread.abort_on_exception = false
 
 if ARGV.size != 2
 	$stderr.puts("Usage: ruby sample/chat_server.rb ACCEPTED_DOMAIN PORT")
@@ -39,12 +39,16 @@ server.run() do |ws| # ecoute des connexions
 		# Recuperation du pseudo
 		pseudo = todata(ws.receive())["data"]
 		puts "Pseudo client = "+pseudo
-
+		salon = nil
 		#Ici on doit créer un salon pour le jeu si aucun salon n'est disponible, sinon on récupère le salon sélectionné
 		begin
 			semSalon.synchronize{
 				#Si tous les salons sont pleins, on crée un salon pour le joueur
-				if(listeSalons.bsearch{|salon| salon.plein == false} == nil)
+				tousPleins = true
+				listeSalons.each{|salon| if(!salon.plein)
+					tousPleins = false 
+					end}
+				if(tousPleins)
 					salon = Salon.new
 					listeSalons.push(salon)
 					#On envoie l'identifiant du salon
@@ -52,8 +56,8 @@ server.run() do |ws| # ecoute des connexions
 				else
 					#Sinon on envoie la liste des salons avec le nombre de joueurs
 					dictionnaireSalon = {}
-					listeSalons.each{|salon| dictionnaireSalon.merge(listeSalons.index(salon), salon.nbJoueur)}
-					ws.send(tojson("listeSalon", dictionnaireSalon))
+					listeSalons.each{|salon| dictionnaireSalon.merge!({listeSalons.index(salon) => salon.nbJoueur})}
+					ws.send(tojson("listeSalons", dictionnaireSalon))
 					#On récupère l'index du salon choisi
 					indexSalon = todata(ws.receive())["data"]
 					salon = listeSalons.at(indexSalon)
