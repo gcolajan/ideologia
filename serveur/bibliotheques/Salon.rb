@@ -58,6 +58,6 @@ class Salon
 
 	#Transmet le pseudo à chaque joueur présent dans le salon
 	def transmissionPseudo(pseudo)
-		@listeJoueur.each(|ws| ws.send(tojson("pseudo", @listePseudo)))
+		@listeJoueur.each{|ws| ws.send(tojson("pseudo", @listePseudo))}
 	end
 end

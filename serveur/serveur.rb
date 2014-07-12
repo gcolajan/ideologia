@@ -60,7 +60,7 @@ server.run() do |ws| # ecoute des connexions
 					#Si le salon est devenu plein avant d'être connecté on le signal
 					if(salon.plein)
 						ws.send(tojson("salonplein", indexSalon))
-						retry
+						redo
 					end
 				end
 			}
