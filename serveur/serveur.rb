@@ -30,49 +30,72 @@ server.run() do |ws| # ecoute des connexions
 		
 		# Recuperation du pseudo
 		pseudo = todata(ws.receive())["data"]
+
 		puts "Pseudo client = "+pseudo
+		
 		salon = nil
-		#Ici on doit créer un salon pour le jeu si aucun salon n'est disponible, sinon on récupère le salon sélectionné
+
+		# On crée un salon pour le jeu si aucun salon n'est disponible, sinon on récupère le salon sélectionné
 		begin
 			semSalon.synchronize{
-				#Si tous les salons sont pleins, on crée un salon pour le joueur
+				
+				#On cherche à savoir si tous les salons sont pleins
 				tousPleins = true
 				listeSalons.each{|salon| if(!salon.plein)
 					tousPleins = false 
-					end}
+					end
+				}
+				# Si tous les salons sont pleins, on crée un salon pour le joueur
 				if(tousPleins)
+
+					# Création du salon
 					salon = Salon.new
+
+					# Ajout du salon à la liste des salons possibles
 					listeSalons.push(salon)
-					#On envoie l'identifiant du salon
+
+					# On envoie l'index du salon au client
 					ws.send(tojson("salons", {listeSalons.index(salon) => salon.nbJoueur}))
+
+				# Sinon on envoie la liste des salons avec le nombre de joueurs
 				else
-					#Sinon on envoie la liste des salons avec le nombre de joueurs
+					# On crée un dictionnaire pour transmettre les index des salons disponibles avec leur nombre de joueur
 					dictionnaireSalon = {}
-					listeSalons.each{|salon| dictionnaireSalon.merge!({listeSalons.index(salon) => salon.nbJoueur})}
+					listeSalons.each{|salon| if(!salon.plein)
+						dictionnaireSalon.merge!({listeSalons.index(salon) => salon.nbJoueur})
+						end
+					}
 					ws.send(tojson("salons", dictionnaireSalon))
+
 					#On récupère l'index du salon choisi
 					indexSalon = todata(ws.receive())["data"]
+
 					salon = listeSalons.at(indexSalon)
-					#Si le salon est devenu plein avant d'être connecté on le signal
+
+					#Si le salon est devenu plein avant d'être connecté on le signale et on recommence
 					if(salon.plein)
 						ws.send(tojson("salonplein", indexSalon))
 						redo
 					end
+
 				end
 			}
 
 			# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
 			numJoueur = salon.connexionJoueurSalon(ws,pseudo)
 
+			# Le joueur attend les autres pour commencer la partie
 			attenteJoueur = Thread.new do
 				salon.attendreDebutPartie()
 			end
 
-			#On doit pouvoir dire quand le joueur sort du salon
+			# On doit pouvoir dire quand le joueur sort du salon
 			gestionDeconnexion = Thread.new do
+				#On regarde si le joueur a demander à quitter le salon
 				if(todata(ws.receive())["data"] == "deco")
 					salon.deconnexionJoueur(ws)
-					#Si le dernier joueur présent sur le salon se déconnecte, il faut supprimer le salon
+
+					#Si le dernier joueur présent sur le salon se déconnecte, il faut supprimer le salon mais on garde toujours deux salons ouverts
 					if(salon.nbJoueur == 0 && listeSalons.size > 2)
 						listeSalons.delete(salon)
 					end

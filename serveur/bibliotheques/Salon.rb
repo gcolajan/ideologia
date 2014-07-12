@@ -6,22 +6,30 @@ class Salon
 	attr_reader :debutPartie
 
 	def initialize
+
 		@partie = Partie.new
 		@plein = false
+
+		# Création des deux listes concordantes pour la gestion des joueurs présents
 		@listeJoueur = [nil, nil, nil, nil]
 		@listePseudo = [nil, nil, nil, nil]
+
 		@semaphore = Mutex.new
 		@condVariable = ConditionVariable.new
 		@semaphorePseudo = Mutex.new
 		@condVariablePseudo = ConditionVariable.new
+
 		@debutPartie = false
 		@nbJoueur = 0
+
 	end
 
+	#Destruction du salon
 	def destruction
 		@partie = nil
 	end
 
+	# Permet au joueur d'attendre le début de la partie
 	def attendreDebutPartie
 		@semaphore.synchronize{
 			while(!@debutPartie)
@@ -30,32 +38,44 @@ class Salon
 		}
 	end
 
+	# Sur déconnexion du salon on envoie les pseudo des personnes restantes et on mets à jour les tableaux
 	def deconnexionJoueur ws
 		indexDeco = @listeJoueur.index(ws)
 		@listeJoueur.insert(indexDeco, nil)
 		@listePseudo.insert(indexDeco, nil)
+		transmissionPseudo()
 	end
 
+	# Connexion d'un joueur au salon
 	def connexionJoueurSalon ws, pseudo
+		# Permet de dire quand un salon est plein
 		if(@listeJoueur.size == 4)
-			return -1
+			@plein = true
+			return
 		end
+
+		# On place les données correctement dans les listes
 		@listeJoueur.insert(listeJoueur.index(nil), ws)
 		@listePseudo.insert(@listeJoueur.index(ws), pseudo)
 
 		@nbJoueur += 1
+
+		# On transmet tous les pseudo à tout le monde
 		transmissionPseudo()
+
+		# Si on a 4 joueurs on commence la partie
 		if(@listeJoueur.size == 4)
 			@debutPartie = true
 			@plein = true
 			@condVariable.signal
 		end
 
+		# On retourne le numéro du joueur
 		return @listeJoueur.index(ws)
 	end
 
 	#Transmet le pseudo à chaque joueur présent dans le salon
-	def transmissionPseudo(pseudo)
+	def transmissionPseudo()
 		@listeJoueur.each{|ws| ws.send(tojson("pseudo", @listePseudo))}
 	end
 end
