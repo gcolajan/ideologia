@@ -1,0 +1,155 @@
+body {
+	font-family:Verdana, Tahoma, Helvetica, Arial;
+	margin:0;
+	padding:0;
+	min-height: 100%;
+	/*background:url('../images/fond.png') !important;
+	background-size:cover !important;*/
+	background:linear-gradient(to bottom, #EEEEEE, #CCCCCC) !important;
+}
+
+h1 {
+	text-align:center;
+}
+
+.row.full-width {
+	width:99%;
+	max-width:99%;
+}
+
+#accueil {
+	text-align:center;
+}
+
+#header {
+}
+
+#map {
+	text-align:center;
+	background:radial-gradient(#20458f, #0c1934);
+	/*background:radial-gradient(#545454, #121212);*/
+	background:radial-gradient(rgba(221,221,221,0.3), rgba(255,255,255,0.8));
+	background:url('../images/fond.jpg');
+	background-size:cover;
+	border:1px solid #222222;
+	box-shadow: 2px 2px 0.5rem #222222;
+	border-radius:6px;
+}
+
+#map div h1 {
+	color:rgba(255,255,255,0.66);
+	text-align:center; margin:0;
+	padding:0;
+	padding-bottom:10px;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: Electrolize;
+	font-size:3.5rem;
+}
+
+.mypanel {
+	margin:0;
+	border:1px solid #222222;
+	background:#383838;
+	color:white;
+	border-bottom-width: 15px;
+	/*box-shadow: 2px 2px 0.5rem #222222;*/
+}
+
+.mypanel h1 {
+	background:#202020;
+	color:#EEEEEE;
+	text-shadow: 1px 1px 2px #000b22;
+	font-size:1.2rem;
+	line-height:2rem;
+	margin:0;
+	font-weight: bold;
+	font-family: 'Cabin', sans-serif;
+
+}
+
+.mypanel h2 {
+	color:#DFDFDF;
+	font-size:1.1rem;
+	font-weight:bold;
+	font-family: 'Cabin', sans-serif;
+	background:#222222;
+	padding:2px;
+	padding-left:25px;
+}
+
+dl#plateau {
+	margin:0;
+	padding:0;
+	display:table;
+	width:100%;
+	background:rgba(221,221,221,0.33);
+	padding:5px;
+	position:fixed;
+	bottom:0;
+	border-top:1px solid rgba(221,221,221,0.5);
+}
+
+dl#plateau dt {
+	text-align:center;
+	list-style-type:none;
+	width:2.38%;
+	padding:2px;
+	display:table-cell;
+}
+
+dl#plateau dt span.case {
+	font-family: 'Cabin', sans-serif;
+	background:#222222;
+	color:#EEEEEE;
+	font-weight:bold;
+	border-bottom:2px solid #888888;
+	line-height:45px;
+	display:block;
+}
+
+dl#plateau dt span.case.danger {
+	border-bottom:2px solid red;
+}
+
+dl#plateau dt span.joueurs {
+	display:table;
+	background:#CCCCCC;
+	width:100%;
+}
+
+dl#plateau dt span.joueurs span.joueur {
+	display:table-cell;
+	margin:0;
+}
+
+dl#plateau dt span.joueurs span.joueur span {
+	height:8px;
+	display:block;
+	margin:1px;
+	border-radius:4px;
+}
+
+dl#plateau dt span.joueurs span.joueur span {background:transparent;}
+dl#plateau dt span.joueurs span.joueur.j1 span.active {background-color:#8d0d1a;}
+dl#plateau dt span.joueurs span.joueur.j2 span.active {background-color:#549124;}
+dl#plateau dt span.joueurs span.joueur.j3 span.active {background-color:#882491;}
+dl#plateau dt span.joueurs span.joueur.j4 span.active {background-color:#247691;}
+
+
+div#timer {
+	text-align:center;
+	margin:10px 0;
+}
+
+div#timer span {
+	font-family:Electrolize;
+	text-align:center;
+	color:#E00000;
+	font-size:1.5rem;
+	padding:7px;
+	background:#161616;
+	border-radius:3px;
+	box-shadow:1px 1px 1px rgba(200,200,200,0.5);
+	display:inline-block;
+}

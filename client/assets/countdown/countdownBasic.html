@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>jQuery Countdown</title>
+<link rel="stylesheet" href="jquery.countdown.css">
+<style type="text/css">
+#defaultCountdown { width: 240px; height: 45px; }
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="jquery.plugin.min.js"></script>
+<script src="jquery.countdown.min.js"></script>
+<script>
+$('#imageLayout').countdown(
+	{until: new Date(2014, 12-1, 25), compact: true, 
+    layout: $('#imageLayout').html()});
+</script>
+<style>
+
+#imageLayout span { display: block; float: left; width: 10px; height: 21px; 
+    background: url(countdownLED.png) no-repeat 0px 0px; } 
+#imageLayout span.image0 { background-position: -0px 0px; } 
+#imageLayout span.image1 { background-position: -10px 0px; } 
+#imageLayout span.image2 { background-position: -20px 0px; } 
+#imageLayout span.image3 { background-position: -30px 0px; } 
+#imageLayout span.image4 { background-position: -40px 0px; } 
+#imageLayout span.image5 { background-position: -50px 0px; } 
+#imageLayout span.image6 { background-position: -60px 0px; } 
+#imageLayout span.image7 { background-position: -70px 0px; } 
+#imageLayout span.image8 { background-position: -80px 0px; } 
+#imageLayout span.image9 { background-position: -90px 0px; } 
+#imageLayout span.imageDay { background-position: -100px 0px; } 
+#imageLayout span.imageSep { background-position: -110px 0px; } 
+#imageLayout span.imageSpace { background-position: -120px 0px; } 
+</style>
+</head>
+<body>
+<h1>jQuery Countdown Basics</h1>
+<p>This page demonstrates the very basics of the
+	<a href="http://keith-wood.name/countdown.html">jQuery Countdown plugin</a>.
+	It contains the minimum requirements for using the plugin and
+	can be used as the basis for your own experimentation.</p>
+<p>For more detail see the <a href="http://keith-wood.name/countdownRef.html">documentation reference</a> page.</p>
+<span id="imageLayout"> 
+    <span class="image{m10}"></span> 
+    <span class="image{m1}"></span> 
+    <span class="imageSep"></span> 
+    <span class="image{s10}"></span> 
+    <span class="image{s1}"></span> 
+</span>
+</body>
+</html>
