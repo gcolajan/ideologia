@@ -23,7 +23,6 @@ server.run() do |ws| # ecoute des connexions
 	begin # Code du thread joueur
 		puts "connexion acceptee"
 		ws.handshake()
-		ws.send(tojson("serveur", "connecte"))
 		
 		# On initialise nos mutex/cv pour les communications
 		$mutexReception = Mutex.new
@@ -45,12 +44,12 @@ server.run() do |ws| # ecoute des connexions
 					salon = Salon.new
 					listeSalons.push(salon)
 					#On envoie l'identifiant du salon
-					ws.send(tojson("salon", {listeSalons.index(salon) => salon.nbJoueur}))
+					ws.send(tojson("salons", {listeSalons.index(salon) => salon.nbJoueur}))
 				else
 					#Sinon on envoie la liste des salons avec le nombre de joueurs
 					dictionnaireSalon = {}
 					listeSalons.each{|salon| dictionnaireSalon.merge!({listeSalons.index(salon) => salon.nbJoueur})}
-					ws.send(tojson("listeSalons", dictionnaireSalon))
+					ws.send(tojson("salons", dictionnaireSalon))
 					#On récupère l'index du salon choisi
 					indexSalon = todata(ws.receive())["data"]
 					salon = listeSalons.at(indexSalon)
