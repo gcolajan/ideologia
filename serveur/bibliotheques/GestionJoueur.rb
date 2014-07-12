@@ -6,18 +6,18 @@ class GestionJoueur
 
 	attr_writer :transmission
 
-	def initialize(wsJoueur, instancePartie, instanceJoueur, instanceCoordinationClient)
+	def initialize(wsJoueur, instancePartie, instanceJoueur, instanceSalon)
 		@ws = wsJoueur
 		@partie = instancePartie
 		@joueur = instanceJoueur
-		@coord = instanceCoordinationClient
+		@salon = instanceSalon
 		@transmission = nil
 	end
 
 	def preparationClient(pseudo)
 
 		@joueur.definirPseudo(pseudo)
-		@coord.transmissionPseudo()
+		@salon.transmissionPseudo()
 		
 		# On envoie une synthèse des personnes participant et les idéologies associées
 		partenaires = @partie.obtenirTableauPartenaires()

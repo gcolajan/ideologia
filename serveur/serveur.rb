@@ -2,7 +2,7 @@ $LOAD_PATH << File.dirname(__FILE__) + "/bibliotheques"
 
 require "web_socket"
 require "thread"
-require 'CoordinationClient'
+require 'Salon'
 require 'Partie'
 require 'GestionJoueur'
 require 'conf'
@@ -20,47 +20,87 @@ server = WebSocketServer.new(
   
 puts("Server is running at port %d" % server.port)
 
-coord = CoordinationClient.new
-
 sem = Mutex.new
+
+semSalon = Mutex.new
+
+listeSalons = [Salon.new, Salon.new]
 
 server.run() do |ws| # ecoute des connexions
 	begin # Code du thread joueur
 		puts "connexion acceptee"
 		ws.handshake()
+		ws.send(tojson("serveur", "connecte"))
 		
 		# On initialise nos mutex/cv pour les communications
 		$mutexReception = Mutex.new
 		$cvReception = ConditionVariable.new
 		
-		# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
-		numJoueur = coord.nouveauJoueur()
-		
 		# Recuperation du pseudo
-		pseudo = ws.receive()
+		pseudo = todata(ws.receive())["data"]
 		puts "Pseudo client = "+pseudo
+
+		#Ici on doit créer un salon pour le jeu si aucun salon n'est disponible, sinon on récupère le salon sélectionné
+		begin
+			semSalon.synchronize{
+				#Si tous les salons sont pleins, on crée un salon pour le joueur
+				if(listeSalons.bsearch{|salon| salon.plein == false} == nil)
+					salon = Salon.new
+					listeSalons.push(salon)
+					#On envoie l'identifiant du salon
+					ws.send(tojson("salon", {listeSalons.index(salon) => salon.nbJoueur}))
+				else
+					#Sinon on envoie la liste des salons avec le nombre de joueurs
+					dictionnaireSalon = {}
+					listeSalons.each{|salon| dictionnaireSalon.merge(listeSalons.index(salon), salon.nbJoueur)}
+					ws.send(tojson("listeSalon", dictionnaireSalon))
+					#On récupère l'index du salon choisi
+					indexSalon = todata(ws.receive())["data"]
+					salon = listeSalons.at(indexSalon)
+					#Si le salon est devenu plein avant d'être connecté on le signal
+					if(salon.plein)
+						ws.send(tojson("salonplein", indexSalon))
+						retry
+					end
+				end
+			}
+
+			# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
+			numJoueur = salon.connexionJoueurSalon(ws,pseudo)
+
+			attenteJoueur = Thread.new do
+				salon.attendreDebutPartie()
+			end
+
+			#On doit pouvoir dire quand le joueur sort du salon
+			gestionDeconnexion = Thread.new do
+				if(todata(ws.receive())["data"] == "deco")
+					salon.deconnexionJoueur(ws)
+					#Si le dernier joueur présent sur le salon se déconnecte, il faut supprimer le salon
+					if(salon.nbJoueur == 0 && listeSalons.size > 2)
+						listeSalons.delete(salon)
+					end
+				end
+			end
+
+			attenteJoueur.kill()
+			gestionDeconnexion.kill()
+		end while(!salon.debutPartie)
 		
-		if (numJoueur < 0)
-			# La partie est pleine
-			ws.send(tojson("etat", -1))
-			
-			# On ferme la socket
-			ws.close()
-		else
+		if(ws)
 			sem.synchronize{
 				# Attente debut de partie
-				coord.attendreDebutPartie()
 				ws.send(tojson("numeroJoueur", numJoueur))
 				puts numJoueur.to_s+" est reveille"
 			}
 		
 			# Obtention de l'instance de Partie
-			partie = coord.obtenirPartie()
+			partie = salon.partie
 			
 			# Instanciation du joueur
 			joueur = partie.recupererInstanceJoueur(numJoueur)
 
-			gestionJoueur = GestionJoueur.new(ws, partie, joueur, coord)
+			gestionJoueur = GestionJoueur.new(ws, partie, joueur, salon)
 			joueur.instanceGestionJoueur = gestionJoueur
 
 			gestionJoueur.preparationClient(pseudo)
@@ -71,10 +111,10 @@ server.run() do |ws| # ecoute des connexions
 
 			# On ping le client toutes les X secondes pour vérifier sa présence
 			ping = Thread.new do
-				while partie.estDemarree
+				while ws
 					sleep($INTERVALLE_PING)
 					pingPrecedent = Time.now.to_i
-					ws.send("ping")
+					@ws.send("ping")
 				end
 			end
 
@@ -85,7 +125,7 @@ server.run() do |ws| # ecoute des connexions
 			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
 			communications = Thread.new do
 				while partie.estDemarree
-					transmission = ws.receive()
+					transmission = ws.receive()["type"]
 			
 					if (transmission != "pong")
 						gestionJoueur.transmission = transmission
@@ -111,9 +151,7 @@ server.run() do |ws| # ecoute des connexions
 				ws.send(tojson("scores", scores))
 			}
 
-			sem.synchronize{
-				coord.nouvellePartie()
-			}
+			salon.destruction()
 		end
 		
 
