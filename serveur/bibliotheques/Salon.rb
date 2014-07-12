@@ -49,13 +49,13 @@ class Salon
 	# Connexion d'un joueur au salon
 	def connexionJoueurSalon ws, pseudo
 		# Permet de dire quand un salon est plein
-		if(@listeJoueur.size == 4)
+		if(@nbJoueur == 4)
 			@plein = true
 			return
 		end
 
 		# On place les données correctement dans les listes
-		@listeJoueur.insert(listeJoueur.index(nil), ws)
+		@listeJoueur.insert(@listeJoueur.index(nil), ws)
 		@listePseudo.insert(@listeJoueur.index(ws), pseudo)
 
 		@nbJoueur += 1
@@ -64,10 +64,10 @@ class Salon
 		transmissionPseudo()
 
 		# Si on a 4 joueurs on commence la partie
-		if(@listeJoueur.size == 4)
+		if(@nbJoueur == 4)
 			@debutPartie = true
 			@plein = true
-			@condVariable.signal
+			@condVariable.broadcast()
 		end
 
 		# On retourne le numéro du joueur
@@ -78,6 +78,9 @@ class Salon
 	def transmissionPseudo()
 		listeEnvoi = @listePseudo
 		listeEnvoi = listeEnvoi.keep_if{|pseudo| pseudo != nil}
-		@listeJoueur.each{|ws| ws.send(tojson("pseudo", @listePseudo))}
+		@listeJoueur.each{|ws| if(ws)
+			ws.send(tojson("pseudo", @listePseudo))
+			end
+		}
 	end
 end

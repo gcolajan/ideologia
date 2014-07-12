@@ -36,7 +36,9 @@ server.run() do |ws| # ecoute des connexions
 		salon = nil
 
 		# On crée un salon pour le jeu si aucun salon n'est disponible, sinon on récupère le salon sélectionné
+		i = 0
 		begin
+			puts "passage "+i.to_s
 			semSalon.synchronize{
 				
 				#On cherche à savoir si tous les salons sont pleins
@@ -81,29 +83,31 @@ server.run() do |ws| # ecoute des connexions
 				end
 			}
 
+			puts "attenteJoueur"
 			# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
 			numJoueur = salon.connexionJoueurSalon(ws,pseudo)
 
 			# Le joueur attend les autres pour commencer la partie
-			attenteJoueur = Thread.new do
-				salon.attendreDebutPartie()
-			end
+			
+			salon.attendreDebutPartie()
 
 			# On doit pouvoir dire quand le joueur sort du salon
-			gestionDeconnexion = Thread.new do
-				#On regarde si le joueur a demander à quitter le salon
-				if(todata(ws.receive())["data"] == "deco")
-					salon.deconnexionJoueur(ws)
+			#gestionDeconnexion = Thread.new do
+				# On regarde si le joueur a demander à quitter le salon
+			#	if(todata(ws.receive())["type"] == "deco")
+			#		salon.deconnexionJoueur(ws)
 
 					#Si le dernier joueur présent sur le salon se déconnecte, il faut supprimer le salon mais on garde toujours deux salons ouverts
-					if(salon.nbJoueur == 0 && listeSalons.size > 2)
-						listeSalons.delete(salon)
-					end
-				end
-			end
+			# 		if(salon.nbJoueur == 0 && listeSalons.size > 2)
+			# 			listeSalons.delete(salon)
+			# 		end
+			# 		break
+			# 	end
+			# end
 
-			attenteJoueur.kill()
-			gestionDeconnexion.kill()
+			#attenteJoueur.kill()
+			#gestionDeconnexion.kill()
+			i += 1
 		end while(!salon.debutPartie)
 		
 		if(ws)
