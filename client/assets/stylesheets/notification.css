@@ -1,6 +1,0 @@
-#conteneur_notification {display:none; position:fixed; z-index:1; background:rgba(128,128,128,0.7); width:100%; height:100%;}
-#notification {width:550px; min-height:40%; max-height:80%; margin:auto; margin-top:10%; background:white; border-radius:20px;}
-div#notification h1 {text-align:center;}
-div#contenu_notification {text-align:center;}
-
-div.listeners {display:none;}
