@@ -33,6 +33,37 @@ EventMachine.run {
 	EventMachine::WebSocket.start(:host => adresseServeur, :port => port) do |ws| # ecoute des connexions
 		ws.onopen{
 			puts "connexion acceptee"
+
+			# Gestion du ping
+			pongMutex = Mutex.new
+			pongResponse = ConditionVariable.new
+			ping = nil;
+
+			ping = Thread.new do
+				while true
+					str = '{"type":"ping","data":"1"}'
+					puts str
+					ws.send str
+					puts "ping sended"
+					pingLaunch = Time.now.to_f;
+					# We are waiting for a response from the client
+					puts "I'll wait"
+					pongMutex.synchronize {
+						pongResponse.wait(pongMutex, $REPONSE_PING)
+					}
+					# If the response was too long (or not exists)
+					if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
+						puts "Disconnected by timeout"
+						break;
+					else
+						puts "In Time!"
+					end
+
+					# We wait a little before re-ask
+					sleep($INTERVALLE_PING_SALON)
+				end
+			end
+
 		
 			# On initialise nos mutex/cv pour les communications
 			$mutexReception = Mutex.new
