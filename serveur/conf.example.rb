@@ -14,7 +14,8 @@ $FONDS_INITIAUX = 2500 # Argent au début de la partie
 $ARGENT_CASE_DEPART = 1600 # Argent au passage sur la case départ
 $TEMPS_JEU = 300 # Temps d'une partie (en secondes)
 
-$INTERVALLE_PING = 30 # Temps entre deux ping envoyés au client (en secondes)
+$INTERVALLE_PING_PARTIE = 30 # Temps entre deux ping envoyés au client (en secondes) lors de la partie
+$INTERVALLE_PING_SALON = 2 # Temps entre deux ping envoyés au client (en secondes) lors du salon
 $REPONSE_PING = 10 # Temps maximal pour le client pour répondre au ping (en secondes)
 
 # Connexion SQL

@@ -105,7 +105,7 @@ server.run() do |ws| # ecoute des connexions
 			# On ping le client toutes les X secondes pour vérifier sa présence
 			ping = Thread.new do
 				while ws
-					sleep($INTERVALLE_PING)
+					sleep($INTERVALLE_PING_SALON)
 					pingPrecedent = Time.now.to_i
 					ws.send("ping")
 				end
@@ -164,7 +164,7 @@ server.run() do |ws| # ecoute des connexions
 			# On ping le client toutes les X secondes pour vérifier sa présence
 			ping = Thread.new do
 				while ws
-					sleep($INTERVALLE_PING)
+					sleep($INTERVALLE_PING_PARTIE)
 					pingPrecedent = Time.now.to_i
 					ws.send("ping")
 				end
