@@ -28,6 +28,12 @@ var ws = $.websocket("ws://localhost:8080/", {
 			chan = e.data;
 			// Je décide d'aller dans CE salon
 		},
+		waitingWith: function(e) {
+			startup.clean();
+			for (var pseudo in e.data)
+				startup.addPseudo(e.data[pseudo]);
+			startup.showWaiting();
+		},
 		numeroJoueur: function(e) {
 			console.log('Je suis le joueur '+e.data);
 		},
