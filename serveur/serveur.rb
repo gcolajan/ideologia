@@ -107,7 +107,7 @@ server.run() do |ws| # ecoute des connexions
 				while !salon.debutPartie
 					sleep($INTERVALLE_PING_SALON)
 					pingPrecedent = Time.now.to_i
-					ws.send("ping")
+					ws.send(tojson("ping",""))
 				end
 			end
 
@@ -166,7 +166,7 @@ server.run() do |ws| # ecoute des connexions
 				while partie.estDemarree
 					sleep($INTERVALLE_PING_PARTIE)
 					pingPrecedent = Time.now.to_i
-					ws.send("ping")
+					ws.send(tojson("ping",""))
 				end
 			end
 
