@@ -30,39 +30,40 @@ listeSalons = [Salon.new, Salon.new]
 EventMachine.run {
 	puts("Server is running at %d" % port)
 
-	EventMachine::WebSocket.start(:host => adresseServeur, :port => port) do |ws| # ecoute des connexions
+	EventMachine::WebSocket.start(:host => adresseServeur, :port => port, :debug => true) do |ws| # ecoute des connexions
+		listeMessage = []
 		ws.onopen{
 			puts "connexion acceptee"
 
 			# Gestion du ping
 			pongMutex = Mutex.new
 			pongResponse = ConditionVariable.new
-			ping = nil;
 
-			ping = Thread.new do
-				while true
-					str = '{"type":"ping","data":"1"}'
-					puts str
-					ws.send str
-					puts "ping sended"
-					pingLaunch = Time.now.to_f;
-					# We are waiting for a response from the client
-					puts "I'll wait"
-					pongMutex.synchronize {
-						pongResponse.wait(pongMutex, $REPONSE_PING)
-					}
-					# If the response was too long (or not exists)
-					if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
-						puts "Disconnected by timeout"
-						break;
-					else
-						puts "In Time!"
-					end
+			# ping = Thread.new do
+			# 	puts "Début du ping"
+			# 	while true
+			# 		str = '{"type":"ping","data":"1"}'
+			# 		puts "test ping"
+			# 		ws.send str
+			# 		puts "ping sended"
+			# 		pingLaunch = Time.now.to_f;
+			# 		# We are waiting for a response from the client
+			# 		puts "I'll wait"
+			# 		pongMutex.synchronize {
+			# 			pongResponse.wait(pongMutex, $REPONSE_PING)
+			# 		}
+			# 		# If the response was too long (or not exists)
+			# 		if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
+			# 			puts "Disconnected by timeout"
+			# 			break
+			# 		else
+			# 			puts "In Time!"
+			# 		end
 
-					# We wait a little before re-ask
-					sleep($INTERVALLE_PING_SALON)
-				end
-			end
+			# 		# We wait a little before re-ask
+			# 		sleep($INTERVALLE_PING_SALON)
+			# 	end
+			# end
 
 		
 			# On initialise nos mutex/cv pour les communications
@@ -70,9 +71,9 @@ EventMachine.run {
 			$cvReception = ConditionVariable.new
 			
 			# Recuperation du pseudo
-			pseudo = todata(ws.receive())["data"]
+			pseudo = listeMessage.pop()
 
-			puts "Pseudo client = "+pseudo
+			puts "Pseudo client = "#+pseudo
 			
 			salon = nil
 			numJoueur = -1
@@ -118,10 +119,10 @@ EventMachine.run {
 					ws.send(tojson("salons", dictionnaireSalon))
 
 					#On récupère l'index du salon choisi
-					indexSalon = todata(ws.receive())["data"]
+					indexSalon = listeMessage.pop()
 
 					semSalon.synchronize{
-						salon = listeSalons.at(indexSalon)
+						salon = listeSalons.at(indexSalon["data"])
 					}
 
 					#Si le salon est devenu plein avant d'être connecté on le signale et on recommence
@@ -156,30 +157,30 @@ EventMachine.run {
 				
 
 				# On ping le client toutes les X secondes pour vérifier sa présence
-				ping = Thread.new do
-					while !salon.debutPartie
-						puts "i'll send a ping"
-						ws.send(tojson("ping",""))
-						puts "ping sended"
-						pingLaunch = Time.now.to_f;
-						# We are waiting for a response from the client
-						puts "I'll wait"
-						pongMutex.synchronize {
-							pongResponse.wait(pongMutex, $REPONSE_PING)
-						}
-						# If the response was too long (or not exists)
-						if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
-							# We disconnect the player
-							gestionJoueur.finAttenteDebutPartie()
-							salon.deconnexionJoueur(ws)
-							puts "Disconnected by timeout"
-							break;
-						end
-						# We wait a little before re-ask
-						puts "pong received in time"
-						sleep($INTERVALLE_PING_SALON)
-					end
-				end
+				# ping = Thread.new do
+				# 	while !salon.debutPartie
+				# 		puts "i'll send a ping"
+				# 		ws.send(tojson("ping",""))
+				# 		puts "ping sended"
+				# 		pingLaunch = Time.now.to_f;
+				# 		# We are waiting for a response from the client
+				# 		puts "I'll wait"
+				# 		pongMutex.synchronize {
+				# 			pongResponse.wait(pongMutex, $REPONSE_PING)
+				# 		}
+				# 		# If the response was too long (or not exists)
+				# 		if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
+				# 			# We disconnect the player
+				# 			gestionJoueur.finAttenteDebutPartie()
+				# 			salon.deconnexionJoueur(ws)
+				# 			puts "Disconnected by timeout"
+				# 			break;
+				# 		end
+				# 		# We wait a little before re-ask
+				# 		puts "pong received in time"
+				# 		sleep($INTERVALLE_PING_SALON)
+				# 	end
+				# end
 
 				attenteJoueur = Thread.new do
 					salon.attendreDebutPartie()
@@ -187,20 +188,19 @@ EventMachine.run {
 				end
 				
 				# Gestion des communication : filtre les réponses au ping et les transmissions utiles
-				communications = Thread.new do
-					while !salon.debutPartie
-						transmission = todata(ws.receive())["type"]
-
-						if (transmission == "deco")
-							gestionJoueur.finAttenteDebutPartie()
-							salon.deconnexionJoueur(ws)
-						elsif (transmission == "pong")
-							pongMutex.synchronize {
-								pongResponse.signal
-							}
-					  	end
-					end
-				end
+				# communications = Thread.new do
+				# 	while !salon.debutPartie
+				# 		transmission = listeMessage.pop()
+				# 		if (transmission["type"] == "deco")
+				# 			gestionJoueur.finAttenteDebutPartie()
+				# 			salon.deconnexionJoueur(ws)
+				# 		elsif (transmission == "pong")
+				# 			pongMutex.synchronize {
+				# 				pongResponse.signal
+				# 			}
+				# 	  	end
+				# 	end
+				# end
 				
 				# Endormir le thread principal (1 par joueur) tant que la partie n'est pas démarrée ou que le joueur n'a pas quitté le salon
 				gestionJoueur.endormirAttenteDebutPartie()
@@ -233,34 +233,34 @@ EventMachine.run {
 				pingPrecedent = Time.now.to_i
 
 				# On ping le client toutes les X secondes pour vérifier sa présence
-				ping = Thread.new do
-					while partie.estDemarree
-						sleep($INTERVALLE_PING_PARTIE)
-						pingPrecedent = Time.now.to_i
-						ws.send(tojson("ping",""))
-					end
-				end
+				# ping = Thread.new do
+				# 	while partie.estDemarree
+				# 		sleep($INTERVALLE_PING_PARTIE)
+				# 		pingPrecedent = Time.now.to_i
+				# 		ws.send(tojson("ping",""))
+				# 	end
+				# end
 
 				threadGestionJoueur = Thread.new do
 					gestionJoueur.tourJoueur()
 				end
 				
 				# Gestion des communication : filtre les réponses au ping et les transmissions utiles
-				communications = Thread.new do
-					while partie.estDemarree
-						transmission = ws.receive()["type"]
+				# communications = Thread.new do
+				# 	while partie.estDemarree
+				# 		transmission = listeMessage.pop()
 				
-						if (transmission != "pong")
-							gestionJoueur.transmission = transmission
-							$mutexReception.synchronize {
-								$cvReception.signal
-							}
-						elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
-							# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
-							partie.deconnexionJoueur(numJoueur)
-					  	end
-					end
-				end
+				# 		if (transmission[type] != "pong")
+				# 			gestionJoueur.transmission = transmission
+				# 			$mutexReception.synchronize {
+				# 				$cvReception.signal
+				# 			}
+				# 		elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
+				# 			# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
+				# 			partie.deconnexionJoueur(numJoueur)
+				# 	  	end
+				# 	end
+				# end
 				
 				# Endormir le thread principal (1 par joueur) tant que la partie est démarrée
 				partie.endormirFinPartie()
@@ -289,6 +289,7 @@ EventMachine.run {
 			transmission = JSON.parse(msg)
 
 			if transmission["type"] != 'pong'
+				listeMessage.push(transmission)
 				puts "Received message: #{msg}"
 			else
 				puts "PONG"
@@ -299,11 +300,12 @@ EventMachine.run {
 		}
 
 		ws.onerror { |error|
-		  if error.kind_of?(EM::WebSocket::WebSocketError)
-		    @log.error "websockets error: #{error}"
-		  else
-		    @log.error "generic error: #{error} #{error.backtrace}"
-		  end
+			puts "Erreur repérée"
+			if error.kind_of?(EM::WebSocket::WebSocketError)
+				@log.error "websockets error: #{error}"
+			else
+				@log.error "generic error: #{error} #{error.backtrace}"
+			end
 		}
 		
 	end
