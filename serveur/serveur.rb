@@ -262,13 +262,6 @@ EventMachine.run {
 						condVarDeco
 					}
 			end
-			if transmission["type"] != 'pong'
-				listeMessage.push(transmission)
-				puts "Received message: #{msg}"
-			else
-				puts "PONG"
-				
-			end
 		}
 
 		ws.onerror { |error|
