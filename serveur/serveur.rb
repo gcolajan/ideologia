@@ -133,6 +133,7 @@ server.run() do |ws| # ecoute des connexions
 			gestionJoueur.endormirAttenteDebutPartie()
 
 			ping.kill()
+			attenteJoueur.kill()
 			communication.kill()
 			
 		end while(!salon.debutPartie)
