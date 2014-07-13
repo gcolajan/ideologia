@@ -82,7 +82,7 @@ server.run() do |ws| # ecoute des connexions
 				end
 			}
 
-			puts "attenteJoueur"
+			puts "attenteJoueur "+pseudo
 			# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
 			numJoueur = salon.connexionJoueurSalon(ws,pseudo)
 
@@ -141,7 +141,7 @@ server.run() do |ws| # ecoute des connexions
 		if(ws)
 			# Attente debut de partie
 			ws.send(tojson("numeroJoueur", numJoueur))
-			puts numJoueur.to_s+" est reveille"
+			puts pseudo+" est reveille"
 		
 			# Obtention de l'instance de Partie
 			partie = salon.partie
@@ -203,8 +203,6 @@ server.run() do |ws| # ecoute des connexions
 
 			salon.destruction()
 		end
-		
-
 		
 		ws.close()
 	end

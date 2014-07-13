@@ -41,7 +41,7 @@ class GestionJoueur
 			envoieDonnees("evenement", @partie.obtenirEvenement)
 		end
 
-		puts "MaJ globale :"+@joueur.numJoueur.to_s
+		puts "MaJ globale :"+@joueur.pseudo
 		
 		# Envoi des informations utiles à l'actualisation du client
 		envoieDonnees("listeTerritoires", {'liste' => @partie.territoiresPartenaires, 'synthese' => @joueur.syntheseTerritoire})
@@ -95,7 +95,7 @@ class GestionJoueur
 	def tourDuJoueur
 
 		# DEBUG
-		puts @joueur.numJoueur.to_s+" joue"
+		puts @joueur.pseudo+" joue"
 
 		# On attend le lance de des
 		attendreReponse(10)
@@ -151,7 +151,7 @@ class GestionJoueur
 			  	tourDuJoueur()
 
 			else # jc != numeroJoueur
-				puts @joueur.numJoueur.to_s+" attend" # DEBUG
+				puts @joueur.pseudo+" attend" # DEBUG
 				
 				# Attendre la fin du tour
 				@partie.attendreFinTour()
