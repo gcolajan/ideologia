@@ -123,6 +123,7 @@ server.run() do |ws| # ecoute des connexions
 			
 					if (transmission == "deco")
 						gestionJoueur.finAttenteDebutPartie()
+						salon.deconnexionJoueur(ws)
 					elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
 						# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
 						salon.deconnexionJoueur(ws)
