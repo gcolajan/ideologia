@@ -86,7 +86,7 @@ class Salon
 		listeEnvoi = @listePseudo
 		listeEnvoi = listeEnvoi.keep_if{|pseudo| pseudo != nil}
 		@listeJoueur.each{|ws| if(ws)
-			ws.send(tojson("pseudo", @listePseudo))
+			ws.send(tojson("waitingWith", @listePseudo))
 			end
 		}
 	end
