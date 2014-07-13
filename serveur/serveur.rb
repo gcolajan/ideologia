@@ -38,49 +38,59 @@ server.run() do |ws| # ecoute des connexions
 
 		# On crée un salon pour le jeu si aucun salon n'est disponible, sinon on récupère le salon sélectionné
 		begin
-			semSalon.synchronize{
+			
 				
 				#On cherche à savoir si tous les salons sont pleins
-				tousPleins = true
+			tousPleins = true
+			semSalon.synchronize{
 				listeSalons.each{|salon| if(!salon.plein)
 					tousPleins = false 
 					end
 				}
+			}
 				# Si tous les salons sont pleins, on crée un salon pour le joueur
-				if(tousPleins)
+			if(tousPleins)
 
-					# Création du salon
-					salon = Salon.new
+				# Création du salon
+				salon = Salon.new
 
-					# Ajout du salon à la liste des salons possibles
+				# Ajout du salon à la liste des salons possibles
+				semSalon.synchronize{
 					listeSalons.push(salon)
+				}
 
-					# On envoie l'index du salon au client
+				# On envoie l'index du salon au client
+				semSalon.synchronize{
 					ws.send(tojson("salons", {listeSalons.index(salon) => salon.nbJoueur}))
+				}
 
-				# Sinon on envoie la liste des salons avec le nombre de joueurs
-				else
-					# On crée un dictionnaire pour transmettre les index des salons disponibles avec leur nombre de joueur
-					dictionnaireSalon = {}
+			# Sinon on envoie la liste des salons avec le nombre de joueurs
+			else
+				# On crée un dictionnaire pour transmettre les index des salons disponibles avec leur nombre de joueur
+				dictionnaireSalon = {}
+				semSalon.synchronize{
 					listeSalons.each{|salon| if(!salon.plein)
 						dictionnaireSalon.merge!({listeSalons.index(salon) => salon.nbJoueur})
 						end
 					}
-					ws.send(tojson("salons", dictionnaireSalon))
+				}
+				ws.send(tojson("salons", dictionnaireSalon))
 
-					#On récupère l'index du salon choisi
-					indexSalon = todata(ws.receive())["data"]
+				#On récupère l'index du salon choisi
+				indexSalon = todata(ws.receive())["data"]
 
+				semSalon.synchronize{
 					salon = listeSalons.at(indexSalon)
+				}
 
-					#Si le salon est devenu plein avant d'être connecté on le signale et on recommence
-					if(salon.plein)
-						ws.send(tojson("salonplein", indexSalon))
-						redo
-					end
-
+				#Si le salon est devenu plein avant d'être connecté on le signale et on recommence
+				if(salon.plein)
+					ws.send(tojson("salonplein", indexSalon))
+					redo
 				end
-			}
+
+			end
+
 
 			puts "attenteJoueur "+pseudo
 			# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
