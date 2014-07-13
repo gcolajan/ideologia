@@ -34,11 +34,10 @@ server.run() do |ws| # ecoute des connexions
 		puts "Pseudo client = "+pseudo
 		
 		salon = nil
+		numJoueur = -1
 
 		# On crée un salon pour le jeu si aucun salon n'est disponible, sinon on récupère le salon sélectionné
-		i = 0
 		begin
-			puts "passage "+i.to_s
 			semSalon.synchronize{
 				
 				#On cherche à savoir si tous les salons sont pleins
@@ -83,39 +82,67 @@ server.run() do |ws| # ecoute des connexions
 				end
 			}
 
-			puts "attenteJoueur"
+			puts "attenteJoueur "+pseudo
 			# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
 			numJoueur = salon.connexionJoueurSalon(ws,pseudo)
 
 			# Le joueur attend les autres pour commencer la partie
+			ws.send(tojson("joined", listeSalons.index(salon)))
+
+			# Obtention de l'instance de Partie
+			partie = salon.partie
 			
-			salon.attendreDebutPartie()
+			# Instanciation du joueur
+			joueur = partie.recupererInstanceJoueur(numJoueur)
 
-			# On doit pouvoir dire quand le joueur sort du salon
-			#gestionDeconnexion = Thread.new do
-				# On regarde si le joueur a demander à quitter le salon
-			#	if(todata(ws.receive())["type"] == "deco")
-			#		salon.deconnexionJoueur(ws)
+			# Création de la gestion du joueur au niveau du salon
+			gestionJoueur = GestionJoueur.new(ws, partie, joueur, salon)
 
-					#Si le dernier joueur présent sur le salon se déconnecte, il faut supprimer le salon mais on garde toujours deux salons ouverts
-			# 		if(salon.nbJoueur == 0 && listeSalons.size > 2)
-			# 			listeSalons.delete(salon)
-			# 		end
-			# 		break
-			# 	end
-			# end
+			semaphore = Mutex.new
+			
+			pingPrecedent = Time.now.to_i
 
-			#attenteJoueur.kill()
-			#gestionDeconnexion.kill()
-			i += 1
+			# On ping le client toutes les X secondes pour vérifier sa présence
+			ping = Thread.new do
+				while ws
+					sleep($INTERVALLE_PING)
+					pingPrecedent = Time.now.to_i
+					ws.send("ping")
+				end
+			end
+
+			attenteJoueur = Thread.new do
+				salon.attendreDebutPartie()
+				gestionJoueur.finAttenteDebutPartie()
+			end
+			
+			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
+			communications = Thread.new do
+				while !salon.debutPartie
+					transmission = ws.receive()["type"]
+			
+					if (transmission == "deco")
+						gestionJoueur.finAttenteDebutPartie()
+					elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
+						# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
+						salon.deconnexionJoueur(ws)
+				  	end
+				end
+			end
+			
+			# Endormir le thread principal (1 par joueur) tant que la partie n'est pas démarrée ou que le joueur n'a pas quitté le salon
+			gestionJoueur.endormirAttenteDebutPartie()
+
+			ping.kill()
+			attenteJoueur.kill()
+			communications.kill()
+			
 		end while(!salon.debutPartie)
 		
 		if(ws)
-			sem.synchronize{
-				# Attente debut de partie
-				ws.send(tojson("numeroJoueur", numJoueur))
-				puts numJoueur.to_s+" est reveille"
-			}
+			# Attente debut de partie
+			ws.send(tojson("numeroJoueur", numJoueur))
+			puts pseudo+" est reveille"
 		
 			# Obtention de l'instance de Partie
 			partie = salon.partie
@@ -123,6 +150,7 @@ server.run() do |ws| # ecoute des connexions
 			# Instanciation du joueur
 			joueur = partie.recupererInstanceJoueur(numJoueur)
 
+			# Création de la gestion du joueur pour la partie
 			gestionJoueur = GestionJoueur.new(ws, partie, joueur, salon)
 			joueur.instanceGestionJoueur = gestionJoueur
 
@@ -137,7 +165,7 @@ server.run() do |ws| # ecoute des connexions
 				while ws
 					sleep($INTERVALLE_PING)
 					pingPrecedent = Time.now.to_i
-					@ws.send("ping")
+					ws.send("ping")
 				end
 			end
 
@@ -177,8 +205,10 @@ server.run() do |ws| # ecoute des connexions
 			salon.destruction()
 		end
 		
-
-		
 		ws.close()
+	# rescue Exception => e
+	# 	e.message
+	# 	e.backtrace.inspect
+	# 	puts "Exception attrapee !"
 	end
 end	
