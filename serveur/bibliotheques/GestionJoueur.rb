@@ -10,6 +10,9 @@ class GestionJoueur
 		@joueur = instanceJoueur
 		@salon = instanceSalon
 		@transmission = nil
+
+		@mutATT = Mutex.new
+		@attenteEnCours = ConditionVariable.new
 	end
 
 	def preparationClient(pseudo)
@@ -180,5 +183,17 @@ class GestionJoueur
 
 	def envoyerSignalDeconnexion(numeroJoueurDeconnecte)
 		envoieDonnees("deconnexion", numeroJoueurDeconnecte)
+	end
+
+	def endormirAttenteDebutPartie
+		@mutATT.synchronize{
+			@attenteEnCours.wait(@mutATT)
+		}
+	end
+
+	def finAttenteDebutPartie
+		@mutATT.synchronize{
+			@attenteEnCours.signal
+		}
 	end
 end
