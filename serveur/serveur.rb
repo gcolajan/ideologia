@@ -78,6 +78,7 @@ EventMachine.run {
 				if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
 					puts "Disconnected by timeout"
 					break
+				end
 
 				# We wait a little before re-ask
 				sleep($INTERVALLE_PING_SALON)
@@ -100,7 +101,7 @@ EventMachine.run {
 			puts listeMessage.pop()
 		end
 
-		
+
 
 		ws.onopen{
 			puts "connexion acceptee"
