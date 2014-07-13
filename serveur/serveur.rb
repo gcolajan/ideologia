@@ -40,7 +40,7 @@ server.run() do |ws| # ecoute des connexions
 		begin
 			
 				
-				#On cherche à savoir si tous les salons sont pleins
+			# On cherche à savoir si tous les salons sont pleins
 			tousPleins = true
 			semSalon.synchronize{
 				listeSalons.each{|salon| if(!salon.plein)
