@@ -28,7 +28,7 @@ semSalon = Mutex.new
 listeSalons = [Salon.new, Salon.new]
 
 EventMachine.run {
-	puts("Server is running at port %d" % adresseServeur.port)
+	puts("Server is running at %d" % port)
 
 	EventMachine::WebSocket.start(:host => adresseServeur, :port => port) do |ws| # ecoute des connexions
 		ws.onopen{
@@ -245,13 +245,35 @@ EventMachine.run {
 
 				salon.destruction()
 			end
+
+			ws.close()
+		}
+
+
+		ws.onclose {
+			puts "Connection closed"
+		}
+
+		ws.onmessage { |msg|
+			transmission = JSON.parse(msg)
+
+			if transmission["type"] != 'pong'
+				puts "Received message: #{msg}"
+			else
+				puts "PONG"
+				pongMutex.synchronize {
+					pongResponse.signal
+				}
+			end
+		}
+
+		ws.onerror { |error|
+		  if error.kind_of?(EM::WebSocket::WebSocketError)
+		    @log.error "websockets error: #{error}"
+		  else
+		    @log.error "generic error: #{error} #{error.backtrace}"
+		  end
 		}
 		
-		
-		ws.close()
-	# rescue Exception => e
-	# 	e.message
-	# 	e.backtrace.inspect
-	# 	puts "Exception attrapee !"
 	end
-end	
+}
