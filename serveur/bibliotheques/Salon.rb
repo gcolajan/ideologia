@@ -83,13 +83,11 @@ class Salon
 
 	#Transmet le pseudo à chaque joueur présent dans le salon
 	def transmissionPseudo()
-		@semaphoreControle.synchronize{
-			listeEnvoi = @listePseudo
-			listeEnvoi = listeEnvoi.keep_if{|pseudo| pseudo != nil}
-			@listeJoueur.each{|ws| if(ws)
-				ws.send(tojson("pseudo", @listePseudo))
-				end
-			}
+		listeEnvoi = @listePseudo
+		listeEnvoi = listeEnvoi.keep_if{|pseudo| pseudo != nil}
+		@listeJoueur.each{|ws| if(ws)
+			ws.send(tojson("pseudo", @listePseudo))
+			end
 		}
 	end
 end

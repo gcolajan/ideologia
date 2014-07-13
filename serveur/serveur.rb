@@ -113,6 +113,7 @@ server.run() do |ws| # ecoute des connexions
 
 			attenteJoueur = Thread.new do
 				salon.attendreDebutPartie()
+				gestionJoueur.finAttenteDebutPartie()
 			end
 			
 			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
@@ -134,7 +135,7 @@ server.run() do |ws| # ecoute des connexions
 
 			ping.kill()
 			attenteJoueur.kill()
-			communication.kill()
+			communications.kill()
 			
 		end while(!salon.debutPartie)
 		
@@ -205,5 +206,9 @@ server.run() do |ws| # ecoute des connexions
 		end
 		
 		ws.close()
+	# rescue Exception => e
+	# 	e.message
+	# 	e.backtrace.inspect
+	# 	puts "Exception attrapee !"
 	end
 end	
