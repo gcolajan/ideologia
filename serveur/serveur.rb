@@ -52,186 +52,71 @@ EventMachine.run {
 
 		transmission = ""
 
-		ws.onopen{
-			puts "connexion acceptee"
 
-			# Gestion du ping
-			ping = Thread.new do
-				puts "Début du ping"
-				while true
-					str = '{"type":"ping","data":"1"}'
-					puts "test ping"
-					ws.send str
-					puts "ping sended"
-					pingLaunch = Time.now.to_f;
-					# We are waiting for a response from the client
-					puts "I'll wait"
-					pongMutex.synchronize {
-						pongResponse.wait(pongMutex, $REPONSE_PING)
-					}
-					# If the response was too long (or not exists)
-					if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
-						puts "Disconnected by timeout"
-						break
-					else
-						puts "In Time!"
-					end
+		listeMessage = []
 
-					# We wait a little before re-ask
-					sleep($INTERVALLE_PING_SALON)
+
+		connexionMutex = Mutex.new
+		connexionOpened = ConditionVariable.new
+
+		# Gestion du ping
+		pingThread = Thread.new do
+			# We start when the connexion is opened
+			connexionMutex.synchronize{
+				connexionOpened.wait(connexionMutex)
+			}
+
+			puts "Début du ping"
+			while true
+				str = '{"type":"ping","data":"1"}'
+				puts "test ping"
+				ws.send str
+				puts "ping sended"
+				pingLaunch = Time.now.to_f;
+				# We are waiting for a response from the client
+				puts "I'll wait"
+				pongMutex.synchronize {
+					pongResponse.wait(pongMutex, $REPONSE_PING)
+				}
+				# If the response was too long (or not exists)
+				if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
+					puts "Disconnected by timeout"
+					break
+				else
+					puts "In Time!"
 				end
-			end
 
-		
-			# On initialise nos mutex/cv pour les communications
-			$mutexReception = Mutex.new
-			$cvReception = ConditionVariable.new
-			
+				# We wait a little before re-ask
+				sleep($INTERVALLE_PING_SALON)
+			end
+		end
+
+	
+		mainThread = Thread.new do
+			# We start when the connexion is opened
+			connexionMutex.synchronize{
+				connexionOpened.wait(connexionMutex)
+			}
+
 			# Recuperation du pseudo
 			mutexPseudo.synchronize{
 				condVarPseudo.wait(mutexPseudo)
 			}
-			pseudo = transmission["data"]
-			puts "Pseudo client = " + pseudo
-			
-			salon = nil
-			numJoueur = -1
 
-			# On crée un salon pour le jeu si aucun salon n'est disponible, sinon on récupère le salon sélectionné
-			begin
-				
-					
-				# On cherche à savoir si tous les salons sont pleins
-				tousPleins = true
-				semSalon.synchronize{
-					listeSalons.each{|salon| if(!salon.plein)
-						tousPleins = false 
-						end
-					}
-				}
-					# Si tous les salons sont pleins, on crée un salon pour le joueur
-				if(tousPleins)
+			# We show the last message extracted
+			puts listeMessage.pop()
+		end
 
-					# Création du salon
-					salon = Salon.new
+		
 
-					# Ajout du salon à la liste des salons possibles
-					semSalon.synchronize{
-						listeSalons.push(salon)
-					}
+		ws.onopen{
+			puts "connexion acceptee"
 
-					# On envoie l'index du salon au client
-					semSalon.synchronize{
-						ws.send(tojson("salons", {listeSalons.index(salon) => salon.nbJoueur}))
-					}
-
-				# Sinon on envoie la liste des salons avec le nombre de joueurs
-				else
-					# On crée un dictionnaire pour transmettre les index des salons disponibles avec leur nombre de joueur
-					dictionnaireSalon = {}
-					semSalon.synchronize{
-						listeSalons.each{|salon| if(!salon.plein)
-							dictionnaireSalon.merge!({listeSalons.index(salon) => salon.nbJoueur})
-							end
-						}
-					}
-					ws.send(tojson("salons", dictionnaireSalon))
-
-					#On récupère l'index du salon choisi
-					mutexJoin.synchronize{
-						condVarJoin.wait(mutexJoin)
-					}
-					indexSalon = message
-
-					semSalon.synchronize{
-						salon = listeSalons.at(indexSalon["data"])
-					}
-
-					#Si le salon est devenu plein avant d'être connecté on le signale et on recommence
-					if(salon.plein)
-						ws.send(tojson("salonplein", indexSalon))
-						redo
-					end
-
-				end
-
-
-				puts "attenteJoueur " + pseudo
-				# On recupère notre numero de joueur (en reveillant les autres thread si la partie peut commencer)
-				numJoueur = salon.connexionJoueurSalon(ws,pseudo)
-
-				# Le joueur attend les autres pour commencer la partie
-				ws.send(tojson("joined", listeSalons.index(salon)))
-
-				# Obtention de l'instance de Partie
-				partie = salon.partie
-				
-				# Instanciation du joueur
-				joueur = partie.recupererInstanceJoueur(numJoueur)
-
-				# Création de la gestion du joueur au niveau du salon
-				gestionJoueur = GestionJoueur.new(ws, partie, joueur, salon)
-
-				semaphore = Mutex.new
-
-
-				attenteJoueur = Thread.new do
-					salon.attendreDebutPartie()
-					gestionJoueur.finAttenteDebutPartie()
-				end
-				
-				# Endormir le thread principal (1 par joueur) tant que la partie n'est pas démarrée ou que le joueur n'a pas quitté le salon
-				gestionJoueur.endormirAttenteDebutPartie()
-
-				ping.kill()
-				attenteJoueur.kill()
-				communications.kill()
-				
-			end while(!salon.debutPartie)
-			
-			if(ws)
-				# Attente debut de partie
-				ws.send(tojson("numeroJoueur", numJoueur))
-				puts pseudo+" est reveille"
-			
-				# Obtention de l'instance de Partie
-				partie = salon.partie
-				
-				# Instanciation du joueur
-				joueur = partie.recupererInstanceJoueur(numJoueur)
-
-				# Création de la gestion du joueur pour la partie
-				gestionJoueur = GestionJoueur.new(ws, partie, joueur, salon)
-				joueur.instanceGestionJoueur = gestionJoueur
-
-				gestionJoueur.preparationClient(pseudo)
-
-				semaphore = Mutex.new
-				
-				pingPrecedent = Time.now.to_i
-
-				threadGestionJoueur = Thread.new do
-					gestionJoueur.tourJoueur()
-				end
-				
-				# Endormir le thread principal (1 par joueur) tant que la partie est démarrée
-				partie.endormirFinPartie()
-
-				ping.kill()
-				communications.kill()
-
-				# Fin de la partie
-				sem.synchronize{ # Le premier accès se fait en écriture
-					scores = partie.obtenirScores()
-					ws.send(tojson("scores", scores))
-				}
-
-				salon.destruction()
-			end
-
-			ws.close()
+			# We wake up all the thread waiting for opening
+			connexionMutex.synchronize{
+				connexionOpened.broadcast
+			}
 		}
-
 
 		ws.onclose {
 			puts "Connection closed"
