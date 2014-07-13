@@ -1,6 +1,7 @@
 require 'json'
 require 'thread'
 require 'mysql'
+require 'em-websocket'
 
 $LOAD_PATH << File.dirname(__FILE__) + "/bibliotheques"
 
