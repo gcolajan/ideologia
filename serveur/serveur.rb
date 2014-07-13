@@ -57,24 +57,20 @@ EventMachine.run {
 
 
 		connexionMutex = Mutex.new
-		connexionOpened = ConditionVariable.new
+		connectionOpened = ConditionVariable.new
 
 		# Gestion du ping
 		pingThread = Thread.new do
 			# We start when the connexion is opened
 			connexionMutex.synchronize{
-				connexionOpened.wait(connexionMutex)
+				connectionOpened.wait(connexionMutex)
 			}
 
-			puts "Début du ping"
 			while true
-				str = '{"type":"ping","data":"1"}'
-				puts "test ping"
-				ws.send str
+				ws.send '{"type":"ping","data":"1"}'
 				puts "ping sended"
 				pingLaunch = Time.now.to_f;
 				# We are waiting for a response from the client
-				puts "I'll wait"
 				pongMutex.synchronize {
 					pongResponse.wait(pongMutex, $REPONSE_PING)
 				}
@@ -82,9 +78,6 @@ EventMachine.run {
 				if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
 					puts "Disconnected by timeout"
 					break
-				else
-					puts "In Time!"
-				end
 
 				# We wait a little before re-ask
 				sleep($INTERVALLE_PING_SALON)
@@ -95,7 +88,7 @@ EventMachine.run {
 		mainThread = Thread.new do
 			# We start when the connexion is opened
 			connexionMutex.synchronize{
-				connexionOpened.wait(connexionMutex)
+				connectionOpened.wait(connexionMutex)
 			}
 
 			# Recuperation du pseudo
@@ -114,7 +107,7 @@ EventMachine.run {
 
 			# We wake up all the thread waiting for opening
 			connexionMutex.synchronize{
-				connexionOpened.broadcast
+				connectionOpened.broadcast
 			}
 		}
 
