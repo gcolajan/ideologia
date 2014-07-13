@@ -29,6 +29,8 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 
 				<div id="startup"><div class="conteneur">
 				<h1>Connexion</h1>
+					<div id="status"></div>
+					<ul id="waiting"></ul>
 					<div id="formPseudo">
 							<div class="row collapse">
 								<div class="columns medium-10 small-8">

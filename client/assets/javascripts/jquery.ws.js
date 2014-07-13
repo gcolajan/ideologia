@@ -13,9 +13,15 @@ $.extend({
 		open: function(){},
 		close: function(){
 			if (ws.opened)
+			{
+				startup.showInterruptedConnection();
 				console.log('La connexion a été interrompue');
+			}
 			else
+			{
+				startup.showServerUnavailable();
 				console.log('Impossible d\'établir la connexion...');
+			}
 		},
 		message: function(){},
 		options: {},
@@ -29,6 +35,7 @@ $.extend({
 		$(ws)
 			.bind('open', function() {
 				console.log('Connexion établie');
+				startup.open();
 				$.websocketSettings.open;
 				ws.opened = true;
 			})

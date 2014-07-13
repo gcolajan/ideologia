@@ -1,12 +1,22 @@
 function Startup() {
 
 	this.chans = '';
+	$("#startup").hide();
 
 	this.clean = function() {
 		// On nettoie le panel startup
 		$("#formPseudo").hide();
 		$("#rooms").hide();
+		$("#status").hide();
+		$("#waiting").hide();
+
+		this.chans = '';
+		this.pseudos = '';
 	}
+
+	this.open = function() {
+		$("#startup").show();
+	}.bind(this);
 
 	this.close = function() {
 		$("#startup").hide();
@@ -38,6 +48,30 @@ function Startup() {
 
 	// Le serveur nous confirme que l'on a rejoint un salon
 	this.hasJoined = function() {
-		this.close();
+		//this.close();
 	}.bind(this);
+
+	this.addPseudo = function(pseudo) {
+		this.pseudos += '<li>'+pseudo+'</li>';
+	}.bind(this);
+
+	this.showWaiting =function() {
+		$("#waiting").html(this.pseudos);
+		$("#waiting").show();
+	}
+
+	this.showInterruptedConnection = function() {
+		this.clean();
+		$('#status').html("La connexion avec le serveur a été interrompue !");
+		$("#status").show();
+		this.open();
+	}
+
+
+	this.showServerUnavailable = function() {
+		this.clean();
+		$('#status').html("Le serveur de jeu n'est pas disponible !");
+		$("#status").show();
+		this.open();
+	}
 }
