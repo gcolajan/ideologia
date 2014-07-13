@@ -1,0 +1,3 @@
+function PlayerAction() {
+	this.founds
+}

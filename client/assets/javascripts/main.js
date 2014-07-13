@@ -1,16 +1,31 @@
+var startup = new Startup();
+var chan;
+var game;
+
 var ws = $.websocket("ws://localhost:8080/", {
 	events: {
 		ping: function(e) {
 			ws.send('pong', '');
 		},
-		salons: function(e) {
-			var interactions = new InteractionsSalons();
-			for (var id in e.data)
-				interactions.addSalon(id, e.data[id]);
-			interactions.show();
-			$("#formPseudo").hide();
+		status: function(e) {
+			switch (e.data) {
+				case 'ready':
+					startup.clean();
+					startup.showPseudo();
+					break;
+				default:
+					console.log("Status received: "+e.data);
+			}
 		},
-		join: function(e) {e
+		salons: function(e) {
+			startup.clean();
+			for (var id in e.data)
+				startup.addChan(id, e.data[id]);
+			startup.showChans();
+		},
+		joined: function(e) {
+			startup.hasJoined();
+			chan = e.data;
 			// Je décide d'aller dans CE salon
 		},
 		numeroJoueur: function(e) {
@@ -88,13 +103,7 @@ var ws = $.websocket("ws://localhost:8080/", {
 	}
 });
 
-$('#pseudo').change(function(){
+$('#pseudo').change(function() {
   ws.send('pseudo', this.value);
   this.disabled = true;
-  return false;
-});
-
-$('#message').change(function(){
-  ws.send('chat', this.value);
-  this.value = '';
 });

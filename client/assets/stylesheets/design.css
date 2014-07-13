@@ -155,7 +155,7 @@ div#timer span {
 	display:inline-block;
 }
 
-div#starting {
+div#startup {
 	position:absolute;
 	height:100%;
 	width:100%;
@@ -163,7 +163,7 @@ div#starting {
 	line-height: 100%;
 }
 
-div#starting div.conteneur {
+div#startup div.conteneur {
 	position:absolute;
 	left:20%;
 	top:25%;
@@ -177,7 +177,7 @@ div#starting div.conteneur {
 	overflow:auto;
 }
 
-div#starting div.conteneur h1 {
+div#startup div.conteneur h1 {
 	color:#161616;
 	font-size:2.2em;
 }

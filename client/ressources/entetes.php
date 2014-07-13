@@ -16,9 +16,17 @@ function entete($titre) {
 		<script src="http://www.google.com/jsapi"></script>
 		<script>google.load("jquery", "1.3")</script>
 		<script src="http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
-		<script src="assets/javascripts/jquery.ws.js?'.uniqid().'"></script>
-		<script src="assets/javascripts/InteractionsSalons.js?'.uniqid().'"></script>
+		<script src="assets/javascripts/jquery.ws.js?'.uniqid().'"></script>';
 
+		if($dir = opendir('./assets/javascripts/game'))
+			while (($file = readdir($dir)) !== false)
+				if ($file != '.' AND $file != '..')
+					echo '
+		<script src="assets/javascripts/game/'.$file.'?'.time().'"></script>'; 
+
+echo '
+		<script src="assets/javascripts/Startup.js?'.uniqid().'"></script>
+		<script src="assets/javascripts/constants.js?'.uniqid().'"></script>
 
 		<link href="http://fonts.googleapis.com/css?family=Cabin:700|Electrolize" rel="stylesheet" type="text/css" />
 

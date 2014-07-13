@@ -15,7 +15,7 @@ $.extend({
 			if (ws.opened)
 				console.log('La connexion a été interrompue');
 			else
-				console.log('Impossible d\'établir la connexion');
+				console.log('Impossible d\'établir la connexion...');
 		},
 		message: function(){},
 		options: {},

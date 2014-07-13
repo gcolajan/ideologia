@@ -27,7 +27,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 		<div class="large-8 columns" id="map">
 			<div class="mapel">
 
-				<div id="starting"><div class="conteneur">
+				<div id="startup"><div class="conteneur">
 				<h1>Connexion</h1>
 					<div id="formPseudo">
 							<div class="row collapse">
