@@ -109,15 +109,33 @@ server.run() do |ws| # ecoute des connexions
 			gestionJoueur = GestionJoueur.new(ws, partie, joueur, salon)
 
 			semaphore = Mutex.new
+
+			pongMutex = Mutex.new
+			pongResponse = ConditionVariable.new
 			
-			pingPrecedent = Time.now.to_i
 
 			# On ping le client toutes les X secondes pour vérifier sa présence
 			ping = Thread.new do
 				while !salon.debutPartie
-					sleep($INTERVALLE_PING_SALON)
-					pingPrecedent = Time.now.to_i
+					puts "i'll send a ping"
 					ws.send(tojson("ping",""))
+					puts "ping sended"
+					pingLaunch = Time.now.to_f;
+					# We are waiting for a response from the client
+					puts "I'll wait"
+					pongMutex.synchronize {
+						pongResponse.wait(pongMutex, $REPONSE_PING)
+					}
+					# If the response was too long (or not exists)
+					if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
+						# We disconnect the player
+						salon.deconnexionJoueur(ws)
+						puts "Disconnected by timeout"
+						break;
+					end
+					# We wait a little before re-ask
+					puts "pong received in time"
+					sleep($INTERVALLE_PING_SALON)
 				end
 			end
 
@@ -129,14 +147,15 @@ server.run() do |ws| # ecoute des connexions
 			# Gestion des communication : filtre les réponses au ping et les transmissions utiles
 			communications = Thread.new do
 				while !salon.debutPartie
-					transmission = ws.receive()["type"]
-			
+					transmission = todata(ws.receive())["type"]
+
 					if (transmission == "deco")
 						gestionJoueur.finAttenteDebutPartie()
 						salon.deconnexionJoueur(ws)
-					elsif (Time.now.to_i-pingPrecedent > $REPONSE_PING)
-						# On considère qu'un client ne répondant pas dans les temps est un joueur déconnecté
-						salon.deconnexionJoueur(ws)
+					elsif (transmission == "pong")
+						pongMutex.synchronize {
+							pongResponse.signal
+						}
 				  	end
 				end
 			end
