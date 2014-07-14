@@ -4,7 +4,8 @@ class Reception
 	# @specialTypes
 	# @specialTypesParams
 
-	def initialize()
+	def initialize(client)
+		@client             = client
 		@autorisedTypes     = {}
 		@specialTypes       = {}
 		@specialTypesParams = {}
@@ -22,7 +23,7 @@ class Reception
 		return true
 	end
 
-	def addYieldType(type, block)
+	def addCallbackType(type, block)
 		if @autorisedTypes.has_key?(type)
 			return false
 		end
@@ -47,7 +48,8 @@ class Reception
 				@autorisedTypes[type]['resource'].signal
 			}
 		else # We want to execute a block
-			@specialTypes[type].call(@specialTypesParams[type])
+			params = (@specialTypesParams.has_key?(type) ? @specialTypesParams[type] : nil)
+			@specialTypes[type].call(@client, params)
 		end
 	end
 

@@ -7,10 +7,11 @@ class Communication
 
 	# @pingThread
 
-	def initialize(ws)
+	def initialize(ws, client)
 		@ws           = ws
+		@client       = client
 		@transmission = Transmission.new(ws)
-		@reception    = Reception.new
+		@reception    = Reception.new(client)
 		@data         = {}
 
 		@pingThread	  = nil
@@ -24,7 +25,7 @@ class Communication
 
 	def setSpecialTypes(types)
 		types.each do |type, block|
-			@reception.addYieldType(type, block)
+			@reception.addCallbackType(type, block)
 		end
 	end
 
@@ -44,7 +45,7 @@ class Communication
 		@data[recept['type']] = recept.has_key?('data') ? recept['data'] : nil
 	end
 
-	def tellParams(type, params)
+	def addCallbackParams(type, params)
 		@reception.tellParams(type, params)
 	end
 

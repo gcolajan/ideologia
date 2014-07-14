@@ -9,15 +9,9 @@ class Salon
 	def initialize
 
 		@partie = Partie.new
-		@plein = false
 
 		# Création des deux listes concordantes pour la gestion des joueurs présents
-		@listeJoueur = [nil, nil, nil, nil]
-		@listePseudo = [nil, nil, nil, nil]
-		@listeVerroux = {}
-
-		@semaphorePseudo = Mutex.new
-		@condVariablePseudo = ConditionVariable.new
+		@clients = [nil, nil, nil, nil]
 
 		@semaphoreControle = Mutex.new
 
@@ -31,33 +25,17 @@ class Salon
 		@partie = nil
 	end
 
-	# We wake up the player concerned (only him !)
-	def cancelJoin(ws)
-		index = @listeJoueur.index(ws)
-		@listeVerroux[index]['mutex'].synchronize {
-			@listeVerroux[index]['resource'].signal
-		}
-		deconnexionJoueur(ws)
-	end
-
 	# Permet au joueur d'attendre le début de la partie
-	def attendreDebutPartie(ws)
-		verroux = @listeVerroux[@listeJoueur.index(ws)]
-
-		verroux['mutex'].synchronize {
-			verroux['resource'].wait(verroux['mutex'])
-		}
-		puts "Fin attente!"
+	def attendreDebutPartie(client)
+		client.wait()
 		return @debutPartie
 	end
 
 	# Sur déconnexion du salon on envoie les pseudo des personnes restantes et on mets à jour les tableaux
-	def deconnexionJoueur ws
+	def deconnexionJoueur(client)
 		@semaphoreControle.synchronize{
-			indexDeco = @listeJoueur.index(ws)
 
-			@listeJoueur[indexDeco] = nil
-			@listePseudo[indexDeco] = nil
+			@clients.delete(client)
 
 			transmissionPseudo()
 
@@ -65,51 +43,56 @@ class Salon
 		}
 	end
 
+	def full?
+		return (@nbJoueur == 4)
+	end
+
 	# Connexion d'un joueur au salon
-	def connexionJoueurSalon ws, pseudo
+	def connexionJoueurSalon(client)
 		@semaphoreControle.synchronize{
 			# Permet de dire quand un salon est plein
-			if(@nbJoueur == 4)
-				@plein = true
+			if full?
+				puts
 				return
 			end
 
-			# On place les données correctement dans les listes
-			@listeJoueur[@listeJoueur.index(nil)] = ws
-			@listePseudo[@listeJoueur.index(ws)] = pseudo
-			@listeVerroux[@listeJoueur.index(ws)] = {
-				'mutex'    => Mutex.new,
-				'resource' => ConditionVariable.new
-			}
-
+			# On place notre client
+			indexJoueur = @clients.index(nil)
+			@clients[indexJoueur] = client
 			@nbJoueur += 1
 
 			# On transmet tous les pseudo à tout le monde
 			transmissionPseudo()
 
-			# Si on a 4 joueurs on commence la partie
-			if(@nbJoueur == 4)
+			# Si après l'ajout on est 4 joueurs on commence la partie
+			if full?
 				@debutPartie = true
-				@plein = true
+
 				# Réveil des joueurs un par un
-				@listeVerroux.each { |joueur, verroux|
-					verroux['mutex'].synchronize {
-						verroux['resource'].signal()
-					}
+				@clients.each { |client|
+					client.signal
 				}
 			end
 
 			# On retourne le numéro du joueur
-			return @listeJoueur.index(ws)
+			return indexJoueur
 		}
 	end
 
 	#Transmet le pseudo à chaque joueur présent dans le salon
 	def transmissionPseudo()
-		listeEnvoi = @listePseudo
-		listeEnvoi = listeEnvoi.keep_if{|pseudo| pseudo != nil}
-		@listeJoueur.each{|ws| if(ws)
-			ws.send(tojson("waitingWith", @listePseudo))
+		# On constitue une liste des pseudos
+		pseudos = []
+		@clients.each{ |client|
+			if (client != nil)
+				pseudos.push(client.pseudo)
+			end
+		}
+
+		# On l'envoie à tous les clients du salon
+		@clients.each{ |client|
+			if (client != nil)
+				client.com.send('waitingWith', pseudos)
 			end
 		}
 	end

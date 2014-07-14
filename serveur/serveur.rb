@@ -31,9 +31,9 @@ nbClients = 0;
 
 authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
 
-def unjoin_method(params)
+def unjoin_method(client, params)
 	puts "Executed unjoined method !"
-	params['salon'].cancelJoin(params['ws'])
+	client.quitSalon()
 end
 
 specialTypes = {
@@ -48,6 +48,7 @@ EventMachine.run {
 		connexionMutex = Mutex.new
 		connectionOpened = ConditionVariable.new
 
+		client = nil
 		communication = nil
 		
 		condVarAttenteDebut = nil
@@ -62,9 +63,9 @@ EventMachine.run {
 			}
 
 			# Recuperation du pseudo
-			pseudo = communication.receive('pseudo')
+			client.setPseudo(communication.receive('pseudo'))
 
-			puts pseudo + " vient de se connecter"
+			puts client.pseudo + " vient de se connecter"
 
 			
 			numJoueur = -1
@@ -73,7 +74,8 @@ EventMachine.run {
 			begin
 				# On cherche à savoir si tous les salons sont pleins
 				tousPleins = true
-				listeSalons.each{ |salon| if(!salon.plein)
+				listeSalons.each{ |salon|
+					if not salon.full?
 						tousPleins = false
 						break
 					end
@@ -92,42 +94,40 @@ EventMachine.run {
 					}
 					communication.send("salons", dictionnaireSalon)
 
-					puts "Attente choix salon par "+pseudo
+					puts "Attente choix salon par "+client.pseudo
 
 					indexSalon = communication.receive('join')
 
-					puts "Salon choisi par "+pseudo+" : "+indexSalon.to_s
+					puts "Salon choisi par "+client.pseudo+" : "+indexSalon.to_s
+					client.setSalon(listeSalons.at(indexSalon))
 
-					salon = listeSalons.at(indexSalon)
-					communication.tellParams('unjoin', {
-						'salon' => salon, 'ws' => ws})
-
-					if(salon.plein)
+					if client.salon.full?
 						communication.send("salonplein", indexSalon)
 						redo
 					end
 				end
 
-				puts pseudo+" commence à attendre"
+				puts client.pseudo+" commence à attendre"
 
-				numJoueur = salon.connexionJoueurSalon(ws, pseudo)
+				numJoueur = client.salon.connexionJoueurSalon(client)
 
-				puts pseudo+" a le numéro de joueur "+numJoueur.to_s
+				puts client.pseudo+" a le numéro de joueur "+numJoueur.to_s
 
-				puts listeSalons.index(salon)
-				communication.send("joined", listeSalons.index(salon).to_s)
+				puts listeSalons.index(client.salon)
+				communication.send("joined", listeSalons.index(client.salon).to_s)
 
 				puts "Envoie de l'index du salon effectue"
 
-				partie = salon.partie
+				partie = client.salon.partie
 
 				joueur = partie.recupererInstanceJoueur(numJoueur)
 
-				gestionJoueur = GestionJoueur.new(ws,partie,joueur,salon)
+				# À reprendre pour transmettre client et pas les éléments séparément
+				gestionJoueur = GestionJoueur.new(ws,partie,joueur,client.salon)
 
-				puts "Debut d'attente de "+pseudo
+				puts "Debut d'attente de "+client.pseudo
 
-				debutPartie = salon.attendreDebutPartie(ws)
+				debutPartie = client.salon.attendreDebutPartie(client)
 
 				if not debutPartie
 					puts "Le joueur s'est barré"
@@ -135,9 +135,9 @@ EventMachine.run {
 					puts "La partie peut commencer !"
 				end
 
-				puts "Fin d'attente de "+pseudo
+				puts "Fin d'attente de "+client.pseudo
 
-			end while(!salon.debutPartie)
+			end while(!debutPartie)
 
 			# We show the last message extracted
 			puts "Message reçu après fin du salon d'attente"+transmission.to_s
@@ -146,11 +146,14 @@ EventMachine.run {
 
 
 		ws.onopen{
-			communication = Communication.new(ws)
+			client = Client.new
+			communication = Communication.new(ws, client)
 			communication.setAuthorizedTypes(authorizedTypes)
 			communication.setSpecialTypes(specialTypes)
 
 			communication.startPing()
+
+			client.setCommunication(communication)
 
 			nbClients += 1
 			puts "connexion acceptee"
@@ -168,8 +171,8 @@ EventMachine.run {
 			puts "<<< Clients = #{nbClients}"
 
 			puts ws.to_s
-			if(salon)
-				salon.deconnexionJoueur(ws)
+			if(client.salon)
+				client.salon.deconnexionJoueur(ws)
 			end
 			mainThread.kill()
 		}
@@ -178,7 +181,7 @@ EventMachine.run {
 			test = JSON.parse(msg)
 			if(test["type"]  == "deco")
 				condVarAttenteDebut.signal
-				salon.deconnexionJoueur(ws)
+				client.salon.deconnexionJoueur(ws)
 			end
 			communication.filterReception(msg)
 		}
