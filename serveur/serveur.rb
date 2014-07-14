@@ -113,7 +113,7 @@ EventMachine.run {
 
 				puts pseudo+" a le numéro de joueur "+numJoueur.to_s
 
-				communication.send("joined", listeSalons.index(salon))
+				communication.send("joined", listeSalons.index(salon).to_s)
 
 				puts "Envoie de l'index du salon effectué"
 

@@ -41,7 +41,6 @@ class Reception
 
 	# Method to connect to the onmessage event
 	def signal(type)
-		puts type
 		# Default way
 		if (@autorisedTypes.has_key?(type))
 			@autorisedTypes[type]["mutex"].synchronize {
