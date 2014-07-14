@@ -57,6 +57,8 @@ EventMachine.run {
 
 		transmission = ""
 
+		salon = nil
+
 		# Gestion du ping
 		pingThread = Thread.new do
 			# We start when the connexion is opened
@@ -75,6 +77,7 @@ EventMachine.run {
 				# If the response was too long (or not exists)
 				if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
 					puts "Disconnected by timeout"
+					ws.close()
 					break
 				end
 
@@ -99,7 +102,7 @@ EventMachine.run {
 
 			puts pseudo + " vient de se connecter"
 
-			salon = nil
+			
 			numJoueur = -1
 
 			# On boucle en attendant le début de la partie ou en quittant le salon
@@ -156,7 +159,7 @@ EventMachine.run {
 
 				gestionJoueur = GestionJoueur.new(ws,partie,joueur,salon)
 
-				@mutexDeco.synchronize{
+				mutexDeco.synchronize{
 					condVarDeco.wait(@mutexDeco)
 				}
 
@@ -187,6 +190,9 @@ EventMachine.run {
 			puts "Connection closed"
 			puts "<<< Clients = #{nbClients}"
 
+			if(salon)
+				salon.deconnexionJoueur(ws)
+			end
 			pingThread.kill()
 			mainThread.kill()
 		}
