@@ -1,11 +1,9 @@
 class Reception
 
 	@autorisedTypes
-	@transmissions
 
 	def initialize()
 		@autorisedTypes = {}
-		@transmissions = {}
 	end
 
 	# Add a new type if it isn't already referenced
@@ -20,29 +18,29 @@ class Reception
 		return true
 	end
 
-	def signal(type, data)
-		if @autorisedTypes.has_key?(type)
-			@transmissions[type] = data
-			@autorisedTypes[type]["mutex"].synchronize {
-				@autorisedTypes[type]['resource'].signal
-			}
-		else
-			puts "Not catched type: #{type}"
-		end
+	def hasType(type)
+		return @autorisedTypes.has_key?(type)
 	end
 
-	def wait(type, timeout=nil)
-		if @autorisedTypes.has_key?(type)
-			@autorisedTypes[type]['mutex'].synchronize {
-				@autorisedTypes[type]['resource'].wait(
-					@autorisedTypes[type]['mutex'],
-					timeout)
-			}
-			return @transmissions[type]
-		else
-			puts "#{type} doesn't exist!"
-			return nil
-		end
+	# Method to connect to the onmessage event
+	def signal(type)
+		@autorisedTypes[type]["mutex"].synchronize {
+			@autorisedTypes[type]['resource'].signal
+		}
+	end
 
+	# To use when we want to wait for a response from the client
+	def wait(type, timeout)
+		@autorisedTypes[type]['mutex'].synchronize {
+			@autorisedTypes[type]['resource'].wait(
+				@autorisedTypes[type]['mutex'],
+				timeout)
+		}
+	end
+
+	def unlock(type)
+		@autorisedTypes[type]["mutex"].synchronize {
+			@autorisedTypes[type]['resource'].signal
+		}
 	end
 end

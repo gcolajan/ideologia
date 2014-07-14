@@ -37,50 +37,20 @@ EventMachine.run {
 		connexionMutex = Mutex.new
 		connectionOpened = ConditionVariable.new
 
-		reception = Reception.new
-		reception.addType('pong')
-		reception.addType('pseudo')
-		reception.addType('join')
-		reception.addType('des')
-		reception.addType('operation')
-		reception.addType('deco')
+		communication = nil
+		authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
 
 		salon = nil
 
-		# Gestion du ping
-		pingThread = Thread.new do
+	
+		mainThread = Thread.new do
 			# We start when the connexion is opened
 			connexionMutex.synchronize{
 				connectionOpened.wait(connexionMutex)
 			}
 
-			while true
-				ws.send '{"type":"ping","data":"1"}'
-				puts "<!>"
-				pingLaunch = Time.now.to_f;
-				# We are waiting for a response from the client
-				reception.wait('pong', $REPONSE_PING)
-				# If the response was too long (or not exists)
-				if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
-					puts "Disconnected by timeout"
-					ws.close()
-					break
-				end
-
-				# We wait a little before re-ask
-				sleep($INTERVALLE_PING_SALON)
-			end
-		end
-
-	
-		mainThread = Thread.new do
-			# We start when the connexion is opened
-			# connexionMutex.synchronize{
-			# 	connectionOpened.wait(connexionMutex)
-			# }
-
 			# Recuperation du pseudo
-			pseudo = reception.wait('pseudo')
+			pseudo = communication.receive('pseudo')
 
 			puts pseudo + " vient de se connecter"
 
@@ -101,25 +71,25 @@ EventMachine.run {
 					puts "Salons tous pleins"
 					salon = Salon.new
 					listeSalons.push(salon)
-					ws.send(tojson("salons", listeSalons.index(salon) => salon.nbJoueur))
+					communication.send("salons", listeSalons.index(salon) => salon.nbJoueur)
 				else
 					dictionnaireSalon = {}
 					listeSalons.each{|salon| if(!salon.plein)
 							dictionnaireSalon.merge!({listeSalons.index(salon) => salon.nbJoueur})
 						end
 					}
-					ws.send(tojson("salons", dictionnaireSalon))
+					communication.send("salons", dictionnaireSalon)
 
 					puts "Attente choix salon par "+pseudo
 
-					indexSalon = reception.wait('join')
+					indexSalon = communication.receive('join')
 
 					puts "Salon choisi par "+pseudo+" : "+indexSalon.to_s
 
 					salon = listeSalons.at(indexSalon)
 
 					if(salon.plein)
-						ws.send(tojson("salonplein", indexSalon))
+						communication.send("salonplein", indexSalon)
 						redo
 					end
 				end
@@ -130,7 +100,7 @@ EventMachine.run {
 
 				puts pseudo+" a le numéro de joueur "+numJoueur.to_s
 
-				ws.send(tojson("joined", listeSalons.index(salon)))
+				communication.send("joined", listeSalons.index(salon))
 
 				partie = salon.partie
 
@@ -140,7 +110,7 @@ EventMachine.run {
 
 				puts "Début d'attente de "+pseudo
 
-				reception.wait('deco')
+				communication.receive('deco')
 
 				salon.deconnexionJoueur(ws)
 
@@ -155,13 +125,15 @@ EventMachine.run {
 
 
 		ws.onopen{
+			communication = Communication.new(ws)
+			communication.setAuthorizedTypes(authorizedTypes)
+
+			communication.startPing()
+
 			nbClients += 1
 			puts "connexion acceptee"
 			puts ">>> Clients = #{nbClients}"
 
-			# We wake up all the thread waiting for opening
-			# pingThread.run()
-			# mainThread.run()
 			connexionMutex.synchronize{
 				connectionOpened.broadcast
 			}
@@ -177,13 +149,11 @@ EventMachine.run {
 			if(salon)
 				salon.deconnexionJoueur(ws)
 			end
-			pingThread.kill()
 			mainThread.kill()
 		}
 
 		ws.onmessage { |msg|
-			transmission = JSON.parse(msg)
-			reception.signal(transmission['type'], transmission['data'])
+			communication.filterReception(msg)
 		}
 
 		ws.onerror { |error|
