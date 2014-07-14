@@ -30,9 +30,14 @@ listeSalons = [Salon.new, Salon.new]
 nbClients = 0;
 
 authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
-# specialTypes = {
-# 	'unjoin' => {puts "unjoined"}
-# }
+
+def unjoin_method
+	puts "Executed unjoined method !"
+end
+
+specialTypes = {
+	'unjoin' => method(:unjoin_method)
+}
 
 EventMachine.run {
 	puts("Server is running at %d" % port)
@@ -139,7 +144,7 @@ EventMachine.run {
 		ws.onopen{
 			communication = Communication.new(ws)
 			communication.setAuthorizedTypes(authorizedTypes)
-			#communication.setSpecialTypes(specialTypes)
+			communication.setSpecialTypes(specialTypes)
 
 			communication.startPing()
 

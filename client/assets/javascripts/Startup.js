@@ -52,7 +52,7 @@ function Startup() {
 	}.bind(this);
 
 	this.cleanPseudos = function() {
-		this.pseudos = '<input type="button" onclick="ws.send(\'deco\'); startup.clean(); startup.showChans();" value="Changer de salon" />';
+		this.pseudos = '<input type="button" onclick="ws.send(\'unjoin\'); startup.clean(); startup.showChans();" value="Changer de salon" />';
 	}.bind(this);
 
 	this.addPseudo = function(pseudo) {
