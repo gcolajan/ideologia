@@ -31,9 +31,9 @@ nbClients = 0;
 
 authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
 
-def unjoin_method(salon)
+def unjoin_method(params)
 	puts "Executed unjoined method !"
-	salon.cancelJoin()
+	params['salon'].cancelJoin(params['ws'])
 end
 
 specialTypes = {
@@ -99,7 +99,8 @@ EventMachine.run {
 					puts "Salon choisi par "+pseudo+" : "+indexSalon.to_s
 
 					salon = listeSalons.at(indexSalon)
-					communication.tellParams('unjoin', salon)
+					communication.tellParams('unjoin', {
+						'salon' => salon, 'ws' => ws})
 
 					if(salon.plein)
 						communication.send("salonplein", indexSalon)
@@ -124,15 +125,9 @@ EventMachine.run {
 
 				gestionJoueur = GestionJoueur.new(ws,partie,joueur,salon)
 
-				puts "Recuperation condVarAttenteDebut"
-
-				condVarAttenteDebut = salon.condVariable
-
-				puts condVarAttenteDebut.to_s
-
 				puts "Debut d'attente de "+pseudo
 
-				debutPartie = salon.attendreDebutPartie()
+				debutPartie = salon.attendreDebutPartie(ws)
 
 				if not debutPartie
 					puts "Le joueur s'est barré"
