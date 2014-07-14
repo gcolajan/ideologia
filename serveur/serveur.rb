@@ -113,7 +113,7 @@ EventMachine.run {
 
 				communication.send("joined", listeSalons.index(salon))
 
-				puts "Envoie de l'index du salon effectué"
+				puts "Envoie de l'index du salon effectue"
 
 				partie = salon.partie
 
