@@ -4,6 +4,7 @@ class Salon
 	attr_reader :plein
 	attr_reader :nbJoueur
 	attr_reader :debutPartie
+	attr_reader :condVariable
 
 	def initialize
 

@@ -30,9 +30,9 @@ listeSalons = [Salon.new, Salon.new]
 nbClients = 0;
 
 authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
-specialTypes = {
-	'unjoin' => {puts "unjoined"}
-}
+# specialTypes = {
+# 	'unjoin' => {puts "unjoined"}
+# }
 
 EventMachine.run {
 	puts("Server is running at %d" % port)
@@ -44,6 +44,7 @@ EventMachine.run {
 
 		communication = nil
 		
+		condVarAttenteDebut = nil
 
 		salon = nil
 
@@ -107,17 +108,23 @@ EventMachine.run {
 
 				communication.send("joined", listeSalons.index(salon))
 
+				puts "Envoie de l'index du salon effectué"
+
 				partie = salon.partie
 
 				joueur = partie.recupererInstanceJoueur(numJoueur)
 
 				gestionJoueur = GestionJoueur.new(ws,partie,joueur,salon)
 
-				puts "Début d'attente de "+pseudo
+				puts "Recuperation condVarAttenteDebut"
 
-				communication.receive('deco')
+				condVarAttenteDebut = salon.condVariable
 
-				salon.deconnexionJoueur(ws)
+				puts condVarAttenteDebut.to_s
+
+				puts "Debut d'attente de "+pseudo
+
+				salon.attendreDebutPartie()
 
 				puts "Fin d'attente de "+pseudo
 
@@ -132,7 +139,7 @@ EventMachine.run {
 		ws.onopen{
 			communication = Communication.new(ws)
 			communication.setAuthorizedTypes(authorizedTypes)
-			communication.setSpecialTypes(specialTypes)
+			#communication.setSpecialTypes(specialTypes)
 
 			communication.startPing()
 
@@ -159,6 +166,11 @@ EventMachine.run {
 		}
 
 		ws.onmessage { |msg|
+			test = JSON.parse(msg)
+			if(test["type"]  == "deco")
+				condVarAttenteDebut.signal
+				salon.deconnexionJoueur(ws)
+			end
 			communication.filterReception(msg)
 		}
 
