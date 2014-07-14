@@ -45,9 +45,13 @@ class Salon
 	def deconnexionJoueur ws
 		@semaphoreControle.synchronize{
 			indexDeco = @listeJoueur.index(ws)
-			@listeJoueur.insert(indexDeco, nil)
-			@listePseudo.insert(indexDeco, nil)
+
+			@listeJoueur[indexDeco] = nil
+			@listePseudo[indexDeco] = nil
+
 			transmissionPseudo()
+
+			@nbJoueur -= 1
 		}
 	end
 
@@ -61,8 +65,8 @@ class Salon
 			end
 
 			# On place les données correctement dans les listes
-			@listeJoueur.insert(@listeJoueur.index(nil), ws)
-			@listePseudo.insert(@listeJoueur.index(ws), pseudo)
+			@listeJoueur[@listeJoueur.index(nil)] = ws
+			@listePseudo[@listeJoueur.index(ws)] = pseudo
 
 			@nbJoueur += 1
 

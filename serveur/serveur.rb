@@ -137,8 +137,14 @@ EventMachine.run {
 				joueur = partie.recupererInstanceJoueur(numJoueur)
 
 				gestionJoueur = GestionJoueur.new(ws,partie,joueur,salon)
-				
+
+				puts "Début d'attente de "+pseudo
+
 				reception.wait('deco')
+
+				salon.deconnexionJoueur(ws)
+
+				puts "Fin d'attente de "+pseudo
 
 			end while(!salon.debutPartie)
 
@@ -167,6 +173,7 @@ EventMachine.run {
 			puts "Connection closed"
 			puts "<<< Clients = #{nbClients}"
 
+			puts ws.to_s
 			if(salon)
 				salon.deconnexionJoueur(ws)
 			end
