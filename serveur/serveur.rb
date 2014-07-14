@@ -113,6 +113,7 @@ EventMachine.run {
 				}
 
 				if(tousPleins)
+					puts "Salons tous pleins"
 					salon = Salon.new
 					listeSalons.push(salon)
 					ws.send(tojson("salons", listeSalons.index(salon) => salon.nbJoueur))
@@ -133,15 +134,19 @@ EventMachine.run {
 
 					puts "Salon choisi par "+pseudo+" : "+indexSalon.to_s
 
+					salon = listeSalons.at(indexSalon)
+
 					if(salon.plein)
 						ws.send(tojson("salonplein", indexSalon))
 						redo
 					end
 				end
 
-				puts pseudo + " commence à attendre"
+				puts pseudo+" commence à attendre"
 
-				numJoueur = salon.connexionJoueurSalon(ws, salon)
+				numJoueur = salon.connexionJoueurSalon(ws, pseudo)
+
+				puts pseudo+" a le numéro de joueur "+numJoueur.to_s
 
 				ws.send(tojson("joined", listeSalons.index(salon)))
 
@@ -149,11 +154,16 @@ EventMachine.run {
 
 				joueur = partie.recupererInstanceJoueur(numJoueur)
 
+				gestionJoueur = GestionJoueur.new(ws,partie,joueur,salon)
+
+				@mutexDeco.synchronize{
+					condVarDeco.wait(@mutexDeco)
+				}
 
 			end while(!salon.debutPartie)
 
 			# We show the last message extracted
-			puts transmission
+			puts "Message reçu après fin du salon d'attente"+transmission.to_s
 		end
 
 
