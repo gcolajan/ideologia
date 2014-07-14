@@ -50,6 +50,7 @@ EventMachine.run {
 
 		communication = nil
 		
+		condVarAttenteDebut = nil
 
 		salon = nil
 
@@ -114,17 +115,23 @@ EventMachine.run {
 
 				communication.send("joined", listeSalons.index(salon))
 
+				puts "Envoie de l'index du salon effectué"
+
 				partie = salon.partie
 
 				joueur = partie.recupererInstanceJoueur(numJoueur)
 
 				gestionJoueur = GestionJoueur.new(ws,partie,joueur,salon)
 
-				puts "Début d'attente de "+pseudo
+				puts "Recuperation condVarAttenteDebut"
 
-				communication.receive('deco')
+				condVarAttenteDebut = salon.condVariable
 
-				salon.deconnexionJoueur(ws)
+				puts condVarAttenteDebut.to_s
+
+				puts "Debut d'attente de "+pseudo
+
+				salon.attendreDebutPartie()
 
 				puts "Fin d'attente de "+pseudo
 
@@ -166,6 +173,11 @@ EventMachine.run {
 		}
 
 		ws.onmessage { |msg|
+			test = JSON.parse(msg)
+			if(test["type"]  == "deco")
+				condVarAttenteDebut.signal
+				salon.deconnexionJoueur(ws)
+			end
 			communication.filterReception(msg)
 		}
 
