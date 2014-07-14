@@ -31,7 +31,7 @@ EventMachine.run {
 	puts("Server is running at %d" % port)
 
 
-	EventMachine::WebSocket.start(:host => adresseServeur, :port => port, :debug => true) do |ws| # ecoute des connexions
+	EventMachine::WebSocket.start(:host => adresseServeur, :port => port) do |ws| # ecoute des connexions
 		mutexPseudo = Mutex.new
 		condVarPseudo = ConditionVariable.new
 
@@ -50,21 +50,17 @@ EventMachine.run {
 		mutexDeco = Mutex.new
 		condVarDeco = ConditionVariable.new
 
-		transmission = ""
-
-
-		listeMessage = []
-
-
 		connexionMutex = Mutex.new
 		connectionOpened = ConditionVariable.new
+
+		transmission = ""
 
 		# Gestion du ping
 		pingThread = Thread.new do
 			# We start when the connexion is opened
-			connexionMutex.synchronize{
-				connectionOpened.wait(connexionMutex)
-			}
+			# connexionMutex.synchronize{
+			# 	connectionOpened.wait(connexionMutex)
+			# }
 
 			while true
 				ws.send '{"type":"ping","data":"1"}'
@@ -88,17 +84,74 @@ EventMachine.run {
 	
 		mainThread = Thread.new do
 			# We start when the connexion is opened
-			connexionMutex.synchronize{
-				connectionOpened.wait(connexionMutex)
-			}
+			# connexionMutex.synchronize{
+			# 	connectionOpened.wait(connexionMutex)
+			# }
 
 			# Recuperation du pseudo
 			mutexPseudo.synchronize{
 				condVarPseudo.wait(mutexPseudo)
 			}
 
+			pseudo = transmission["data"]
+
+			puts pseudo + " vient de se connecter"
+
+			salon = nil
+			numJoueur = -1
+
+			# On boucle en attendant le début de la partie ou en quittant le salon
+			begin
+				# On cherche à savoir si tous les salons sont pleins
+				tousPleins = true
+				listeSalons.each{ |salon| if(!salon.plein)
+						tousPleins = false
+						break
+					end
+				}
+
+				if(tousPleins)
+					salon = Salon.new
+					listeSalons.push(salon)
+					ws.send(tojson("salons", listeSalons.index(salon) => salon.nbJoueur))
+				else
+					dictionnaireSalon = {}
+					listeSalons.each{|salon| if(!salon.plein)
+							dictionnaireSalon.merge!({listeSalons.index(salon) => salon.nbJoueur})
+						end
+					}
+					ws.send(tojson("salons", dictionnaireSalon))
+
+					puts "Attente choix salon par "+pseudo
+					mutexJoin.synchronize{
+						condVarJoin.wait(mutexJoin)
+					}
+
+					indexSalon = transmission["data"]
+
+					puts "Salon choisi par "+pseudo+" : "+indexSalon
+
+					if(salon.plein)
+						ws.send(tojson("salonplein", indexSalon))
+						redo
+					end
+				end
+
+				puts pseudo + " commence à attendre"
+
+				numJoueur = salon.connexionJoueurSalon(ws, salon)
+
+				ws.send(tojson("joined", listeSalons.index(salon)))
+
+				partie = salon.partie
+
+				joueur = partie.recupererInstanceJoueur(numJoueur)
+
+
+			end while(!salon.debutPartie)
+
 			# We show the last message extracted
-			puts listeMessage.pop()
+			puts transmission
 		end
 
 
@@ -107,9 +160,11 @@ EventMachine.run {
 			puts "connexion acceptee"
 
 			# We wake up all the thread waiting for opening
-			connexionMutex.synchronize{
-				connectionOpened.broadcast
-			}
+			pingThread.run()
+			mainThread.run()
+			# connexionMutex.synchronize{
+			# 	connectionOpened.broadcast
+			# }
 		}
 
 		ws.onclose {
@@ -117,13 +172,20 @@ EventMachine.run {
 		}
 
 		ws.onmessage { |msg|
+			puts msg
 			transmission = JSON.parse(msg)
+
+			puts "Type de transmission reçu "+transmission["type"]
 
 			case transmission["type"]
 				when "pseudo"
-					condVarPseudo.signal
+					mutexPseudo.synchronize{
+						condVarPseudo.signal
+					}
 				when "pong"
-					pongResponse.signal
+					pongMutex.synchronize{
+						pongResponse.signal
+					}
 				when "des"
 					mutexDes.synchronize{
 						condVarDes.signal
@@ -133,6 +195,7 @@ EventMachine.run {
 						condVarOpe.signal
 					}
 				when "join"
+					puts "Transmission de type join repérée"
 					mutexJoin.synchronize{
 						condVarJoin.signal
 					}
