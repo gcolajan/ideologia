@@ -14,9 +14,7 @@ class Salon
 		# Création des deux listes concordantes pour la gestion des joueurs présents
 		@listeJoueur = [nil, nil, nil, nil]
 		@listePseudo = [nil, nil, nil, nil]
-
-		@semaphore = Mutex.new
-		@condVariable = ConditionVariable.new
+		@listeVerroux = {}
 
 		@semaphorePseudo = Mutex.new
 		@condVariablePseudo = ConditionVariable.new
@@ -26,8 +24,6 @@ class Salon
 		@debutPartie = false
 		@nbJoueur = 0
 
-		@canceled = false
-
 	end
 
 	#Destruction du salon
@@ -35,20 +31,23 @@ class Salon
 		@partie = nil
 	end
 
-	def cancelJoin
-		@canceled = true
-		@semaphore.synchronize{
-			@condVariable.signal
+	# We wake up the player concerned (only him !)
+	def cancelJoin(ws)
+		index = @listeJoueur.index(ws)
+		@listeVerroux[index]['mutex'].synchronize {
+			@listeVerroux[index]['resource'].signal
 		}
+		deconnexionJoueur(ws)
 	end
 
 	# Permet au joueur d'attendre le début de la partie
-	def attendreDebutPartie
-		@semaphore.synchronize{
-			while(!@debutPartie and !@canceled)
-				@condVariable.wait(@semaphore)
-			end
+	def attendreDebutPartie(ws)
+		verroux = @listeVerroux[@listeJoueur.index(ws)]
+
+		verroux['mutex'].synchronize {
+			verroux['resource'].wait(verroux['mutex'])
 		}
+		puts "Fin attente!"
 		return @debutPartie
 	end
 
@@ -78,6 +77,10 @@ class Salon
 			# On place les données correctement dans les listes
 			@listeJoueur[@listeJoueur.index(nil)] = ws
 			@listePseudo[@listeJoueur.index(ws)] = pseudo
+			@listeVerroux[@listeJoueur.index(ws)] = {
+				'mutex'    => Mutex.new,
+				'resource' => ConditionVariable.new
+			}
 
 			@nbJoueur += 1
 
@@ -88,7 +91,12 @@ class Salon
 			if(@nbJoueur == 4)
 				@debutPartie = true
 				@plein = true
-				@condVariable.broadcast()
+				# Réveil des joueurs un par un
+				@listeVerroux.each { |joueur, verroux|
+					verroux['mutex'].synchronize {
+						verroux['resource'].signal()
+					}
+				}
 			end
 
 			# On retourne le numéro du joueur
