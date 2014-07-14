@@ -30,8 +30,13 @@ listeSalons = [Salon.new, Salon.new]
 nbClients = 0;
 
 authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
+
+def unjoin_method
+	puts "Executed unjoined method !"
+end
+
 specialTypes = {
-	'unjoin' => {puts "unjoined"}
+	'unjoin' => method(:unjoin_method)
 }
 
 EventMachine.run {
