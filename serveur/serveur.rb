@@ -29,6 +29,11 @@ listeSalons = [Salon.new, Salon.new]
 
 nbClients = 0;
 
+authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
+specialTypes = {
+	'unjoin' => {puts "unjoined"}
+}
+
 EventMachine.run {
 	puts("Server is running at %d" % port)
 
@@ -38,7 +43,7 @@ EventMachine.run {
 		connectionOpened = ConditionVariable.new
 
 		communication = nil
-		authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
+		
 
 		salon = nil
 
@@ -127,6 +132,7 @@ EventMachine.run {
 		ws.onopen{
 			communication = Communication.new(ws)
 			communication.setAuthorizedTypes(authorizedTypes)
+			communication.setSpecialTypes(specialTypes)
 
 			communication.startPing()
 

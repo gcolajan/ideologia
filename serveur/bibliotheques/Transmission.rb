@@ -1,6 +1,6 @@
 class Transmission
 
-	@ws
+	# @ws
 
 	def initialize(ws)
 		@ws = ws

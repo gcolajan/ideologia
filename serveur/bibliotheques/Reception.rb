@@ -1,6 +1,6 @@
 class Reception
 
-	@autorisedTypes
+	# @autorisedTypes
 
 	def initialize()
 		@autorisedTypes = {}
@@ -8,13 +8,18 @@ class Reception
 
 	# Add a new type if it isn't already referenced
 	def addType(type)
+		addYieldType(type)
+	end
+
+	def addYieldType(type, block=nil)
 		if @autorisedTypes.has_key?(type)
 			return false
 		end
 
 		@autorisedTypes[type] = {
-			'mutex' => Mutex.new,
-			'resource' => ConditionVariable.new}
+			'mutex'    => Mutex.new,
+			'resource' => ConditionVariable.new,
+			'block'    => block}
 		return true
 	end
 
@@ -24,9 +29,14 @@ class Reception
 
 	# Method to connect to the onmessage event
 	def signal(type)
-		@autorisedTypes[type]["mutex"].synchronize {
-			@autorisedTypes[type]['resource'].signal
-		}
+		# Default way
+		if (@autorisedTypes[type]["block"] == nil)
+			@autorisedTypes[type]["mutex"].synchronize {
+				@autorisedTypes[type]['resource'].signal
+			}
+		else # We want to execute a block
+			yield(@autorisedTypes[type]["block"])
+		end
 	end
 
 	# To use when we want to wait for a response from the client
@@ -35,12 +45,6 @@ class Reception
 			@autorisedTypes[type]['resource'].wait(
 				@autorisedTypes[type]['mutex'],
 				timeout)
-		}
-	end
-
-	def unlock(type)
-		@autorisedTypes[type]["mutex"].synchronize {
-			@autorisedTypes[type]['resource'].signal
 		}
 	end
 end

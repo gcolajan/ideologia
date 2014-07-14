@@ -1,11 +1,11 @@
 class Communication
 
-	@ws
-	@transmission
-	@reception
-	@data
+	# @ws
+	# @transmission
+	# @reception
+	# @data
 
-	@pingThread
+	# @pingThread
 
 	def initialize(ws)
 		@ws           = ws
@@ -22,6 +22,12 @@ class Communication
 		end
 	end
 
+	def setSpecialTypes(types)
+		types.each do |type, block|
+			@reception.addYieldType(type, block)
+		end
+	end
+
 	def send(type, data='', delay=0)
 		@transmission.send(type,data,delay)
 	end
@@ -31,6 +37,7 @@ class Communication
 
 		if not @reception.hasType(recept['type'])
 			puts "Reception unauthorized: #{msg}"
+			return
 		end	
 
 		@reception.signal(recept['type'])
