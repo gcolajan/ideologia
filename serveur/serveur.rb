@@ -27,13 +27,15 @@ semSalon = Mutex.new
 
 listeSalons = [Salon.new, Salon.new]
 
+nbClients = 0;
+
 EventMachine.run {
 	puts("Server is running at %d" % port)
 
 
-	EventMachine::WebSocket.start(:host => adresseServeur, :port => port) do |ws| # ecoute des connexions
+	EventMachine::WebSocket.start(:host => adresseServeur, :port => port, :debug => false) do |ws| # ecoute des connexions
 		mutexPseudo = Mutex.new
-		condVarPseudo = ConditionVariable.new
+		pseudoReceived = ConditionVariable.new
 
 		pongMutex = Mutex.new
 		pongResponse = ConditionVariable.new
@@ -58,13 +60,13 @@ EventMachine.run {
 		# Gestion du ping
 		pingThread = Thread.new do
 			# We start when the connexion is opened
-			# connexionMutex.synchronize{
-			# 	connectionOpened.wait(connexionMutex)
-			# }
+			connexionMutex.synchronize{
+				connectionOpened.wait(connexionMutex)
+			}
 
 			while true
 				ws.send '{"type":"ping","data":"1"}'
-				puts "ping sended"
+				puts ">"
 				pingLaunch = Time.now.to_f;
 				# We are waiting for a response from the client
 				pongMutex.synchronize {
@@ -90,7 +92,7 @@ EventMachine.run {
 
 			# Recuperation du pseudo
 			mutexPseudo.synchronize{
-				condVarPseudo.wait(mutexPseudo)
+				pseudoReceived.wait(mutexPseudo)
 			}
 
 			pseudo = transmission["data"]
@@ -129,7 +131,7 @@ EventMachine.run {
 
 					indexSalon = transmission["data"]
 
-					puts "Salon choisi par "+pseudo+" : "+indexSalon
+					puts "Salon choisi par "+pseudo+" : "+indexSalon.to_s
 
 					if(salon.plein)
 						ws.send(tojson("salonplein", indexSalon))
@@ -157,32 +159,40 @@ EventMachine.run {
 
 
 		ws.onopen{
+			nbClients += 1
 			puts "connexion acceptee"
+			puts ">>> Clients = #{nbClients}"
 
 			# We wake up all the thread waiting for opening
-			pingThread.run()
-			mainThread.run()
-			# connexionMutex.synchronize{
-			# 	connectionOpened.broadcast
-			# }
+			# pingThread.run()
+			# mainThread.run()
+			connexionMutex.synchronize{
+				connectionOpened.broadcast
+			}
+
 		}
 
 		ws.onclose {
+			nbClients -= 1
 			puts "Connection closed"
+			puts "<<< Clients = #{nbClients}"
+
+			pingThread.kill()
+			mainThread.kill()
 		}
 
 		ws.onmessage { |msg|
-			puts msg
 			transmission = JSON.parse(msg)
 
-			puts "Type de transmission reçu "+transmission["type"]
+			
 
 			case transmission["type"]
 				when "pseudo"
 					mutexPseudo.synchronize{
-						condVarPseudo.signal
+						pseudoReceived.signal
 					}
 				when "pong"
+					puts "<"
 					pongMutex.synchronize{
 						pongResponse.signal
 					}
@@ -203,6 +213,8 @@ EventMachine.run {
 					mutexDeco.synchronize{
 						condVarDeco
 					}
+				else
+					puts "Received, not catched: "+transmission["type"]
 			end
 		}
 
