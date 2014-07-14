@@ -31,8 +31,9 @@ nbClients = 0;
 
 authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
 
-def unjoin_method
+def unjoin_method(params)
 	puts "Executed unjoined method !"
+	puts "Params: #{params}"
 end
 
 specialTypes = {
@@ -97,6 +98,7 @@ EventMachine.run {
 					puts "Salon choisi par "+pseudo+" : "+indexSalon.to_s
 
 					salon = listeSalons.at(indexSalon)
+					communication.tellParams('unjoin', salon)
 
 					if(salon.plein)
 						communication.send("salonplein", indexSalon)

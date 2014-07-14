@@ -2,10 +2,12 @@ class Reception
 
 	# @autorisedTypes
 	# @specialTypes
+	# @specialTypesParams
 
 	def initialize()
-		@autorisedTypes = {}
-		@specialTypes = {}
+		@autorisedTypes     = {}
+		@specialTypes       = {}
+		@specialTypesParams = {}
 	end
 
 	# Add a new type if it isn't already referenced
@@ -33,6 +35,10 @@ class Reception
 		return @autorisedTypes.has_key?(type) || @specialTypes.has_key?(type)
 	end
 
+	def tellParams(type, params)
+		@specialTypesParams[type] = params
+	end
+
 	# Method to connect to the onmessage event
 	def signal(type)
 		puts type
@@ -42,7 +48,7 @@ class Reception
 				@autorisedTypes[type]['resource'].signal
 			}
 		else # We want to execute a block
-			@specialTypes[type].call()
+			@specialTypes[type].call(@specialTypesParams[type])
 		end
 	end
 
