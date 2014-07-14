@@ -7,6 +7,7 @@ class Transmission
 	end
 
 	def send(type, data, delay)
+		puts "SENDED #{type}"
 		response = {'type' => type}
 		if not data.empty?
 			response['data'] = data
