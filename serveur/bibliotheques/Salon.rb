@@ -26,6 +26,8 @@ class Salon
 		@debutPartie = false
 		@nbJoueur = 0
 
+		@canceled = false
+
 	end
 
 	#Destruction du salon
@@ -33,13 +35,21 @@ class Salon
 		@partie = nil
 	end
 
+	def cancelJoin
+		@canceled = true
+		@semaphore.synchronize{
+			@condVariable.signal
+		}
+	end
+
 	# Permet au joueur d'attendre le début de la partie
 	def attendreDebutPartie
 		@semaphore.synchronize{
-			while(!@debutPartie)
+			while(!@debutPartie and !@canceled)
 				@condVariable.wait(@semaphore)
 			end
 		}
+		return @debutPartie
 	end
 
 	# Sur déconnexion du salon on envoie les pseudo des personnes restantes et on mets à jour les tableaux
