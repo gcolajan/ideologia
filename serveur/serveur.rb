@@ -34,28 +34,16 @@ EventMachine.run {
 
 
 	EventMachine::WebSocket.start(:host => adresseServeur, :port => port, :debug => false) do |ws| # ecoute des connexions
-		mutexPseudo = Mutex.new
-		pseudoReceived = ConditionVariable.new
-
-		pongMutex = Mutex.new
-		pongResponse = ConditionVariable.new
-
-		mutexDes = Mutex.new
-		condVarDes = ConditionVariable.new
-
-		mutexOpe = Mutex.new
-		condVarOpe = ConditionVariable.new
-
-		mutexJoin = Mutex.new
-		condVarJoin = ConditionVariable.new
-
-		mutexDeco = Mutex.new
-		condVarDeco = ConditionVariable.new
-
 		connexionMutex = Mutex.new
 		connectionOpened = ConditionVariable.new
 
-		transmission = ""
+		reception = Reception.new
+		reception.addType('pong')
+		reception.addType('pseudo')
+		reception.addType('join')
+		reception.addType('des')
+		reception.addType('operation')
+		reception.addType('deco')
 
 		salon = nil
 
@@ -68,12 +56,10 @@ EventMachine.run {
 
 			while true
 				ws.send '{"type":"ping","data":"1"}'
-				puts ">"
+				puts "<!>"
 				pingLaunch = Time.now.to_f;
 				# We are waiting for a response from the client
-				pongMutex.synchronize {
-					pongResponse.wait(pongMutex, $REPONSE_PING)
-				}
+				reception.wait('pong', $REPONSE_PING)
 				# If the response was too long (or not exists)
 				if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
 					puts "Disconnected by timeout"
@@ -94,11 +80,7 @@ EventMachine.run {
 			# }
 
 			# Recuperation du pseudo
-			mutexPseudo.synchronize{
-				pseudoReceived.wait(mutexPseudo)
-			}
-
-			pseudo = transmission["data"]
+			pseudo = reception.wait('pseudo')
 
 			puts pseudo + " vient de se connecter"
 
@@ -129,11 +111,8 @@ EventMachine.run {
 					ws.send(tojson("salons", dictionnaireSalon))
 
 					puts "Attente choix salon par "+pseudo
-					mutexJoin.synchronize{
-						condVarJoin.wait(mutexJoin)
-					}
 
-					indexSalon = transmission["data"]
+					indexSalon = reception.wait('join')
 
 					puts "Salon choisi par "+pseudo+" : "+indexSalon.to_s
 
@@ -158,10 +137,8 @@ EventMachine.run {
 				joueur = partie.recupererInstanceJoueur(numJoueur)
 
 				gestionJoueur = GestionJoueur.new(ws,partie,joueur,salon)
-
-				mutexDeco.synchronize{
-					condVarDeco.wait(@mutexDeco)
-				}
+				
+				reception.wait('deco')
 
 			end while(!salon.debutPartie)
 
@@ -199,39 +176,7 @@ EventMachine.run {
 
 		ws.onmessage { |msg|
 			transmission = JSON.parse(msg)
-
-			
-
-			case transmission["type"]
-				when "pseudo"
-					mutexPseudo.synchronize{
-						pseudoReceived.signal
-					}
-				when "pong"
-					puts "<"
-					pongMutex.synchronize{
-						pongResponse.signal
-					}
-				when "des"
-					mutexDes.synchronize{
-						condVarDes.signal
-					}
-				when "operation"
-					mutexOpe.synchronize{
-						condVarOpe.signal
-					}
-				when "join"
-					puts "Transmission de type join repérée"
-					mutexJoin.synchronize{
-						condVarJoin.signal
-					}
-				when "deco"
-					mutexDeco.synchronize{
-						condVarDeco
-					}
-				else
-					puts "Received, not catched: "+transmission["type"]
-			end
+			reception.signal(transmission['type'], transmission['data'])
 		}
 
 		ws.onerror { |error|
