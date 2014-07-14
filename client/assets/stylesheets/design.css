@@ -182,6 +182,12 @@ div#startup div.conteneur h1 {
 	font-size:2.2em;
 }
 
+div#status {
+	color:red;
+	font-size:110%;
+	padding:20px;
+}
+
 div#rooms {
 	margin:0;
 }
