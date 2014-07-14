@@ -31,9 +31,9 @@ nbClients = 0;
 
 authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
 
-def unjoin_method(params)
+def unjoin_method(salon)
 	puts "Executed unjoined method !"
-	puts "Params: #{params}"
+	salon.cancelJoin()
 end
 
 specialTypes = {
@@ -113,6 +113,7 @@ EventMachine.run {
 
 				puts pseudo+" a le numéro de joueur "+numJoueur.to_s
 
+				puts listeSalons.index(salon)
 				communication.send("joined", listeSalons.index(salon).to_s)
 
 				puts "Envoie de l'index du salon effectue"
@@ -131,7 +132,13 @@ EventMachine.run {
 
 				puts "Debut d'attente de "+pseudo
 
-				salon.attendreDebutPartie()
+				debutPartie = salon.attendreDebutPartie()
+
+				if not debutPartie
+					puts "Le joueur s'est barré"
+				else
+					puts "La partie peut commencer !"
+				end
 
 				puts "Fin d'attente de "+pseudo
 
