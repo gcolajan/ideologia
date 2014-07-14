@@ -1,6 +1,5 @@
 function Startup() {
 
-	this.chans = '';
 	$("#startup").hide();
 
 	this.clean = function() {
@@ -9,9 +8,6 @@ function Startup() {
 		$("#rooms").hide();
 		$("#status").hide();
 		$("#waiting").hide();
-
-		this.chans = '';
-		this.pseudos = '';
 	}
 
 	this.open = function() {
@@ -22,11 +18,15 @@ function Startup() {
 		$("#startup").hide();
 	}.bind(this);
 
-	this.showPseudo = function() {
+	this.showPseudoForm = function() {
 		// On affiche le nécessaire pour rentrer le pseudo
 		$('#formPseudo').show();
 
 		// On déclare le listener associé au pseudo
+	}.bind(this);
+
+	this.cleanChans = function() {
+		this.chans = '';
 	}.bind(this);
 
 	this.showChans = function() {
@@ -49,6 +49,10 @@ function Startup() {
 	// Le serveur nous confirme que l'on a rejoint un salon
 	this.hasJoined = function() {
 		//this.close();
+	}.bind(this);
+
+	this.cleanPseudos = function() {
+		this.pseudos = '<input type="button" onclick="startup.clean(); startup.showChans();" value="Changer de salon" />';
 	}.bind(this);
 
 	this.addPseudo = function(pseudo) {

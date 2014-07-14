@@ -5,13 +5,13 @@ var game;
 var ws = $.websocket("ws://localhost:8080/", {
 	events: {
 		ping: function(e) {
-			ws.send('pong', '');
+			ws.send('pong');
 		},
 		status: function(e) {
 			switch (e.data) {
 				case 'ready':
 					startup.clean();
-					startup.showPseudo();
+					startup.showPseudoForm();
 					break;
 				default:
 					console.log("Status received: "+e.data);
@@ -19,6 +19,7 @@ var ws = $.websocket("ws://localhost:8080/", {
 		},
 		salons: function(e) {
 			startup.clean();
+			startup.cleanChans();
 			for (var id in e.data)
 				startup.addChan(id, e.data[id]);
 			startup.showChans();
@@ -30,6 +31,7 @@ var ws = $.websocket("ws://localhost:8080/", {
 		},
 		waitingWith: function(e) {
 			startup.clean();
+			startup.cleanPseudos();
 			for (var pseudo in e.data)
 				startup.addPseudo(e.data[pseudo]);
 			startup.showWaiting();
