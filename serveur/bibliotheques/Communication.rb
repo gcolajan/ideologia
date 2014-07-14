@@ -44,6 +44,10 @@ class Communication
 		@data[recept['type']] = recept.has_key?('data') ? recept['data'] : nil
 	end
 
+	def tellParams(type, params)
+		@reception.tellParams(type, params)
+	end
+
 	def receive(type, timeout=nil)
 		if not @reception.hasType(type)
 			puts "Reception type unknown!"
