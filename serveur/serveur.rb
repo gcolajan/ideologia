@@ -122,8 +122,10 @@ EventMachine.run {
 
 				joueur = partie.recupererInstanceJoueur(numJoueur)
 
+
 				# À reprendre pour transmettre client et pas les éléments séparément
-				gestionJoueur = GestionJoueur.new(ws,partie,joueur,client.salon)
+				gestionJoueur = GestionJoueur.new(communication,partie,joueur,client.salon)
+				joueur.obtenirInstanceGestionJoueur(gestionJoueur)
 
 				puts "Debut d'attente de "+client.pseudo
 
@@ -142,9 +144,11 @@ EventMachine.run {
 			# We show the last message extracted
 			puts "Message reçu après fin du salon d'attente"+transmission.to_s
 
+			gestionJoueur.preparationClient(client.pseudo)
 			gestionJoueur.tourJoueur()
 		
-			
+			communication.send("score", partie.obtenirScores)
+			ws.close()
 		end
 
 

@@ -2,17 +2,11 @@ $LOAD_PATH << File.dirname(__FILE__) + "/jeu"
 
 class GestionJoueur
 
-	attr_writer :transmission
-
-	def initialize(wsJoueur, instancePartie, instanceJoueur, instanceSalon)
-		@ws = wsJoueur
+	def initialize(instanceCommunication, instancePartie, instanceJoueur, instanceSalon)
+		@communication = instanceCommunication
 		@partie = instancePartie
 		@joueur = instanceJoueur
 		@salon = instanceSalon
-		@transmission = nil
-
-		@mutATT = Mutex.new
-		@attenteEnCours = ConditionVariable.new
 	end
 
 	def preparationClient(pseudo)
@@ -63,12 +57,12 @@ class GestionJoueur
 				listeId = @partie.genererIdOperationsProposees()
 				
 				# Transmission des identifiants d'opération possibles et attente d'un choix
-				idActionChoisie = todata(envoieDonneesAvecReponse("operations", listeId, 30))["data"]
+				idActionChoisie = todata(envoieDonneesAvecReponse("operations", listeId, 30))
 				
 				# Vérification des données venant du client
-				if((idActionChoisie.to_i.integer?) && listeId.include?(idActionChoisie))
+				if((idActionChoisie["data"].to_i.integer?) && listeId.include?(idActionChoisie["data"]))
 					# Création de l'opération choisie
-					operation = Operation.new(idActionChoisie, @partie.joueurCourant.ideologie.numero)
+					operation = Operation.new(idActionChoisie["data"], @partie.joueurCourant.ideologie.numero)
 					
 					# Repercussion du choix
 					@partie.appliquerOperationTerritoire(operation, caseCourante.territoire)
@@ -158,42 +152,22 @@ class GestionJoueur
 			end
 		
 		end # Fin du while (partie.estDemarree)
+
 	end
 	
 	
 	def envoieDonnees(identifiantCommunication, donnees)
 		@transmission = nil
-		@ws.send(tojson(identifiantCommunication, donnees))
+		@communication.send(tojson(identifiantCommunication, donnees))
 	end
 	
 	def envoieDonneesAvecReponse(identifiantCommunication, donnees, delai)
 		@transmission = nil
-		@ws.send(tojson(identifiantCommunication, donnees, delai))
-		return attendreReponse(delai)
-	end
-
-	# Permet d'attendre une réponse pendant un temps donné
-	def attendreReponse(delai)
-		$mutexReception.synchronize {
-			$cvReception.wait($mutexReception, delai)
-		}
-		
-		return @transmission
+		@communication.send(tojson(identifiantCommunication, donnees, delai))
+		return @communication.receive(identifiantCommunication)
 	end
 
 	def envoyerSignalDeconnexion(numeroJoueurDeconnecte)
-		envoieDonnees("deconnexion", numeroJoueurDeconnecte)
-	end
-
-	def endormirAttenteDebutPartie
-		@mutATT.synchronize{
-			@attenteEnCours.wait(@mutATT)
-		}
-	end
-
-	def finAttenteDebutPartie
-		@mutATT.synchronize{
-			@attenteEnCours.signal
-		}
+		envoieDonnees("deconnexionJoueur", numeroJoueurDeconnecte)
 	end
 end
