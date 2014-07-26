@@ -1,8 +1,8 @@
 class Client
 
 	attr_accessor :com
-	attr_reader :pseudo
-	attr_reader :salon
+	attr_accessor :pseudo
+	attr_accessor :salon
 
 	def initialize
 		@com = nil
@@ -14,15 +14,8 @@ class Client
 		}
 	end
 
-	def setCommunication(communication)
-		@com = communication
-	end
 
-	def setPseudo(pseudo)
-		@pseudo = pseudo
-	end
-
-	def setSalon(salon)
+	def salon=(salon)
 		if not @salon.nil?
 			puts "Client could have change room without notify him!"
 		end

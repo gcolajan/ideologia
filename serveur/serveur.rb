@@ -63,7 +63,7 @@ EventMachine.run {
 			}
 
 			# Recuperation du pseudo
-			client.setPseudo(communication.receive('pseudo'))
+			client.pseudo = communication.receive('pseudo')
 
 			puts client.pseudo + " vient de se connecter"
 
@@ -85,6 +85,7 @@ EventMachine.run {
 					puts "Salons tous pleins"
 					salon = Salon.new
 					listeSalons.push(salon)
+					client.salon = salon
 					communication.send("salons", listeSalons.index(salon) => salon.nbJoueur)
 				else
 					dictionnaireSalon = {}
@@ -99,7 +100,7 @@ EventMachine.run {
 					indexSalon = communication.receive('join')
 
 					puts "Salon choisi par "+client.pseudo+" : "+indexSalon.to_s
-					client.setSalon(listeSalons.at(indexSalon))
+					client.salon = listeSalons.at(indexSalon)
 
 					if client.salon.full?
 						communication.send("salonplein", indexSalon)
@@ -161,7 +162,7 @@ EventMachine.run {
 
 			communication.startPing()
 
-			client.setCommunication(communication)
+			client.com = communication
 
 			nbClients += 1
 			puts "connexion acceptee"
