@@ -114,7 +114,7 @@ EventMachine.run {
 
 				puts client.pseudo+" a le numéro de joueur "+numJoueur.to_s
 
-				puts listeSalons.index(client.salon)
+				#puts listeSalons.index(client.salon)
 				communication.send("joined", listeSalons.index(client.salon).to_s)
 
 				puts "Envoie de l'index du salon effectue"
@@ -130,7 +130,7 @@ EventMachine.run {
 
 				puts "Debut d'attente de "+client.pseudo
 
-				debutPartie = client.salon.attendreDebutPartie(client)
+				debutPartie = !client.salon.debutPartie ? client.salon.attendreDebutPartie(client) : true
 
 				if not debutPartie
 					puts "Le joueur s'est barré"
@@ -141,6 +141,8 @@ EventMachine.run {
 				puts "Fin d'attente de "+client.pseudo
 
 			end while(!debutPartie)
+
+			puts "Debut partie"
 
 			# We show the last message extracted
 			puts "Message reçu après fin du salon d'attente"+transmission.to_s
