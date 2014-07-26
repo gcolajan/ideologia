@@ -44,7 +44,7 @@ EventMachine.run {
 	puts("Server is running at %d" % port)
 
 
-	EventMachine::WebSocket.start(:host => adresseServeur, :port => port, :debug => false) do |ws| # ecoute des connexions
+	EventMachine::WebSocket.start(:host => adresseServeur, :port => port, :debug => true) do |ws| # ecoute des connexions
 		connexionMutex = Mutex.new
 		connectionOpened = ConditionVariable.new
 
@@ -143,9 +143,6 @@ EventMachine.run {
 			end while(!debutPartie)
 
 			puts "Debut partie"
-
-			# We show the last message extracted
-			puts "Message reçu après fin du salon d'attente"+transmission.to_s
 
 			gestionJoueur.preparationClient(client.pseudo)
 			gestionJoueur.tourJoueur()

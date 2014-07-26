@@ -158,12 +158,12 @@ class GestionJoueur
 	
 	def envoieDonnees(identifiantCommunication, donnees)
 		@transmission = nil
-		@communication.send(tojson(identifiantCommunication, donnees))
+		@communication.send(identifiantCommunication, donnees)
 	end
 	
 	def envoieDonneesAvecReponse(identifiantCommunication, donnees, delai)
 		@transmission = nil
-		@communication.send(tojson(identifiantCommunication, donnees, delai))
+		@communication.send(identifiantCommunication, donnees, delai)
 		return @communication.receive(identifiantCommunication)
 	end
 
