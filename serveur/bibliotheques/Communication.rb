@@ -10,7 +10,7 @@ class Communication
 	def initialize(ws, client)
 		@ws           = ws
 		@client       = client
-		@transmission = Transmission.new(ws)
+		@transmission = Emission.new(ws)
 		@reception    = Reception.new(client)
 		@data         = {}
 

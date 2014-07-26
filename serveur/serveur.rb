@@ -141,6 +141,10 @@ EventMachine.run {
 
 			# We show the last message extracted
 			puts "Message reçu après fin du salon d'attente"+transmission.to_s
+
+			gestionJoueur.tourJoueur()
+		
+			
 		end
 
 
