@@ -1,4 +1,4 @@
-class Transmission
+class Emission
 
 	# @ws
 

@@ -1,18 +1,18 @@
 class Communication
 
 	# @ws
-	# @transmission
+	# @emission
 	# @reception
 	# @data
 
 	# @pingThread
 
 	def initialize(ws, client)
-		@ws           = ws
-		@client       = client
-		@transmission = Transmission.new(ws)
-		@reception    = Reception.new(client)
-		@data         = {}
+		@ws        = ws
+		@client    = client
+		@emission  = Emission.new(ws)
+		@reception = Reception.new(client)
+		@data      = {}
 
 		@pingThread	  = nil
 	end
@@ -30,7 +30,7 @@ class Communication
 	end
 
 	def send(type, data='', delay=0)
-		@transmission.send(type,data,delay)
+		@emission.send(type,data,delay)
 	end
 
 	def filterReception(msg)
