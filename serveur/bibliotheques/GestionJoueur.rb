@@ -11,8 +11,8 @@ class GestionJoueur
 
 	def preparationClient(pseudo)
 
-		@joueur.definirPseudo(pseudo)
-		@salon.transmissionPseudo()
+		#@joueur.definirPseudo(pseudo)
+		#@salon.transmissionPseudo()
 		
 		# On envoie une synthèse des personnes participant et les idéologies associées
 		partenaires = @partie.obtenirTableauPartenaires()
