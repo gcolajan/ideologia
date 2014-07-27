@@ -51,7 +51,7 @@ class Communication
 
 	def receive(type, timeout=nil)
 		if not @reception.hasType(type)
-			puts "Reception type unknown!"
+			puts "Reception type unknown! #{type}"
 		end	
 
 		@reception.wait(type, timeout)

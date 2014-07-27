@@ -397,14 +397,14 @@ class Partie
 		for joueur in @listeJoueurs
 			respectIdeo = joueur.calculerDecalage() # Faible = meilleur
 			dominationGeo = joueur.listeTerritoires.length/@nbTerritoires.to_f # Haut = meilleur
-			values += "('', NOW(), '"+joueur.pseudo+"', "+joueur.ideologie.numero.to_s+", "+respectIdeo.to_s+", "+dominationGeo.to_s+"), "
+			values += "(NOW(), '"+joueur.pseudo+"', "+joueur.ideologie.numero.to_s+", "+respectIdeo.to_s+", "+dominationGeo.to_s+"), "
 			@scores.merge!(joueur.numJoueur => [respectIdeo, dominationGeo])
 		end
 		
 		begin
 			dbh = Mysql.new($host, $user, $mdp, $bdd)
-			values = values[0, values.length-1]
-			res = dbh.query("INSERT INTO ideo_score (score_id, score_date, score_pseudo, score_ideologie_id, score_respect_ideologie, score_domination_geo) VALUES"+values)
+			values = values[0..-3]
+			res = dbh.query("INSERT INTO ideo_score (score_date, score_pseudo, score_ideologie_id, score_respect_ideologie, score_domination_geo) VALUES"+values)
 		rescue Mysql::Error => e
 			puts e
 		ensure
