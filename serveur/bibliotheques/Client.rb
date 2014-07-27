@@ -27,15 +27,15 @@ class Client
 	end
 
 	def quitSalon
-		if not @salon.nil?
-			# Je libère le verroux lié à mon attente de début de partie
-			signal()
+		unless @salon.nil?
+			# Je me déréfence
+			@salon = nil
 
 			# Je notifie le salon que je m'en vais
 			@salon.deconnexionJoueur(self)
 
-			# Je me déréfence
-			@salon = nil
+			# Je libère le verroux lié à mon attente de début de partie
+			signal()
 		end
 	end
 

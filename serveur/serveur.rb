@@ -58,6 +58,7 @@ EventMachine.run {
 
 		# Thread principal permettant de jouer
 		mainThread = Thread.new do
+			Thread.stop
 
 			# Recuperation du pseudo
 			client.pseudo = client.com.receive('pseudo')
@@ -72,20 +73,22 @@ EventMachine.run {
 				puts client.pseudo+" est entrain de choisir un salon"
 				listeSalons.selection(client)
 
-				puts "#{client.pseudo} (#{client.num}) commence à attendre"
-
 				# Test si la partie n'est pas commencée afin d'endormir le client si besoin
-				unless client.salon.debutPartie
-					client.salon.attendreDebutPartie(client)
+				if client.salon.full?
+					# On réveille les amis
+					puts "WAKE UP!"
+					client.salon.wakeup()
+				else
+					puts "#{client.pseudo} (#{client.num}) commence à attendre"
+					client.wait()
+					puts "#{client.pseudo} est réveillé"
 				end
-
-				puts "#{client.pseudo} est réveillé"
 
 				# Au réveil, je vérifie que le client ne m'a pas réveillé pour changer de salon
 			end while (client.salon.nil?)
 
 			# On initialise tout un tas de variables pour pouvoir démarrer la partie
-			joueur = partie.recupererInstanceJoueur(client.num)
+			joueur = client.salon.partie.recupererInstanceJoueur(client.num)
 
 			joueur.definirPseudo(client.pseudo)
 			# À reprendre pour transmettre client et pas les éléments séparément
@@ -93,11 +96,6 @@ EventMachine.run {
 
 			# Le joueur de la partie connait l'instance le gérant
 			joueur.obtenirInstanceGestionJoueur(gestionJoueur)
-
-			debutPartie = !client.salon.debutPartie ? client.salon.attendreDebutPartie(client) : true
-
-
-
 
 
 
@@ -136,6 +134,8 @@ EventMachine.run {
 			nbClients += 1
 			puts 'connexion acceptee'
 			puts ">>> Clients = #{nbClients}"
+
+			mainThread.run
 		}
 
 		# Réaction du serveur sur fermeture de la websocket

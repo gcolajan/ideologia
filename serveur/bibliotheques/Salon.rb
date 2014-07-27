@@ -1,9 +1,9 @@
 class Salon
 	
+	attr_reader :demarree
 	attr_reader :partie
 	attr_reader :plein
 	attr_reader :nbJoueur
-	attr_reader :debutPartie
 	attr_reader :condVariable
 
 	class FullSalonException < StandardError
@@ -18,7 +18,7 @@ class Salon
 
 		@semaphoreControle = Mutex.new
 
-		@debutPartie = false
+		@demarree = false
 		@nbJoueur = 0
 
 	end
@@ -28,10 +28,15 @@ class Salon
 		@partie = nil
 	end
 
-	# Permet au joueur d'attendre le début de la partie
-	def attendreDebutPartie(client)
-		client.wait()
-		return @debutPartie
+	# Est un alias
+	def debutPartie?
+		return full?
+	end
+
+	# On réveille tous les clients, la partie va démarrer
+	def wakeup
+		@demarree = true
+		@clients.each { |client| client.signal }
 	end
 
 	# Sur déconnexion du salon on envoie les pseudo des personnes restantes et on mets à jour les tableaux
@@ -66,8 +71,6 @@ class Salon
 
 			# Si après l'ajout on est 4 joueurs on commence la partie
 			if full?
-				@debutPartie = true
-
 				# Réveil des joueurs un par un
 				@clients.each { |client|
 					client.signal
