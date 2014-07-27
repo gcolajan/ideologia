@@ -7,7 +7,10 @@ class Emission
 	end
 
 	def send(type, data, delay)
-		puts "SENDED #{type}"
+		if type != 'ping'
+			puts "SENDED #{type}"
+		end
+
 		response = {'type' => type}
 		if not data.empty?
 			response['data'] = data

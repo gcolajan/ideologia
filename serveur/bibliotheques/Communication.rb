@@ -68,7 +68,6 @@ class Communication
 		@pingThread = Thread.new do
 			while true
 				send 'ping'
-				puts "<!>"
 				pingLaunch = Time.now.to_f;
 				# We are waiting for a response from the client
 				receive('pong', $REPONSE_PING)
