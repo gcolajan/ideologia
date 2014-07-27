@@ -56,71 +56,9 @@ EventMachine.run {
 
 		salon = nil
 
-		# Thread principal permettant de jouer
-		mainThread = Thread.new do
-			Thread.stop
-
-			# Recuperation du pseudo
-			client.pseudo = client.com.receive('pseudo')
-
-			puts "#{client.pseudo} vient de se connecter"
-
-			numJoueur = -1
-
-			begin
-				# On fait choisir un salon 
-				puts client.pseudo+" est entrain de choisir un salon"
-				listeSalons.selection(client)
-
-				# Test si la partie n'est pas commencée afin d'endormir le client si besoin
-				if client.salon.full?
-					# On réveille les amis
-					puts "WAKE UP!"
-					client.salon.wakeup()
-				else
-					puts "#{client.pseudo} (#{client.num}) commence à attendre"
-					client.wait()
-					puts "#{client.pseudo} est réveillé"
-				end
-
-				# Au réveil, je vérifie que le client ne m'a pas réveillé pour changer de salon
-			end while (client.salon.nil?)
-
-			# On initialise tout un tas de variables pour pouvoir démarrer la partie
-			joueur = client.salon.partie.recupererInstanceJoueur(client.num)
-
-			joueur.definirPseudo(client.pseudo)
-			# À reprendre pour transmettre client et pas les éléments séparément
-			gestionJoueur = GestionJoueur.new(communication,client.salon.partie,joueur,client.salon)
-
-			# Le joueur de la partie connait l'instance le gérant
-			joueur.obtenirInstanceGestionJoueur(gestionJoueur)
-
-
-
-			puts 'Debut partie'
-
-			# Préparation du client pour le début de partie
-
-			puts 'preparationClient'
-			gestionJoueur.preparationClient
-
-			# Gestion du joueur durant toute la partie
-			puts 'Debut tour'
-			gestionJoueur.tourJoueur
-		
-			# Envoi des scores finaux au client
-			puts 'envoi score'
-			communication.send('score', partie.obtenirScores)
-
-			# On ferme la ws
-			ws.close
-		end
-
-
 		# Réaction du serveur lors de l'ouverture d'une connexion websocket
 		ws.onopen{
-			client = Client.new
+			client = Client.new(listeSalons)
 			communication = Communication.new(ws, client)
 			communication.setAuthorizedTypes(authorizedTypes)
 			communication.setSpecialTypes(specialTypes)
@@ -134,7 +72,7 @@ EventMachine.run {
 			puts 'connexion acceptee'
 			puts ">>> Clients = #{nbClients}"
 
-			mainThread.run
+			client.launchThread
 		}
 
 		# Réaction du serveur sur fermeture de la websocket
