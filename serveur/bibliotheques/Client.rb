@@ -9,6 +9,7 @@ class Client
 
 	def initialize(listeSalons)
 		@listeSalons = listeSalons
+		@mainThread = nil
 		@com = nil
 		@num = nil
 		@pseudo = nil
@@ -54,10 +55,14 @@ class Client
 		}
 	end
 
+	def stopThread
+		@mainThread.kill
+	end
+
 
 	# Thread principal permettant de jouer
 	def launchThread
-		mainThread = Thread.new do
+		@mainThread = Thread.new do
 
 			# Recuperation du pseudo
 			@pseudo = @com.receive('pseudo')

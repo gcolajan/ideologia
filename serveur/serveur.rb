@@ -88,7 +88,7 @@ EventMachine.run {
 			end
 
 			# On tue son thread
-			mainThread.kill
+			client.stopThread
 		}
 
 		# Réaction du serveur sur réception d'un message de la websocket
