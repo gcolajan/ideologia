@@ -140,12 +140,16 @@ EventMachine.run {
 			puts 'Debut partie'
 
 			# Préparation du client pour le début de partie
-			gestionJoueur.preparationClient(client.pseudo)
+
+			puts 'preparationClient'
+			gestionJoueur.preparationClient
 
 			# Gestion du joueur durant toute la partie
+			puts 'Debut tour'
 			gestionJoueur.tourJoueur
 		
 			# Envoi des scores finaux au client
+			puts 'envoi score'
 			communication.send('score', partie.obtenirScores)
 
 			# On ferme la ws
@@ -162,7 +166,6 @@ EventMachine.run {
 
 			# On commence le ping du joueur
 			communication.startPing
-			mainThread.run
 
 			client.com = communication
 
