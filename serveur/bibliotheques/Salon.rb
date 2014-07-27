@@ -2,7 +2,6 @@ class Salon
 	
 	attr_reader :demarree
 	attr_reader :partie
-	attr_reader :plein
 	attr_reader :nbJoueur
 	attr_reader :condVariable
 
@@ -28,11 +27,6 @@ class Salon
 		@partie = nil
 	end
 
-	# Est un alias
-	def debutPartie?
-		return full?
-	end
-
 	# On réveille tous les clients, la partie va démarrer
 	def wakeup
 		@demarree = true
@@ -41,9 +35,10 @@ class Salon
 
 	# Sur déconnexion du salon on envoie les pseudo des personnes restantes et on mets à jour les tableaux
 	def deconnexionJoueur(client)
+		puts "#{client.pseudo} est parti du salon"
 		@semaphoreControle.synchronize{
 
-			@clients.delete(client)
+			@clients[@clients.index(client)] = nil
 
 			transmissionPseudo()
 

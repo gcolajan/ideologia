@@ -3,7 +3,7 @@
 
 require './conf.rb'
 
-#Thread.abort_on_exception = false
+Thread.abort_on_exception = true
 
 if ARGV.size != 2 and ARGV.size != 0 
 	$stderr.puts('Usage:ruby ./serveur.rb ACCEPTED_DOMAIN PORT')
@@ -67,7 +67,6 @@ EventMachine.run {
 
 			numJoueur = -1
 
-			salonSelected = nil
 			begin
 				# On fait choisir un salon 
 				puts client.pseudo+" est entrain de choisir un salon"

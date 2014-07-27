@@ -17,7 +17,7 @@ class Client
 	end
 
 	def salon=(salon)
-		if not @salon.nil?
+		unless @salon.nil?
 			puts "Client could have change room without notify him!"
 		end
 
@@ -28,11 +28,11 @@ class Client
 
 	def quitSalon
 		unless @salon.nil?
-			# Je me déréfence
-			@salon = nil
-
 			# Je notifie le salon que je m'en vais
 			@salon.deconnexionJoueur(self)
+
+			# Je me déréfence
+			@salon = nil
 
 			# Je libère le verroux lié à mon attente de début de partie
 			signal()
