@@ -45,7 +45,7 @@ class Reception
 		# Default way
 		if (@autorisedTypes.has_key?(type))
 			@autorisedTypes[type]["mutex"].synchronize {
-				@autorisedTypes[type]['resource'].signal
+				@autorisedTypes[type]['resource'].broadcast
 			}
 		else # We want to execute a block
 			params = (@specialTypesParams.has_key?(type) ? @specialTypesParams[type] : nil)

@@ -1,11 +1,13 @@
 class Client
 
 	attr_accessor :com
+	attr_accessor :num
 	attr_accessor :pseudo
 	attr_accessor :salon
 
 	def initialize
 		@com = nil
+		@num = nil
 		@pseudo = nil
 		@salon = nil
 		@verroux = {
@@ -14,11 +16,13 @@ class Client
 		}
 	end
 
-
 	def salon=(salon)
 		if not @salon.nil?
 			puts "Client could have change room without notify him!"
 		end
+
+		salon.join(self)
+
 		@salon = salon
 	end
 

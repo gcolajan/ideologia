@@ -6,6 +6,7 @@ require 'em-websocket'
 $LOAD_PATH << File.dirname(__FILE__) + "/bibliotheques"
 
 require 'Client'
+require 'ListeSalon'
 require 'Salon'
 require 'Partie'
 require 'GestionJoueur'

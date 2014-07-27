@@ -6,6 +6,9 @@ class Salon
 	attr_reader :debutPartie
 	attr_reader :condVariable
 
+	class FullSalonException < StandardError
+	end
+
 	def initialize
 
 		@partie = Partie.new
@@ -48,13 +51,10 @@ class Salon
 	end
 
 	# Connexion d'un joueur au salon
-	def connexionJoueurSalon(client)
+	def join(client)
 		@semaphoreControle.synchronize{
 			# Permet de dire quand un salon est plein
-			if full?
-				puts
-				return
-			end
+			raise StandardError, "Salon is full" if full?
 
 			# On place notre client
 			indexJoueur = @clients.index(nil)
@@ -74,8 +74,8 @@ class Salon
 				}
 			end
 
-			# On retourne le numéro du joueur
-			return indexJoueur
+			# On indique son numéro au client/joueur
+			client.num = indexJoueur
 		}
 	end
 

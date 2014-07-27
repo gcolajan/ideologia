@@ -25,7 +25,7 @@ sem = Mutex.new
 
 semSalon = Mutex.new
 
-listeSalons = [Salon.new, Salon.new]
+listeSalons = ListeSalon.new
 
 nbClients = 0
 
@@ -33,7 +33,7 @@ nbClients = 0
 authorizedTypes = %w(pong pseudo join des operation deco)
 
 # Méthode activé lors de la réception d'une communication signalant que le joueur quitte le salon
-def unjoin_method(client)
+def unjoin_method(client, params)
 	puts 'Executed unjoined method !'
 	client.quitSalon
 end
@@ -67,82 +67,46 @@ EventMachine.run {
 			}
 
 			# Recuperation du pseudo
-			client.pseudo = communication.receive('pseudo')
+			client.pseudo = client.com.receive('pseudo')
 
 			puts "#{client.pseudo} vient de se connecter"
 
 			numJoueur = -1
 
-			# On boucle en attendant le début de la partie ou en quittant le salon
+			salonSelected = nil
 			begin
-				# On cherche à savoir si tous les salons sont pleins
-				tousPleins = true
-				listeSalons.each{ |salon|
-					unless salon.full?
-						tousPleins = false
-						break
-					end
-				}
+				# On fait choisir un salon 
+				puts client.pseudo+" est entrain de choisir un salon"
+				listeSalons.selection(client)
 
-				if tousPleins
-					puts 'Salons tous pleins'
-					salon = Salon.new
-					listeSalons.push(salon)
-					client.salon = salon
-					communication.send('salons', listeSalons.index(salon) => salon.nbJoueur)
-				else
-					dictionnaireSalon = {}
-					listeSalons.each{|salon|
-						unless salon.plein
-							dictionnaireSalon.merge!({ listeSalons.index(salon) => salon.nbJoueur })
-						end
-					}
-					communication.send('salons', dictionnaireSalon)
-
-					puts "Attente choix salon par #{client.pseudo}"
-
-					indexSalon = communication.receive('join')
-
-					puts "Salon choisi par #{client.pseudo} : #{indexSalon.to_s}"
-					client.salon = listeSalons.at(indexSalon)
-
-					if client.salon.full?
-						communication.send('salonplein', indexSalon)
-						redo
-					end
-				end
-
-				puts "#{client.pseudo} commence à attendre"
-
-				# Récupération du numéro de joueur et connexion au salon
-				numJoueur = client.salon.connexionJoueurSalon(client)
-
-				puts "#{client.pseudo} a le numéro de joueur #{numJoueur.to_s}"
-
-				#puts listeSalons.index(client.salon)
-				communication.send('joined', listeSalons.index(client.salon).to_s)
-
-				puts 'Envoie de l\'index du salon effectue'
-
-				partie = client.salon.partie
-
-				joueur = partie.recupererInstanceJoueur(numJoueur)
-
-				joueur.definirPseudo(client.pseudo)
-				# À reprendre pour transmettre client et pas les éléments séparément
-				gestionJoueur = GestionJoueur.new(communication,partie,joueur,client.salon)
-
-				# Le joueur de la partie connait l'instance le gérant
-				joueur.obtenirInstanceGestionJoueur(gestionJoueur)
-
-				puts "Debut d'attente de #{client.pseudo}"
+				puts "#{client.pseudo} (#{client.num}) commence à attendre"
 
 				# Test si la partie n'est pas commencée afin d'endormir le client si besoin
-				debutPartie = !client.salon.debutPartie ? client.salon.attendreDebutPartie(client) : true
+				unless client.salon.debutPartie
+					client.salon.attendreDebutPartie(client)
+				end
 
-				puts "Fin d'attente de #{client.pseudo}"
+				puts "#{client.pseudo} est réveillé"
 
-			end while(!debutPartie)
+				# Au réveil, je vérifie que le client ne m'a pas réveillé pour changer de salon
+			end while (client.salon.nil?)
+
+			# On initialise tout un tas de variables pour pouvoir démarrer la partie
+			joueur = partie.recupererInstanceJoueur(client.num)
+
+			joueur.definirPseudo(client.pseudo)
+			# À reprendre pour transmettre client et pas les éléments séparément
+			gestionJoueur = GestionJoueur.new(communication,client.salon.partie,joueur,client.salon)
+
+			# Le joueur de la partie connait l'instance le gérant
+			joueur.obtenirInstanceGestionJoueur(gestionJoueur)
+
+			debutPartie = !client.salon.debutPartie ? client.salon.attendreDebutPartie(client) : true
+
+
+
+
+
 
 			puts 'Debut partie'
 
@@ -153,7 +117,7 @@ EventMachine.run {
 			gestionJoueur.tourJoueur
 		
 			# Envoi des scores finaux au client
-			communication.send('score', partie.obtenirScores)
+			communication.send('score', client.salon.partie.obtenirScores)
 
 			# On ferme la ws
 			ws.close
