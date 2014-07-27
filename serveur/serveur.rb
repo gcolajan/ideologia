@@ -83,8 +83,8 @@ EventMachine.run {
 
 			puts ws.to_s
 			# Si le client est encore dans un salon on le déconnecte
-			if client.salon
-				client.salon.deconnexionJoueur(ws)
+			unless client.salon.nil?
+				client.salon.deconnexionJoueur(client)
 			end
 
 			# On tue son thread
@@ -97,7 +97,7 @@ EventMachine.run {
 			# Si on a un message de deco on réveille le joueur et on le déconnecte du salon
 			if test['type']  == 'deco'
 				condVarAttenteDebut.signal
-				client.salon.deconnexionJoueur(ws)
+				client.salon.deconnexionJoueur(client)
 			end
 
 			# On traite le message
