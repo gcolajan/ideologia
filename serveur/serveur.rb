@@ -48,8 +48,6 @@ EventMachine.run {
 
 
 	EventMachine::WebSocket.start(:host => adresseServeur, :port => port, :debug => false) do |ws| # ecoute des connexions
-		connexionMutex = Mutex.new
-		connectionOpened = ConditionVariable.new
 
 		client = nil
 		communication = nil
@@ -60,11 +58,6 @@ EventMachine.run {
 
 		# Thread principal permettant de jouer
 		mainThread = Thread.new do
-			# Mutex d'attente du thread pour attendre l'ouverture de la websocket
-
-			connexionMutex.synchronize{
-				connectionOpened.wait(connexionMutex)
-			}
 
 			# Recuperation du pseudo
 			client.pseudo = communication.receive('pseudo')
@@ -169,18 +162,13 @@ EventMachine.run {
 
 			# On commence le ping du joueur
 			communication.startPing
+			mainThread.run
 
 			client.com = communication
 
 			nbClients += 1
 			puts 'connexion acceptee'
 			puts ">>> Clients = #{nbClients}"
-
-			# Réveil du thread principal
-			connexionMutex.synchronize{
-				connectionOpened.broadcast
-			}
-
 		}
 
 		# Réaction du serveur sur fermeture de la websocket
