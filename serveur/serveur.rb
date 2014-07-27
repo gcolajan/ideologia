@@ -6,7 +6,7 @@ require './conf.rb'
 #Thread.abort_on_exception = false
 
 if ARGV.size != 2 and ARGV.size != 0 
-	$stderr.puts("Usage: ./serveur.rb ACCEPTED_DOMAIN PORT")
+	$stderr.puts("Usage:ruby ./serveur.rb ACCEPTED_DOMAIN PORT")
 	exit(1)
 end
 
@@ -29,13 +29,16 @@ listeSalons = [Salon.new, Salon.new]
 
 nbClients = 0;
 
+# Types de communication entrantes autorisées
 authorizedTypes = ['pong', 'pseudo', 'join', 'des', 'operation', 'deco']
 
+# Méthode activé lors de la réception d'une communication signalant que le joueur quitte le salon
 def unjoin_method(client, params)
 	puts "Executed unjoined method !"
 	client.quitSalon()
 end
 
+#Types de communication entrantes spéciales utilisant une méthode lors de leur réception
 specialTypes = {
 	'unjoin' => method(:unjoin_method)
 }
@@ -55,9 +58,10 @@ EventMachine.run {
 
 		salon = nil
 
-	
+		# Thread principal permettant de jouer
 		mainThread = Thread.new do
-			# We start when the connexion is opened
+			# Mutex d'attente du thread pour attendre l'ouverture de la websocket
+
 			connexionMutex.synchronize{
 				connectionOpened.wait(connexionMutex)
 			}
@@ -67,7 +71,6 @@ EventMachine.run {
 
 			puts client.pseudo + " vient de se connecter"
 
-			
 			numJoueur = -1
 
 			# On boucle en attendant le début de la partie ou en quittant le salon
@@ -110,6 +113,7 @@ EventMachine.run {
 
 				puts client.pseudo+" commence à attendre"
 
+				# Récupération du numéro de joueur et connexion au salon
 				numJoueur = client.salon.connexionJoueurSalon(client)
 
 				puts client.pseudo+" a le numéro de joueur "+numJoueur.to_s
@@ -126,10 +130,13 @@ EventMachine.run {
 
 				# À reprendre pour transmettre client et pas les éléments séparément
 				gestionJoueur = GestionJoueur.new(communication,partie,joueur,client.salon)
+
+				# Le joueur de la partie connait l'instance le gérant
 				joueur.obtenirInstanceGestionJoueur(gestionJoueur)
 
 				puts "Debut d'attente de "+client.pseudo
 
+				# Test si la partie n'est pas commencée afin d'endormir le client si besoin
 				debutPartie = !client.salon.debutPartie ? client.salon.attendreDebutPartie(client) : true
 
 				if not debutPartie
@@ -144,21 +151,28 @@ EventMachine.run {
 
 			puts "Debut partie"
 
+			# Préparation du client pour le début de partie
 			gestionJoueur.preparationClient(client.pseudo)
+
+			# Gestion du joueur durant toute la partie
 			gestionJoueur.tourJoueur()
 		
+			# Envoi des scores finaux au client
 			communication.send("score", partie.obtenirScores)
+
+			# On ferme la ws
 			ws.close()
 		end
 
 
-
+		# Réaction du serveur lors de l'ouverture d'une connexion websocket
 		ws.onopen{
 			client = Client.new
 			communication = Communication.new(ws, client)
 			communication.setAuthorizedTypes(authorizedTypes)
 			communication.setSpecialTypes(specialTypes)
 
+			# On commence le ping du joueur
 			communication.startPing()
 
 			client.com = communication
@@ -167,33 +181,43 @@ EventMachine.run {
 			puts "connexion acceptee"
 			puts ">>> Clients = #{nbClients}"
 
+			# Réveil du thread principal
 			connexionMutex.synchronize{
 				connectionOpened.broadcast
 			}
 
 		}
 
+		# Réaction du serveur sur fermeture de la websocket
 		ws.onclose {
 			nbClients -= 1
 			puts "Connection closed"
 			puts "<<< Clients = #{nbClients}"
 
 			puts ws.to_s
+			# Si le client est encore dans un salon on le déconnecte
 			if(client.salon)
 				client.salon.deconnexionJoueur(ws)
 			end
+
+			# On tue son thread
 			mainThread.kill()
 		}
 
+		# Réaction du serveur sur réception d'un message de la websocket
 		ws.onmessage { |msg|
 			test = JSON.parse(msg)
+			# Si on a un message de deco on réveille le joueur et on le déconnecte du salon
 			if(test["type"]  == "deco")
 				condVarAttenteDebut.signal
 				client.salon.deconnexionJoueur(ws)
 			end
+
+			# On traite le message
 			communication.filterReception(msg)
 		}
 
+		#Réaction du serveur en cas d'erreur
 		ws.onerror { |error|
 			puts "websockets error: #{error}"
 		}
