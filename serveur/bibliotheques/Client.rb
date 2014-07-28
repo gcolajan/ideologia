@@ -113,7 +113,7 @@ class Client
 		
 			# Envoi des scores finaux au client
 			puts 'envoi score'
-			communication.send('score', @salon.partie.obtenirScores)
+			@com.send('score', @salon.partie.obtenirScores)
 
 			# On ferme la ws
 			@com.close
