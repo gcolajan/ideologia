@@ -61,7 +61,7 @@ class GestionJoueur
 				# Vérification des données venant du client
 				if((idActionChoisie.to_i.integer?) && listeId.include?(idActionChoisie))
 					# Création de l'opération choisie
-					operation = Operation.new(idActionChoisie["data"], @partie.joueurCourant.ideologie.numero)
+					operation = Operation.new(idActionChoisie, @partie.joueurCourant.ideologie.numero)
 					
 					# Repercussion du choix
 					@partie.appliquerOperationTerritoire(operation, caseCourante.territoire)

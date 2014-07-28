@@ -21,10 +21,6 @@ elsif ARGV.size == 2
 	port = ARGV[1].to_i
 end
 
-sem = Mutex.new
-
-semSalon = Mutex.new
-
 listeSalons = ListeSalon.new
 
 nbClients = 0
@@ -53,8 +49,6 @@ EventMachine.run {
 		communication = nil
 		
 		condVarAttenteDebut = nil
-
-		salon = nil
 
 		# Réaction du serveur lors de l'ouverture d'une connexion websocket
 		ws.onopen{
@@ -107,6 +101,7 @@ EventMachine.run {
 		#Réaction du serveur en cas d'erreur
 		ws.onerror { |error|
 			puts "websockets error: #{error}"
+			puts error.backtrace
 		}
 		
 	end

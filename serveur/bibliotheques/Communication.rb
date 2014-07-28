@@ -1,12 +1,5 @@
 class Communication
 
-	# @ws
-	# @emission
-	# @reception
-	# @data
-
-	# @pingThread
-
 	def initialize(ws, client)
 		@ws        = ws
 		@client    = client

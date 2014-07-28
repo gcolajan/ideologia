@@ -69,8 +69,6 @@ class Client
 
 			puts "#{@pseudo} vient de se connecter"
 
-			numJoueur = -1
-
 			begin
 				# On fait choisir un salon 
 				puts "#{@pseudo} est entrain de choisir un salon"
