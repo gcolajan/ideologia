@@ -89,7 +89,7 @@ class Client
 			end while (@salon.nil?)
 
 			# On initialise tout un tas de variables pour pouvoir démarrer la partie
-			joueur = @salon.partie.recupererInstanceJoueur(client.num)
+			joueur = @salon.partie.recupererInstanceJoueur(self.num)
 
 			joueur.definirPseudo(@pseudo)
 			# À reprendre pour transmettre client et pas les éléments séparément
