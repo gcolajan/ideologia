@@ -10,17 +10,20 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 		</div>		
 	</div>
 
-	<div class="row full-width">
+	<div class="row full-width" ng-controller="IdeologiaCtrl">
 
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel">
 				<h1>Observations</h1>
 				
-				<div id="timer"><span>09:59</span></div>
+				<div id="timer"><span>{{timer}}</span></div>
 
 				<h2>Adversaires</h2>
+				{{enmies}}
 				<h2>Historique</h2>
+				{{history}}
 				<h2>Détails</h2>
+				{{details}}
 			</div>
 		</div>
 
@@ -31,21 +34,23 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 				<h1>Connexion</h1>
 					<div id="status"></div>
 					<ul id="waiting"></ul>
+					<form ng-submit="sendPseudo()">
 					<div id="formPseudo">
 							<div class="row collapse">
 								<div class="columns medium-10 small-8">
-									<input type="text" name="pseudo" id="pseudo" placeholder="Pseudo" class="columns small-10" />
+									<input type="text" name="pseudo" ng-model="pseudo" id="pseudo" placeholder="Pseudo" class="columns small-10" />
 								</div>
 								<div class="columns medium-2 small-4">
 									<input type="submit" value="Continuer" class="button postfix" />
 								</div>
 							</div>
 					</div>
+					</form>
 					<div id="rooms" style="display:none"></div>
 				</div></div>
 
 				<img src="carte.svg" /><br />
-				<h1>Ideologia</h1>
+				<h1>{{game}}</h1>
 			</div>
 		</div>
 		<div class="large-2 columns" id="mypan">
@@ -80,21 +85,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 
 	<div style="height:80px"></div>
 
-	<script src="assets/javascripts/main.js?<?php echo uniqid(); ?>"></script>
 
-	<script>
-		function Equilibre(Indentifier){
-			$(Indentifier).each(function(){
-				var h=0;
-				$(">*", this);
-				$(Indentifier).each(function(){ h=Math.max(h,this.offsetHeight); }).css({'height': h+'px'});
-			});
-		}
-
-		$(document).ready(function() {
-			Equilibre(".mapel");
-		});
-	</script>
 
 <?php
 pied();
