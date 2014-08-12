@@ -37,10 +37,6 @@ function entete($titre) {
 
 // 	<script src="//jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
 function pied() {
-	echo '
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
-	<script src="assets/javascripts/jquery.ws.js?'.uniqid().'"></script>';
-
 	if($dir = opendir('./assets/javascripts/game'))
 		while (($file = readdir($dir)) !== false)
 			if ($file != '.' AND $file != '..')
@@ -48,10 +44,14 @@ function pied() {
 	<script src="assets/javascripts/game/'.$file.'?'.time().'"></script>'; 
 
 	echo '
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+
 	<script src="assets/javascripts/Startup.js?'.uniqid().'"></script>
 	<script src="assets/javascripts/constants.js?'.uniqid().'"></script>
 
 	<script src="assets/javascripts/main.js?'.uniqid().'"></script>
+
+	<script src="assets/javascripts/services/websocket.js?'.uniqid().'"></script>
 
 	<script>
 		function Equilibre(Indentifier){

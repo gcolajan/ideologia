@@ -1,71 +1,63 @@
 var app = angular.module('myGame', []);
 
-app.service('ws', function($rootScope) {
+app.controller('IdeologiaCtrl', function($scope, ws) {
 
-	var opened = false;
-	var ws = new WebSocket("ws://127.0.0.1:8080");
-	var callbacks = {};
+	$scope.popunderTitle = '';
 
-	window.addEventListener("beforeunload", function(event) {
-		ws.close();
-		ws = null;
+	$scope.currentPhase = undefined;
+
+	$scope.salons = [];
+	$scope.adversaires = [];
+
+	// Définition des actions associées à chaque phase
+	$scope.phases = {
+		introduction: function() {
+			$scope.popunderTitle = 'Connexion';
+		},
+		salons: function() {
+			$scope.popunderTitle = 'Salons de jeu';
+		},
+		attente: function() {
+			$scope.popunderTitle = 'Joueurs';
+		}
+	};
+
+	ws.on('phase', function(phase) {
+		if ($scope.phases[phase] !== undefined) {
+			$scope.currentPhase = phase;
+			$scope.phases[phase]();
+		} else
+			console.log('Phase unknown');
 	});
 
-	ws.onopen = function() {
-		console.log('WS opened')
-		opened = true;
-	};
+	ws.on('salons', function(salons) {
+		$scope.salons = salons;
+		console.log(salons);
+	});
 
-	ws.onclose = function() {
-		if (!opened)
-			console.log('Impossible d\'établir la connexion');
-		else
-			console.log('Connexion interrompue !');
+	ws.on('joined', function(salon) {
+		$scope.salon = salon;
+		$scope.currentPhase = 'attente';
+	});
 
-		console.log('WS closed');
-	};
+	ws.on('waitingWith', function(adversaires) {
+		$scope.adversaires = adversaires;
+	})
 
-
-	var events = {
-		on: function(eventName, callback) {
-			callbacks[eventName] = callback;
-		},
-		emit: function(eventName, data) {
-			var transmission = {};
-			transmission.type = eventName;
-			if (data) {
-				transmission.data = data;
-			}
-			ws.send(JSON.stringify(transmission));
-		},
-		close: function() {
-			ws.close();
-		}
-	};
-
-	ws.onmessage = function(e) {
-		var msg = JSON.parse(e.data);
-		if (callbacks[msg.type]) {
-			var args = '';
-			if (msg.data)
-				args = msg.data;
-
-			$rootScope.$apply(callbacks[msg.type](args));
-		}
-		else
-			console.log('Unregistered property');
-	};
-
-	callbacks.ping = function() { events.emit('pong'); }
-
-	return events;
-});
-
-app.controller('IdeologiaCtrl', function($scope, ws) {
+	$scope.showPopunder = function() {
+		return $scope.currentPhase == 'introduction'
+			|| $scope.currentPhase == 'salons'
+			|| $scope.currentPhase == 'attente';
+	}
 
 	$scope.sendPseudo = function() {
 		ws.emit('pseudo', $scope.pseudo);
-		console.log("pseudo sended");
+		console.log("pseudo send");
+	}
+
+	$scope.joinSalon = function(index) {
+		ws.emit('join', index);
+		console.log('salon send');
 	}
 });
 

@@ -30,11 +30,11 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 		<div class="large-8 columns" id="map">
 			<div class="mapel">
 
-				<div id="startup"><div class="conteneur">
-				<h1>Connexion</h1>
+				<div id="startup" ng-show="showPopunder()"><div class="conteneur">
+				<h1>{{popunderTitle}}</h1>
 					<div id="status"></div>
 					<ul id="waiting"></ul>
-					<form ng-submit="sendPseudo()">
+					<form ng-show="currentPhase == 'introduction'" ng-submit="sendPseudo()">
 					<div id="formPseudo">
 							<div class="row collapse">
 								<div class="columns medium-10 small-8">
@@ -46,7 +46,20 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 							</div>
 					</div>
 					</form>
-					<div id="rooms" style="display:none"></div>
+					<div id="rooms" ng-show="currentPhase == 'salons'">
+						<div ng-repeat="salon in salons">
+						<h2>Salon #{{$index}}</h2>
+						<div class="row collapse">
+							<div class="columns small-8"><p class="room-detail">{{salon}} joueur(s)</p></div> <!-- ((salon == 0) ? 'Aucun' : salon)+' joueur'+((salon>1)?'s') -->
+							<div class="columns small-4"><input type="button" value="Rejoindre !" class="room-detail" ng-click="joinSalon($index)" /></div>
+						</div>
+						</div>						
+					</div>
+					<div ng-show="currentPhase == 'attente'">
+						<ul>
+							<li ng-repeat="joueur in adversaires">{{joueur}}</li>
+						</ul>
+					</div>
 				</div></div>
 
 				<img src="carte.svg" /><br />
