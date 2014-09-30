@@ -9,16 +9,12 @@ class GestionJoueur
 		@salon = instanceSalon
 	end
 
-	def preparationClient
+	def obtenirPartenaires
 
 		# On envoie une synthèse des personnes participant et les idéologies associées
 		partenaires = @partie.obtenirTableauPartenaires
 		envoieDonnees("partenaires", partenaires)
 		
-		# On envoie au client les niveaux idéaux de ses jauges.
-		niveaux = @joueur.niveauxIdeals
-		envoieDonnees("jaugesIdeales", niveaux)
-
 	end
 
 
