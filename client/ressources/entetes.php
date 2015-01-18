@@ -11,10 +11,10 @@ function entete($titre) {
 		<link rel="stylesheet" href="assets/stylesheets/normalize.css?'.uniqid().'" />
 		<link rel="stylesheet" href="assets/stylesheets/design.css?'.uniqid().'" />
 		<link rel="stylesheet" href="assets/stylesheets/foundation.min.css" />
-		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="assets/stylesheets/fonts.css" />
 		<link href="//fonts.googleapis.com/css?family=Cabin:700|Electrolize" rel="stylesheet" type="text/css" />
 		
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="assets/javascripts/jquery.min.js"></script>
 	</head>
 	<body ng-app="myGame">
 
@@ -44,10 +44,15 @@ function pied() {
 	<script src="assets/javascripts/game/'.$file.'?'.time().'"></script>'; 
 
 	echo '
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+	<script src="assets/javascripts/angular.min.js"></script>
 
-	<script src="assets/javascripts/Startup.js?'.uniqid().'"></script>
-	<script src="assets/javascripts/constants.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/Phase.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/phases/introduction.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/phases/salons.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/phases/attente.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/phases/jeu.js?'.uniqid().'"></script>
+
+	<script src="assets/javascripts/Collection.js?'.uniqid().'"></script>
 
 	<script src="assets/javascripts/main.js?'.uniqid().'"></script>
 

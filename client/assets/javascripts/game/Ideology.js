@@ -1,6 +1,7 @@
 // Idéologies
-function Ideology(name, color) {
+function Ideology(name, slug, color) {
 	this.name = name;
+	this.slug = slug;
 	this.color = color;
 	this.operations = [];
 	this.events = [];

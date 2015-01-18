@@ -3,8 +3,11 @@ app.service('ws', function($rootScope) {
 	var opened = false;
 	var ws = new WebSocket("ws://127.0.0.1:8080");
 	var callbacks = {};
+	var currentPhase = undefined;
 
 	var status = '';
+
+	callbacks.ping = function() { events.emit('pong'); };
 
 	window.addEventListener("beforeunload", function(event) {
 		ws.close();
@@ -27,7 +30,12 @@ app.service('ws', function($rootScope) {
 
 
 	var events = {
+		registerPhase: function(phase) {
+			currentPhase = phase;
+		},
+		// For global purpose
 		on: function(eventName, callback) {
+			console.log('Globally registered events: '+eventName);
 			callbacks[eventName] = callback;
 		},
 		emit: function(eventName, data) {
@@ -36,7 +44,6 @@ app.service('ws', function($rootScope) {
 			if (data !== undefined) {
 				transmission.data = data;
 			}
-			console.log(transmission)
 			ws.send(JSON.stringify(transmission));
 		},
 		close: function() {
@@ -46,18 +53,20 @@ app.service('ws', function($rootScope) {
 
 	ws.onmessage = function(e) {
 		var msg = JSON.parse(e.data);
-		if (callbacks[msg.type]) {
-			var args = '';
-			if (msg.data !== undefined)
-				args = msg.data;
+		var args = '';
+		if (msg.data !== undefined)
+			args = msg.data;
 
+		// First, if can be caught by the phase callback
+		if (currentPhase !== undefined && currentPhase.isStarted() && currentPhase.hasOperation(msg.type)) {
+			$rootScope.$apply(currentPhase.run(msg.type)($rootScope, args));
+		}
+		else if (callbacks[msg.type]) {
 			$rootScope.$apply(callbacks[msg.type](args));
 		}
 		else
-			console.log('Unregistered property');
+			console.log('Unregistered property: '+msg.type);
 	};
-
-	callbacks.ping = function() { events.emit('pong'); }
 
 	return events;
 });
