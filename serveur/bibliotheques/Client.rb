@@ -69,14 +69,14 @@ class Client
 
 			puts "#{@pseudo} vient de se connecter"
 
-			@com.send('phase', 'salons');
+			@com.send('phase', 'salons')
 
 			begin
 				# On fait choisir un salon 
 				puts "#{@pseudo} est entrain de choisir un salon"
 				@listeSalons.selection(self)
 
-				@com.send('phase', 'attente');
+				@com.send('phase', 'attente')
 
 				# Test si la partie n'est pas commencée afin d'endormir le client si besoin
 				if @salon.full?
@@ -105,6 +105,7 @@ class Client
 
 
 			puts 'Debut partie'
+			@com.send('phase', 'jeu')
 
 			# Préparation du client pour le début de partie
 

@@ -1,12 +1,12 @@
 // Waiting (attente) phase
 var attentePhase = new Phase('attente',
-    function(scope, http, ws) {
+    function(scope) {
         console.log("Attente is initialized");
     },
-    function(scope, http, ws) {
+    function(scope) {
         console.log("Attente is started");
         scope.popunderTitle = 'Joueurs';
     },
-    function() {
+    function(scope) {
         console.log('Ending attente phase');
     });

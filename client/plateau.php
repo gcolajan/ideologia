@@ -3,7 +3,7 @@ require 'ressources/entetes.php';
 entete('Plateau');
 $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 ?>
-<div ng-controller="IdeologiaCtrl">
+<div ng-controller="IdeologiaCtrl" id="IdeologiaCtrl">
 		
 	
 
@@ -58,7 +58,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 					<div id="formPseudo">
 							<div class="row collapse">
 								<div class="columns medium-10 small-8">
-									<input type="text" name="pseudo" ng-model="pseudo" id="pseudo" placeholder="Pseudo" class="columns small-10" />
+									<input type="text" autofocus name="pseudo" ng-model="pseudo" id="pseudo" placeholder="Pseudo" class="columns small-10" />
 								</div>
 								<div class="columns medium-2 small-4">
 									<input type="submit" value="Continuer" class="button postfix" />

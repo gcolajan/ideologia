@@ -31,7 +31,7 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 	ws.on('phase', function(phase) {
 		// If they were a previous phase, we end it before
 		if ($scope.currentPhase !== undefined) {
-			$scope.currentPhase.end($scope, $http, ws);
+			$scope.currentPhase.end($scope);
 		}
 
 		// We're looking for the phase asked by the server
@@ -41,9 +41,9 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 				$scope.currentPhase = $scope.phases[i];
 				hasRegistered = true;
 
-				$scope.currentPhase.init($scope, $http, ws);
+				$scope.currentPhase.init($scope);
 				ws.registerPhase($scope.currentPhase);
-				$scope.currentPhase.start($scope, $http, ws);
+				$scope.currentPhase.start($scope);
 			}
 		}
 

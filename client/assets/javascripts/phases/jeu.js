@@ -1,11 +1,11 @@
 // Jeu phase
 var jeuPhase = new Phase('jeu',
-    function(scope, http, ws) {
-        console.log("Attente is initialized");
-        http({
-            method: 'GET',
-            url: 'data.ajax.php'
-        }).success(function (result) {
+    function(scope) {
+        console.log("Jeu is initialized");
+
+        $http = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('$http');
+        $http.get('data.ajax.php')
+            .success(function (result) {
             scope.territoires = result.territory;
             for (var id in scope.territoires)
             {
@@ -21,11 +21,14 @@ var jeuPhase = new Phase('jeu',
             // result.gauge
 
             // result.ideology
+        })
+        .error(function() {
+            console.log('Game\'s data can\'t be reached!');
         });
     },
-    function(scope, http, ws) {
-        console.log("Attente is started");
+    function(scope) {
+        console.log("Jeu is started");
     },
-    function(scope, http, ws) {
-        console.log('Ending attente phase');
+    function(scope) {
+        console.log('Ending jeu phase');
     });

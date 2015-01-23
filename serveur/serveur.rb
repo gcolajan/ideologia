@@ -62,7 +62,7 @@ EventMachine.run {
 
 			client.com = communication
 
-			client.com.send('phase', 'introduction');
+			client.com.send('phase', 'introduction')
 
 			nbClients += 1
 			puts 'connexion acceptee'
