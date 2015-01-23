@@ -108,8 +108,8 @@ class Client
 
 			# Préparation du client pour le début de partie
 
-			puts 'preparationClient'
-			gestionJoueur.preparationClient
+			puts 'Recuperation des partenaires'
+			gestionJoueur.obtenirPartenaires
 
 			# Gestion du joueur durant toute la partie
 			puts 'Debut tour'
