@@ -10,3 +10,5 @@ var salonsPhase = new Phase('salons',
     function(scope) {
         console.log('Ending salon phase');
     });
+
+salonsPhase.hasPopunder = true;

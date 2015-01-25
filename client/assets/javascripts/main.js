@@ -66,10 +66,7 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 	});
 
 	$scope.showPopunder = function() {
-		return $scope.currentPhase !== undefined && (
-			$scope.currentPhase.is('introduction')
-			|| $scope.currentPhase.is('salons')
-			|| $scope.currentPhase.is('attente'));
+		return $scope.currentPhase !== undefined && $scope.currentPhase.hasPopunder;
 	};
 
 	$scope.sendPseudo = function() {

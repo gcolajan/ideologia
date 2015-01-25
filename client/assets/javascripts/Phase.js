@@ -28,6 +28,12 @@ function Phase(name, before, starting, ending) {
     this.operations = {};
 
     /**
+     * Tell if this phase run on the popunder
+     * @type {boolean}
+     */
+    this.hasPopunder = false;
+
+    /**
      * Returns if the asked phase is that one
      * @type {function(this:Phase)}
      */

@@ -11,3 +11,5 @@ var introductionPhase = new Phase('introduction',
     function(scope) {
         console.log('Ending intro phase');
     });
+
+introductionPhase.hasPopunder = true;

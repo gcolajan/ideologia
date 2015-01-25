@@ -10,3 +10,5 @@ var attentePhase = new Phase('attente',
     function(scope) {
         console.log('Ending attente phase');
     });
+
+attentePhase.hasPopunder = true;
