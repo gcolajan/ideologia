@@ -36,23 +36,27 @@ function entete($titre) {
 }
 
 // 	<script src="//jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
+
 function pied() {
+	echo '
+	<script src="assets/javascripts/Collection.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/Set.js?'.uniqid().'"></script>
+
+	<script src="assets/javascripts/angular.min.js"></script>'."\n";
+
 	if($dir = opendir('./assets/javascripts/game'))
 		while (($file = readdir($dir)) !== false)
 			if ($file != '.' AND $file != '..')
 				echo '
-	<script src="assets/javascripts/game/'.$file.'?'.time().'"></script>'; 
+	<script src="assets/javascripts/game/'.$file.'?'.time().'"></script>';
 
 	echo '
-	<script src="assets/javascripts/angular.min.js"></script>
 
 	<script src="assets/javascripts/Phase.js?'.uniqid().'"></script>
 	<script src="assets/javascripts/phases/introduction.js?'.uniqid().'"></script>
 	<script src="assets/javascripts/phases/salons.js?'.uniqid().'"></script>
 	<script src="assets/javascripts/phases/attente.js?'.uniqid().'"></script>
 	<script src="assets/javascripts/phases/jeu.js?'.uniqid().'"></script>
-
-	<script src="assets/javascripts/Collection.js?'.uniqid().'"></script>
 
 	<script src="assets/javascripts/main.js?'.uniqid().'"></script>
 

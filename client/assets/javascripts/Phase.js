@@ -23,9 +23,16 @@ function Phase(name, before, starting, ending) {
 
     /**
      * Store operations that can be processed during starting phase
+     * They are called when the server send something (except phases)
      * @type {{}}
      */
-    this.operations = {};
+    this.operations = new Set();
+
+    /**
+     * Store functions to react when the user trigger something from the UI
+     * @type {{}}
+     */
+    this.userActions = new Set();
 
     /**
      * Tell if this phase run on the popunder
@@ -39,6 +46,14 @@ function Phase(name, before, starting, ending) {
      */
     this.is = function(name) {
         return (name == this.name);
+    }.bind(this);
+
+    /**
+     * Returns if the phase is started (condition to run operations).
+     * @returns {boolean}
+     */
+    this.isStarted = function() {
+        return (this.state == States.STARTED);
     }.bind(this);
 
     /**
@@ -93,34 +108,17 @@ function Phase(name, before, starting, ending) {
     }.bind(this);
 
     /**
-     * Returns if the operation is registered
+     * Execute a method, before, checks if phase is started & method exists
      * @type {function(this:Phase)}
+     * @return false or method return.
      */
-    this.hasOperation = function(name) {
-        return (this.operations[name] !== undefined);
-    }.bind(this);
-
-    /**
-     * Returns if the phase is started (condition to run operations).
-     * @returns {boolean}
-     */
-    this.isStarted = function() {
-        return (this.state == States.STARTED);
-    }.bind(this);
-
-    /**
-     * Add an operation that can be runned when the phase is started
-     * @type {function(this:Phase)}
-     */
-    this.addOperation = function(name, operation) {
-        if (this.hasOperation(name)) {
-            console.log('Phase::addOperation: '+name+' can\'t be declared twice.');
-            return false;
+    this.getOperation = function(opName) {
+        if (!this.isStarted()) {
+            console.log('Phase::getOperation: '+opName+' can\'t be processed because state is '+this.state+' (expected: '+States.STARTED+').');
+            return undefined;
         }
 
-        this.operations[name] = operation;
-
-        return true;
+        return this.operations.get(opName);
     }.bind(this);
 
     /**
@@ -128,18 +126,13 @@ function Phase(name, before, starting, ending) {
      * @type {function(this:Phase)}
      * @return false or method return.
      */
-    this.run = function(opName) {
-        if (this.state != States.STARTED) {
-            console.log('Phase::run: '+opName+' can\'t be processed because state is '+this.state+' (expected: '+States.STARTED+').');
-            return false;
+    this.getUserAction = function(uaName) {
+        if (!this.isStarted()) {
+            console.log('Phase::getUserAction: '+uaName+' can\'t be processed because state is '+this.state+' (expected: '+States.STARTED+').');
+            return undefined;
         }
 
-        if (this.operations['name'] !== undefined) {
-            console.log('Phase::run: '+opName+' doesn\'t exist.');
-            return false;
-        }
-
-        return this.operations[opName];
+        return this.userActions.get(uaName);
     }.bind(this);
 
     /**

@@ -58,8 +58,8 @@ app.service('ws', function($rootScope) {
 			args = msg.data;
 
 		// First, if can be caught by the phase callback
-		if (currentPhase !== undefined && currentPhase.isStarted() && currentPhase.hasOperation(msg.type)) {
-			$rootScope.$apply(currentPhase.run(msg.type)($rootScope, args));
+		if (currentPhase !== undefined && currentPhase.isStarted() && currentPhase.operations.exists(msg.type)) {
+			$rootScope.$apply(currentPhase.getOperation(msg.type)($rootScope, args));
 		}
 		else if (callbacks[msg.type]) {
 			$rootScope.$apply(callbacks[msg.type](args));
