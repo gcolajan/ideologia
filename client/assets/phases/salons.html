@@ -5,7 +5,7 @@
 	<h2>Salon #{{$index}}</h2>
 	<div class="row collapse">
 		<div class="columns small-8"><p class="room-detail">{{salon}} joueur(s)</p></div> <!-- ((salon == 0) ? 'Aucun' : salon)+' joueur'+((salon>1)?'s') -->
-		<div class="columns small-4"><input type="button" value="Rejoindre !" class="room-detail" ng-click="joinSalon($index)" /></div>
+		<div class="columns small-4"><input type="button" value="Rejoindre !" class="room-detail" ng-click="trigger('join', $index)" /></div>
 	</div>
 	</div>						
 </div>

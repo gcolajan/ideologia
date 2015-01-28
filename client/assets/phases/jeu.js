@@ -1,8 +1,6 @@
 // Jeu phase
 var jeuPhase = new Phase('jeu',
     function(scope) {
-        console.log("Jeu is initialized");
-
         $http = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('$http');
         $http.get('data.ajax.php')
             .success(function (result) {
@@ -27,8 +25,18 @@ var jeuPhase = new Phase('jeu',
         });
     },
     function(scope) {
-        console.log("Jeu is started");
     },
     function(scope) {
-        console.log('Ending jeu phase');
     });
+
+
+jeuPhase.userActions.insert('onTerritory', function($scope, territory) {
+    $scope.currentTerr = territory;
+    $scope.oldColor = $scope.currentTerr.couleur;
+    $scope.currentTerr.couleur = 'rgba(100,30,168,0.6)';
+});
+
+jeuPhase.userActions.insert('leaveTerritory', function($scope, _) {
+    $scope.currentTerr.couleur = $scope.oldColor;
+    $scope.currentTerr = null;
+});

@@ -35,7 +35,7 @@ app.service('ws', function($rootScope) {
 		},
 		// For global purpose
 		on: function(eventName, callback) {
-			console.log('Globally registered events: '+eventName);
+			console.log('Global event: '+eventName);
 			callbacks[eventName] = callback;
 		},
 		emit: function(eventName, data) {

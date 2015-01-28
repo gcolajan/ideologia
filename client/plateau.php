@@ -30,8 +30,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			</div>
 		</div>
 
-		<div class="large-8 columns" id="map">
-			<div class="mapel">
+		<div class="large-8 columns" id="map"><div class="mapel">
 			<div class="indicateurs">
 				<ul>
 					<li title="Social-politique"><i class="icon-jauge-social"></i></li>
@@ -60,8 +59,8 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 				</g>
 			</svg>
 			<h1>{{game}}</h1>
-			</div>
-		</div>
+		</div></div>
+
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel">
 				<h1>Commandement</h1>

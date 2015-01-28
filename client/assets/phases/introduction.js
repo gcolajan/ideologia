@@ -1,15 +1,20 @@
 var introductionPhase = new Phase('introduction',
     function(scope) {
-        console.log("Intro is initialized");
         scope.board = new Board();
         scope.board.init();
     },
     function(scope) {
-        console.log("Intro is started");
-        scope.popunderTitle = 'Connexion';
     },
     function(scope) {
-        console.log('Ending intro phase');
     });
 
 introductionPhase.hasPopunder = true;
+
+introductionPhase.userActions.insert('setPseudo', function($scope, args) {
+    // Updating the local model
+    $scope.pseudo = pseudo.value;
+
+    // Emitting some data to the server
+    ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
+    ws.emit('pseudo', $scope.pseudo);
+});

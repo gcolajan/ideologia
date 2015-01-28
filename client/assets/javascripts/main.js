@@ -1,12 +1,9 @@
 "use strict";
-
 var app = angular.module('myGame', []);
 
 app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 
 	$scope.game = 'Ideologia';
-
-	$scope.popunderTitle = '';
 
 	$scope.currentPhase = undefined;
 	$scope.currentTerr = null;
@@ -28,6 +25,9 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 	$scope.phases.push(attentePhase);
 	$scope.phases.push(jeuPhase);
 
+	/**
+	 * How do we react when we receive the instruction to switch phase
+	 */
 	ws.on('phase', function(phase) {
 		// If they were a previous phase, we end it before
 		if ($scope.currentPhase !== undefined) {
@@ -44,61 +44,38 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 				$scope.currentPhase.init($scope);
 				ws.registerPhase($scope.currentPhase);
 				$scope.currentPhase.start($scope);
+				console.log($scope.currentPhase.name+' phase is started.');
 			}
 		}
 
 		if (!hasRegistered)
-			console.log('Server asked for phase '+phase+' but isn\'t registered.')
+			console.log('Server asked for phase '+phase+' but isn\'t registered.');
 	});
 
-	ws.on('salons', function(salons) {
-		$scope.salons = salons;
-		console.log(salons);
-	});
 
-	ws.on('joined', function(salon) {
-		$scope.salon = salon;
-		//$scope.currentPhase.name = 'attente';
-	});
+	/**
+	 * Permit to trigger "userActions" from the current phase
+	 * @param actionName
+	 * @param args
+	 */
+	$scope.trigger = function(actionName, args) {
+		if ($scope.currentPhase === undefined) {
+			console.log('IdeologiaCtrl::trigger: action can\'t be performed (no phase).');
+			return;
+		}
 
-	ws.on('waitingWith', function(adversaires) {
-		$scope.adversaires = adversaires;
-	});
+		if (!$scope.currentPhase.userActions.exists(actionName)) {
+			console.log('IdeologiaCtrl::trigger: "'+actionName+'" isn\'t referenced (phase: '+$scope.currentPhase.name+').');
+			return;
+		}
+
+		// Triggering the user action with the current scope and provided args
+		$scope.currentPhase.getUserAction(actionName)($scope, args);
+	};
+
 
 	$scope.showPopunder = function() {
 		return $scope.currentPhase !== undefined && $scope.currentPhase.hasPopunder;
 	};
-
-	$scope.setPseudo = function(pseudo) {
-		$scope.pseudo = pseudo;
-		ws.emit('pseudo', pseudo);
-		console.log("pseudo send");
-	};
-
-	$scope.joinSalon = function(index) {
-		ws.emit('join', index);
-		console.log('salon send');
-	};
-
-
-
-	$scope.onTerritoire = function(territoire) {
-		$scope.currentTerr = territoire;
-		$scope.oldColor = $scope.currentTerr.couleur;
-		$scope.currentTerr.couleur = 'rgba(100,30,168,0.6)';
-
-	};
-
-	$scope.leaveTerritoire = function() {
-		$scope.currentTerr.couleur = $scope.oldColor;
-		$scope.currentTerr = null;
-	}
-});
-
-app.controller('MapCtrl', function($scope, ws) {
-
-});
-
-app.controller('MovementCtrl', function($scope, ws) {
 
 });
