@@ -26,32 +26,24 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 	$scope.phases.push(jeuPhase);
 
 	/**
-	 * How do we react when we receive the instruction to switch phase
+	 * Permit to call the right operation when we receive a message (which is not globally referenced)
+	 * @param msgName
+	 * @param args
 	 */
-	ws.on('phase', function(phase) {
-		// If they were a previous phase, we end it before
-		if ($scope.currentPhase !== undefined) {
-			$scope.currentPhase.end($scope);
+	ws.setOnMessageCallback(function(msgName, args) {
+		if ($scope.currentPhase === undefined) {
+			console.log('IdeologiaCtrl::onMessageCallback: action can\'t be performed (no phase).');
+			return;
 		}
 
-		// We're looking for the phase asked by the server
-		var hasRegistered = false;
-		for (var i in $scope.phases) {
-			if ($scope.phases[i].name == phase) {
-				$scope.currentPhase = $scope.phases[i];
-				hasRegistered = true;
-
-				$scope.currentPhase.init($scope);
-				ws.registerPhase($scope.currentPhase);
-				$scope.currentPhase.start($scope);
-				console.log($scope.currentPhase.name+' phase is started.');
-			}
+		if (!$scope.currentPhase.operations.exists(msgName)) {
+			console.log('IdeologiaCtrl::onMessageCallback: "'+msgName+'" isn\'t referenced (phase: '+$scope.currentPhase.name+').');
+			return;
 		}
 
-		if (!hasRegistered)
-			console.log('Server asked for phase '+phase+' but isn\'t registered.');
+		// Triggering the user action with the current scope and provided args
+		$scope.currentPhase.getOperation(msgName)($scope, args);
 	});
-
 
 	/**
 	 * Permit to trigger "userActions" from the current phase
@@ -73,9 +65,34 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 		$scope.currentPhase.getUserAction(actionName)($scope, args);
 	};
 
+	/**
+	 * How do we react when we receive the instruction to switch phase
+	 */
+	ws.on('phase', function(phase) {
+		// If they were a previous phase, we end it before
+		if ($scope.currentPhase !== undefined) {
+			$scope.currentPhase.end($scope);
+		}
+
+		// We're looking for the phase asked by the server
+		var found = false;
+		for (var i in $scope.phases) {
+			if ($scope.phases[i].name == phase) {
+				$scope.currentPhase = $scope.phases[i];
+				found = true;
+
+				$scope.currentPhase.init($scope);
+				$scope.currentPhase.start($scope);
+				console.log($scope.currentPhase.name+' phase is started.');
+			}
+		}
+
+		if (!found)
+			console.log('Server asked for phase '+phase+' but isn\'t registered.');
+	});
+
 
 	$scope.showPopunder = function() {
 		return $scope.currentPhase !== undefined && $scope.currentPhase.hasPopunder;
 	};
-
 });

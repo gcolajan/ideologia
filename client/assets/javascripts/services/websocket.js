@@ -2,8 +2,8 @@ app.service('ws', function($rootScope) {
 
 	var opened = false;
 	var ws = new WebSocket("ws://127.0.0.1:8080");
+	var onMessageCallback = {};
 	var callbacks = {};
-	var currentPhase = undefined;
 
 	var status = '';
 
@@ -28,10 +28,24 @@ app.service('ws', function($rootScope) {
 		console.log('WS closed');
 	};
 
+	ws.onmessage = function(e) {
+		var msg = JSON.parse(e.data);
+		var args = '';
+		if (msg.data !== undefined)
+			args = msg.data;
+
+		if (callbacks[msg.type]) {
+			$rootScope.$apply(callbacks[msg.type](args));
+		}
+		else {
+			$rootScope.$apply(onMessageCallback(msg.type, args));
+		}
+	};
+
 
 	var events = {
-		registerPhase: function(phase) {
-			currentPhase = phase;
+		setOnMessageCallback: function(fct) {
+			onMessageCallback = fct;
 		},
 		// For global purpose
 		on: function(eventName, callback) {
@@ -49,23 +63,6 @@ app.service('ws', function($rootScope) {
 		close: function() {
 			ws.close();
 		}
-	};
-
-	ws.onmessage = function(e) {
-		var msg = JSON.parse(e.data);
-		var args = '';
-		if (msg.data !== undefined)
-			args = msg.data;
-
-		// First, if can be caught by the phase callback
-		if (currentPhase !== undefined && currentPhase.isStarted() && currentPhase.operations.exists(msg.type)) {
-			$rootScope.$apply(currentPhase.getOperation(msg.type)($rootScope, args));
-		}
-		else if (callbacks[msg.type]) {
-			$rootScope.$apply(callbacks[msg.type](args));
-		}
-		else
-			console.log('Unregistered property: '+msg.type);
 	};
 
 	return events;

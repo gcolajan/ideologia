@@ -14,9 +14,7 @@ salonsPhase.hasPopunder = true;
  * We store them into the scope (ng update the view)
  */
 salonsPhase.operations.insert('salons', function($scope, salons) {
-    console.log($scope);
     $scope.salons = salons;
-    console.log(salons);
 });
 
 salonsPhase.operations.insert('joined', function($scope, salon) {
