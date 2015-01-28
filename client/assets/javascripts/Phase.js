@@ -48,6 +48,15 @@ function Phase(name, before, starting, ending) {
         return (name == this.name);
     }.bind(this);
 
+
+    /**
+     * Returns the file used to show infos in the popunder
+     * @type {function(this:Phase)}
+     */
+    this.getPopUnder = function() {
+        return "./assets/phases/"+name+".html";
+    }.bind(this);
+
     /**
      * Returns if the phase is started (condition to run operations).
      * @returns {boolean}

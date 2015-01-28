@@ -53,10 +53,10 @@ function pied() {
 	echo '
 
 	<script src="assets/javascripts/Phase.js?'.uniqid().'"></script>
-	<script src="assets/javascripts/phases/introduction.js?'.uniqid().'"></script>
-	<script src="assets/javascripts/phases/salons.js?'.uniqid().'"></script>
-	<script src="assets/javascripts/phases/attente.js?'.uniqid().'"></script>
-	<script src="assets/javascripts/phases/jeu.js?'.uniqid().'"></script>
+	<script src="assets/phases/introduction.js?'.uniqid().'"></script>
+	<script src="assets/phases/salons.js?'.uniqid().'"></script>
+	<script src="assets/phases/attente.js?'.uniqid().'"></script>
+	<script src="assets/phases/jeu.js?'.uniqid().'"></script>
 
 	<script src="assets/javascripts/main.js?'.uniqid().'"></script>
 

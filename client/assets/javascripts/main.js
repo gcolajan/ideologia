@@ -69,8 +69,9 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 		return $scope.currentPhase !== undefined && $scope.currentPhase.hasPopunder;
 	};
 
-	$scope.sendPseudo = function() {
-		ws.emit('pseudo', $scope.pseudo);
+	$scope.setPseudo = function(pseudo) {
+		$scope.pseudo = pseudo;
+		ws.emit('pseudo', pseudo);
 		console.log("pseudo send");
 	};
 
