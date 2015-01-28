@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
+-- version 4.2.12deb2
 -- http://www.phpmyadmin.net
 --
--- Client: localhost
--- Généré le : Ven 09 Août 2013 à 22:28
--- Version du serveur: 5.5.32
--- Version de PHP: 5.3.10-1ubuntu3.7
+-- Client :  localhost
+-- Généré le :  Mer 28 Janvier 2015 à 18:19
+-- Version du serveur :  5.5.40-1
+-- Version de PHP :  5.6.5-1
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données: `nf`
+-- Base de données :  `ideologia`
 --
 
 -- --------------------------------------------------------
@@ -30,9 +30,7 @@ CREATE TABLE IF NOT EXISTS `ideo_evenement_effet` (
   `ee_operation_id` int(11) NOT NULL,
   `ee_jauge_id` int(11) NOT NULL,
   `ee_variation_absolue` int(11) NOT NULL,
-  `ee_variation_pourcentage` float NOT NULL,
-  PRIMARY KEY (`ee_operation_id`,`ee_jauge_id`),
-  KEY `ee_jauge_id` (`ee_jauge_id`)
+  `ee_variation_pourcentage` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -58,12 +56,11 @@ INSERT INTO `ideo_evenement_effet` (`ee_operation_id`, `ee_jauge_id`, `ee_variat
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_evenement_operation` (
-  `eo_id` int(11) NOT NULL AUTO_INCREMENT,
+`eo_id` int(11) NOT NULL,
   `eo_nom` varchar(32) NOT NULL,
   `eo_description` varchar(255) NOT NULL,
-  `eo_destination` tinyint(4) NOT NULL,
-  PRIMARY KEY (`eo_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+  `eo_destination` tinyint(4) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `ideo_evenement_operation`
@@ -82,22 +79,24 @@ INSERT INTO `ideo_evenement_operation` (`eo_id`, `eo_nom`, `eo_description`, `eo
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_ideologie` (
-  `ideo_id` int(11) NOT NULL AUTO_INCREMENT,
+`ideo_id` int(11) NOT NULL,
+  `ideo_joueur` varchar(32) NOT NULL,
   `ideo_nom` varchar(32) NOT NULL,
-  `ideo_couleur` varchar(6) NOT NULL,
-  `ideo_pion` varchar(32) NOT NULL,
-  PRIMARY KEY (`ideo_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+  `ideo_slug` varchar(16) NOT NULL,
+  `ideo_r` tinyint(3) unsigned NOT NULL,
+  `ideo_g` tinyint(3) unsigned NOT NULL,
+  `ideo_b` tinyint(3) unsigned NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `ideo_ideologie`
 --
 
-INSERT INTO `ideo_ideologie` (`ideo_id`, `ideo_nom`, `ideo_couleur`, `ideo_pion`) VALUES
-(1, 'Anarchisme', '8000FF', ''),
-(2, 'Communisme', 'FF0000', ''),
-(3, 'Économie féodale', '80FF00', ''),
-(4, 'Libéralisme', '00FFFF', '');
+INSERT INTO `ideo_ideologie` (`ideo_id`, `ideo_joueur`, `ideo_nom`, `ideo_slug`, `ideo_r`, `ideo_g`, `ideo_b`) VALUES
+(1, 'anarchiste', 'Anarchisme', 'anarchy', 128, 0, 255),
+(2, 'communiste', 'Communisme', 'communism', 255, 0, 0),
+(3, 'seigneur', 'Économie féodale', 'feudal', 128, 255, 0),
+(4, 'capitaliste', 'Capitalisme', 'capitalism', 0, 255, 255);
 
 -- --------------------------------------------------------
 
@@ -106,19 +105,19 @@ INSERT INTO `ideo_ideologie` (`ideo_id`, `ideo_nom`, `ideo_couleur`, `ideo_pion`
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_jauge` (
-  `jauge_id` int(11) NOT NULL AUTO_INCREMENT,
+`jauge_id` int(11) NOT NULL,
   `jauge_nom` varchar(32) NOT NULL,
-  PRIMARY KEY (`jauge_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+  `jauge_slug` varchar(32) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `ideo_jauge`
 --
 
-INSERT INTO `ideo_jauge` (`jauge_id`, `jauge_nom`) VALUES
-(1, 'Économique'),
-(2, 'Environnementale'),
-(3, 'Sociale');
+INSERT INTO `ideo_jauge` (`jauge_id`, `jauge_nom`, `jauge_slug`) VALUES
+(1, 'Économique', 'economic'),
+(2, 'Environnementale', 'environmental'),
+(3, 'Sociale', 'social');
 
 -- --------------------------------------------------------
 
@@ -131,9 +130,7 @@ CREATE TABLE IF NOT EXISTS `ideo_jauge_caracteristique` (
   `caract_jauge_id` int(11) NOT NULL,
   `caract_coeff_diminution` float NOT NULL,
   `caract_coeff_augmentation` float NOT NULL,
-  `caract_ideal` float NOT NULL,
-  PRIMARY KEY (`caract_jauge_id`,`caract_ideo_id`),
-  KEY `ideo_jauge_caract_ibfk_2` (`caract_ideo_id`)
+  `caract_ideal` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -161,17 +158,13 @@ INSERT INTO `ideo_jauge_caracteristique` (`caract_ideo_id`, `caract_jauge_id`, `
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_score` (
-  `score_id` int(11) NOT NULL AUTO_INCREMENT,
+`score_id` int(11) NOT NULL,
   `score_date` datetime NOT NULL,
   `score_pseudo` varchar(32) NOT NULL,
   `score_ideologie_id` int(11) NOT NULL,
   `score_respect_ideologie` float NOT NULL,
-  `score_domination_geo` float NOT NULL,
-  PRIMARY KEY (`score_id`),
-  KEY `score_date` (`score_date`,`score_respect_ideologie`),
-  KEY `score_date_2` (`score_date`,`score_domination_geo`),
-  KEY `score_ideologie_id` (`score_ideologie_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+  `score_domination_geo` float NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `ideo_score`
@@ -181,7 +174,31 @@ INSERT INTO `ideo_score` (`score_id`, `score_date`, `score_pseudo`, `score_ideol
 (5, '2013-03-26 18:28:22', 'A', 1, 14.2857, 0.21875),
 (6, '2013-03-26 18:28:22', 'B', 2, 8.44444, 0.28125),
 (7, '2013-03-26 18:28:22', 'C', 3, 15.5, 0.25),
-(8, '2013-03-26 18:28:22', 'D', 4, 11.75, 0.25);
+(8, '2013-03-26 18:28:22', 'D', 4, 11.75, 0.25),
+(9, '2014-09-14 19:05:41', 'Gautier', 1, 0, 0.25),
+(10, '2014-09-14 19:05:41', 'c', 2, 0, 0.25),
+(11, '2014-09-14 19:05:41', 'a', 3, 0, 0.25),
+(12, '2014-09-14 19:05:41', 'b', 4, 0, 0.25),
+(13, '2014-09-15 08:47:37', 'g', 1, 2.25, 0.25),
+(14, '2014-09-15 08:47:37', 'a', 2, 0, 0.25),
+(15, '2014-09-15 08:47:37', 'b', 3, 3.875, 0.25),
+(16, '2014-09-15 08:47:37', 'c', 4, 4.125, 0.25),
+(17, '2015-01-18 15:54:27', 'p1', 1, 0, 0.25),
+(18, '2015-01-18 15:54:27', 'p2', 2, 0, 0.25),
+(19, '2015-01-18 15:54:27', 'p3', 3, 0, 0.25),
+(20, '2015-01-18 15:54:27', 'p4', 4, 0, 0.25),
+(21, '2015-01-18 16:00:04', 'p1', 1, 3, 0.25),
+(22, '2015-01-18 16:00:04', 'p2', 2, 4.375, 0.25),
+(23, '2015-01-18 16:00:04', 'p3', 3, 4.5, 0.25),
+(24, '2015-01-18 16:00:04', 'p4', 4, 3.875, 0.25),
+(25, '2015-01-23 22:57:37', 'Selenium', 1, 0, 0.25),
+(26, '2015-01-23 22:57:37', 'Selenium', 2, 0, 0.25),
+(27, '2015-01-23 22:57:37', 'Selenium', 3, 0, 0.25),
+(28, '2015-01-23 22:57:37', 'Selenium', 4, 0, 0.25),
+(29, '2015-01-23 23:18:52', 'a', 1, 3.125, 0.25),
+(30, '2015-01-23 23:18:52', 'b', 2, 0, 0.25),
+(31, '2015-01-23 23:18:52', 'c', 3, 2.625, 0.25),
+(32, '2015-01-23 23:18:52', 'd', 4, 1.375, 0.25);
 
 -- --------------------------------------------------------
 
@@ -194,10 +211,7 @@ CREATE TABLE IF NOT EXISTS `ideo_territoire_effet` (
   `te_jauge_id` int(11) NOT NULL,
   `te_ideologie_id` int(11) NOT NULL,
   `te_variation_absolue` int(11) NOT NULL,
-  `te_variation_pourcentage` float NOT NULL,
-  PRIMARY KEY (`te_operation_id`,`te_jauge_id`,`te_ideologie_id`),
-  KEY `te_jauge_id` (`te_jauge_id`),
-  KEY `te_ideologie_id` (`te_ideologie_id`)
+  `te_variation_pourcentage` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -416,11 +430,10 @@ INSERT INTO `ideo_territoire_effet` (`te_operation_id`, `te_jauge_id`, `te_ideol
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_territoire_operation` (
-  `to_id` int(11) NOT NULL AUTO_INCREMENT,
+`to_id` int(11) NOT NULL,
   `to_nom` varchar(32) NOT NULL,
-  `to_description` varchar(255) NOT NULL,
-  PRIMARY KEY (`to_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+  `to_description` varchar(255) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `ideo_territoire_operation`
@@ -451,9 +464,7 @@ INSERT INTO `ideo_territoire_operation` (`to_id`, `to_nom`, `to_description`) VA
 CREATE TABLE IF NOT EXISTS `ideo_territoire_operation_cout` (
   `toc_operation_id` int(11) NOT NULL,
   `toc_ideologie_id` int(11) NOT NULL,
-  `toc_cout` int(11) NOT NULL,
-  PRIMARY KEY (`toc_operation_id`,`toc_ideologie_id`),
-  KEY `toc_ideologie_id` (`toc_ideologie_id`)
+  `toc_cout` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -523,10 +534,9 @@ INSERT INTO `ideo_territoire_operation_cout` (`toc_operation_id`, `toc_ideologie
 --
 
 CREATE TABLE IF NOT EXISTS `terr_continent` (
-  `continent_id` tinyint(4) NOT NULL AUTO_INCREMENT,
-  `continent_nom` varchar(32) NOT NULL,
-  PRIMARY KEY (`continent_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+`continent_id` tinyint(4) NOT NULL,
+  `continent_nom` varchar(32) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `terr_continent`
@@ -548,11 +558,10 @@ INSERT INTO `terr_continent` (`continent_id`, `continent_nom`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `terr_territoire` (
-  `terr_id` tinyint(4) NOT NULL AUTO_INCREMENT,
+`terr_id` tinyint(4) NOT NULL,
   `terr_nom` varchar(32) NOT NULL,
-  `terr_position` tinyint(4) NOT NULL,
-  PRIMARY KEY (`terr_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=33 ;
+  `terr_position` tinyint(4) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `terr_territoire`
@@ -595,20 +604,98 @@ INSERT INTO `terr_territoire` (`terr_id`, `terr_nom`, `terr_position`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `terr_territoire_path`
+--
+
+CREATE TABLE IF NOT EXISTS `terr_territoire_path` (
+`path_id` int(11) NOT NULL,
+  `path_territoire` tinyint(4) NOT NULL,
+  `path_d` text NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `terr_territoire_path`
+--
+
+INSERT INTO `terr_territoire_path` (`path_id`, `path_territoire`, `path_d`) VALUES
+(1, 1, 'm 870,239 5,-7 6,2 5,8 11,0 7,3 11,2 16,-4 3,-9 6,-6 12,-4 10,1 4,-8 12,6 11,-3 9,-6 22,14 10,-5 10,2 0,14 -10,4 0,10 0,4 -10,-1 -10,-15 -10,4 -16,25 -5,3 10,6 -7,4 -12,-3 -4,5 -5,19 -5,1 -4,-6 -8,-11 -1,-11 -6,-7 -11,-11 -4,-6 -16,-1 -6,1 8,10 9,7 7,11 3,10 -13,-8 -10,-11 -7,-8 -13,-3 -3,-2 -2,-6 -9,-3 z'),
+(2, 2, 'm 979,167 12,9 -3,9 7,7 2,8 2,14 -10,5 -11,4 -13,-7 -3,8 -11,-1 -11,5 -6,6 -3,8 -15,5 -11,-2 -8,-4 -10,1 -6,-9 -6,-2 -5,8 -4,-11 -15,-7 12,-10 12,-8 11,-1 0,-8 -3,-8 7,-6 6,5 -1,13 2,3 9,-2 13,0 13,-3 12,1 10,-5 -7,-5 2,-12 12,-8 11,2 z'),
+(3, 2, 'm 981,141 -13,-23 12,-6 -4,-7 -11,-3 -18,1 -20,8 -17,10 -10,11 -5,7 -17,7 -7,9 -1,10 6,4 3,7 6,-3 7,-8 5,-2 4,3 -1,7 2,9 7,0 5,5 4,0 3,-9 7,-14 -1,-6 -6,-5 4,-8 13,-7 9,-4 -2,-7 5,-6 8,5 -4,10 -8,13 -1,6 6,4 9,2 5,-3 9,0 z'),
+(4, 3, 'm 742,139 7,-5 9,-1 22,-3 -2,4 -10,3 -12,6 -8,-1 z'),
+(5, 3, 'm 804,194 -12,13 -2,6 9,2 5,-3 8,-7 0,-5 -4,-3 z'),
+(6, 3, 'm 824,178 -10,6 2,7 6,3 1,9 1,13 3,3 8,-1 6,-4 3,-7 -4,-3 -6,-10 -2,-4 -6,-8 z'),
+(7, 3, 'm 851,221 14,7 5,11 -1,11 11,4 1,5 -5,3 -7,5 -6,-2 -10,1 -4,6 -1,6 -6,5 -6,6 0,11 -12,5 -12,5 -10,1 -11,-8 -6,-7 2,-16 7,-13 9,-2 9,0 10,4 8,1 1,-9 -1,-8 -1,-5 4,-4 -7,-2 c 0,-5 -5,-4 -9,-5 l 2,-4 12,0 4,-7 9,-1 z'),
+(8, 4, 'm 368,498 4,-4 -10,-5 -10,1 -8,5 -6,-7 -7,-11 2,-10 -1,-17 -11,-3 -19,2 -1,-1 8,-7 0,-9 6,-8 6,-9 -4,-5 -14,3 -2,8 -1,5 -21,3 -14,-5 -5,-7 2,-24 1,-18 9,-8 15,-8 13,-7 5,-1 -2,-25 -13,-11 -46,2 2,14 -6,18 -21,-8 1,-17 3,-14 0,-33 43,2 -1,18 38,2 -3,-16 4,-25 -46,0 -6,-5 -9,-26 -5,-1 -8,6 0,21 -7,20 -57,0 -3,-4 -16,31 22,31 1,12 0,8 15,41 3,2 2,-6 -14,-39 0,-11 12,6 3,19 21,36 8,11 -8,6 10,8 9,8 19,8 18,5 7,-6 14,16 7,7 12,-6 5,3 2,13 10,15 11,12 10,6 7,-3 -5,-4 4,-6 7,0 6,2 z'),
+(9, 5, 'm 120,157 -68.4,32 -1.3,-3 33.8,-17 -16,-1 12.3,-13 -5.5,-2 0,-5 34.1,-5 1,-6 8,-3 -29.6,3 0,-7 35.6,-6 4,-2 -8,-6 13,-3 54,-13 69,11 38,-5 34,5 13,3 -1,5 7,0 27,-3 42,3 6,1 16,-6 5,-14.3 4,-1.8 5,1.8 0,11.3 7,-4 4,6 -4,8 -13,10 0,6 -14,2 -21,10 -13,8 4,3 0,3 -15,1 -1,9 17,12 22,9 -2,23 9,0 20,-25 11,-9 5,-17 6,-1 3,-10 17,-9 2,4 6,4 9,9 -1,7 9,4 13,-10 5,6 -2,12 6,15 8,0 5,7 -2,6 -4,5 -29,7 -16,0 -23,12 18,-3 -1,6 -5,8 -16,13 -25,11 -1,9 -18,5 -10,9 -10,9 0,11 -17,14 -22,13 -6,11 -2,16 2,8 1,7 -6,4 -7,-10 -1,-19 -3,-6 -9,3 -7,0 0,-8 -6,2 0,7 -23,-2 -3,-26 -13,-10 -46,1 2,15 -5,18 -22,-9 1,-14 3,-15 1,-34 42,2 -1,18 38,0 -3,-15 5,-25 -46,0 -7,-5 -4,-12 -5,-12 -5,-3 -8,5 0,22 -6,20 -46,0 -11,1 -4,-5 14,-21 10,-11 8,-3 1,-13 -10,-10 2,-14 6,-5 0,-11 -6,-9 -10,-3 -17,-11 -17,-1 -21,5 z'),
+(10, 6, 'm 524,533 -1,-10 -9,-9 -16,-3 -9,-3 -14,-9 -10,-8 5,-7 0,-1 -10,-1 -22,0 -24,-15 -4,8 -1,7 -7,1 3,-8 -7,-3 -13,6 -2,5 -4,7 -8,3 -3,6 -3,5 6,4 0,7 2,11 -12,11 -7,12 -5,11 -2,14 2,14 10,10 9,16 5,15 5,13 10,9 6,1 11,6 6,8 12,14 1,16 -1,26 -1,28 3,35 3,23 4,5 5,4 9,11 0,11 -1,8 -5,4 3,7 6,4 5,9 8,14 7,0 9,2 5,-1 -1,-5 1,-13 -4,-13 -9,-8 10,-8 4,-6 -3,-8 -2,-7 6,-4 5,-5 4,-9 1,-6 8,6 8,0 3,-11 -6,-12 -12,-14 10,-13 0,-13 6,-6 4,-19 -5,-11 -6,3 -14,-23 1,-7 -25,-35 -13,0 0,-9 -6,5 -12,-4 0,-22 -13,13 -7,3 -20,-23 -2,-9 6,-14 0,-9 5,-2 6,4 7,-1 -5,-23 3,-9 10,-2 9,7 14,1 3,-17 13,-10 4,3 -1,13 14,9 29,-10 z'),
+(11, 6, 'm 488,898 -5,-2 2,-2 8,-1 13,12 -1,3 -10,-2 -7,-1 -6,-5 2,-2 z'),
+(12, 7, 'm 525,533 -15,0 -11,4 -18,7 -13,-10 2,-13 -6,-3 -12,11 -3,16 -13,0 -11,-8 -9,2 -3,9 4,23 -6,3 -5,-6 -6,3 0,8 -7,13 2,9 20,23 7,-1 13,-14 1,9 1,15 12,2 6,-4 -1,8 13,0 25,36 -1,7 5,6 9,16 7,-3 3,11 -2,19 -7,7 0,12 -10,13 13,16 15,-2 9,-12 0,-9 10,-6 1,-13 7,-5 -1,-14 5,-6 9,-8 14,-3 13,-9 2,-14 4,-16 4,-24 10,-17 8,-10 2,-11 -1,-12 -7,-6 -8,0 -5,-5 -5,-6 -4,-3 -15,2 -9,-4 -10,-4 -8,-8 -10,7 -7,-3 -3,-11 -3,-8 z'),
+(13, 8, 'm 919,403 -10,-4 -9,-6 -7,8 -12,3 -3,9 -20,10 -2,24 -5,4 -10,-2 -5,0 -4,7 5,5 14,1 3,7 -6,5 -12,1 -8,5 0,8 6,12 2,10 9,-2 15,0 7,14 8,-1 6,-1 3,-12 22,-7 1,-10 8,-16 1,-8 -6,-14 9,-9 9,-11 2,-8 -2,-5 -8,-11 z'),
+(14, 9, 'm 920,403 13,-1 7,9 14,1 9,4 9,16 -3,18 -5,5 -4,-2 7,19 3,7 -10,4 -12,1 -11,10 -13,8 -3,18 0,12 5,4 11,-1 3,4 -1,8 -6,3 -3,18 -25,15 2,4 27,-2 8,5 6,3 8,1 3,10 4,13 1,8 7,5 19,-1 2,7 18,6 0,-12 -10,-7 -1,-6 1,-6 10,0 10,3 10,11 0,14 10,6 0,-8 10,-6 10,-4 10,3 0,19 -10,11 -10,5 -10,7 -10,8 0,12 10,6 0,8 -10,13 -10,0 0,5 0,6 0,5 -10,5 0,10 -16,13 -11,8 -9,3 -3,-4 -23,6 -4,0 4,-9 -4,-5 -4,-5 -6,-3 -5,-13 -5,-15 -5,-13 9,4 -5,-10 -6,-7 -7,-14 -5,-17 -4,-9 1,-11 5,-19 4,-13 -2,-18 -3,-8 -5,-12 3,-18 -11,7 -8,-7 -2,-9 5,-8 5,-13 -4,-3 -9,-7 3,-12 9,-3 14,-5 1,-10 8,-17 0,-7 -3,-10 -2,-4 9,-8 9,-13 1,-6 -1,-7 -8,-10 z'),
+(15, 9, 'm 1120,636 0,8 -10,6 -10,6 -10,4 10,11 0,7 -10,12 0,15 0,7 10,5 10,-2 0,-20 10,-21 0,-14 10,-16 z'),
+(16, 10, 'm 978,345 7,1 14,4 21,-1 10,10 0,9 0,-3 0,2 10,34 10,24 20,20 10,15 10,11 0,11 10,0 10,-5 10,-1 10,1 0,12 0,11 -20,32 -10,3 0,9 -20,13 0,-13 0,-13 -10,3 -20,-18 -10,-6 0,-14 -10,-1 0,-14 -20,-4 -40,1 -11,-25 4,1 6,-4 3,-19 9,-24 -3,-14 -2,-21 z'),
+(17, 11, 'm 970,478 40,-1 20,4 0,14 10,2 0,13 10,6 10,11 10,7 10,-2 0,13 0,12 -10,10 0,4 0,9 0,3 0,47 -10,-3 -10,3 -10,8 0,7 -10,-6 0,-14 -10,-12 -10,-2 -10,0 -1,6 1,7 10,6 0,12 -19,-7 -2,-7 -18,2 -7,-6 -1,-9 -7,-21 -8,-1 -15,-8 -27,2 -1,-5 25,-14 3,-18 6,-3 1,-8 -3,-5 -12,1 -4,-3 3,-30 14,-8 10,-10 12,-1 z'),
+(18, 12, 'm 835,510 -5,4 -13,0 -27,2 -12,3 -7,-4 -10,-8 -8,-9 -9,-10 1,-7 -10,-6 -5,-10 3,-13 3,-9 7,-11 -6,-11 -2,-7 1,-8 9,-14 17,-26 14,-9 4,-7 -3,-8 12,-12 12,-4 16,-3 11,-1 12,-6 7,-3 10,-4 8,5 16,-3 9,-5 1,7 0,8 5,10 15,5 6,2 0,7 10,5 13,5 6,-5 2,-6 0,-8 6,-2 8,4 17,7 -3,27 2,20 3,15 -9,24 -9,-16 -9,-3 -14,-2 -7,-8 -14,1 -11,-4 -8,-6 -7,8 -11,3 -4,9 -20,10 -2,24 -5,4 -15,-2 -4,7 5,5 14,1 3,8 -6,5 -12,0 -8,5 0,8 7,12 z'),
+(19, 13, 'm 1500,251 10,2 10,-2 20,10 10,8 0,5 0,6 0,5 0,3 0,-3 -10,5 0,6 10,5 10,6 10,4 0,8 -10,7 0,3 -10,-3 0,-8 0,-6 0,-4 -10,-3 0,-3 -10,-3 0,-8 -10,2 0,2 -10,-4 0,-5 0,-8 0,-4 0,-8 -20,-4 0,-7 z'),
+(20, 13, 'm 1600,257 0,10 0,11 10,-6 0,3 10,1 0,-6 0,-4 0,-2 -10,-2 -10,-6 z'),
+(21, 13, 'm 1610,282 0,8 0,6 10,5 -10,5 0,5 c 0,0 -10,4 -10,4 0,0 -10,2 -10,2 l -10,1 0,4 0,5 10,-1 0,-3 10,3 10,0 0,-4 10,-4 10,-5 -10,-9 0,-2 0,-3 10,-3 -10,-3 0,-3 0,-4 z'),
+(22, 13, 'm 1580,330 c 0,0 0,5 0,6 0,0 0,9 0,9 l 0,-8 z'),
+(23, 13, 'm 1590,327 0,4 10,2 0,-3 z'),
+(24, 14, 'm 978,291 10,5 -3,5 -2,5 10,6 3,4 4,-5 10,1 10,0 20,-2 0,-1 0,7 0,15 0,5 0,4 -10,11 10,12 0,15 20,20 10,9 -10,4 10,9 0,3 10,5 0,10 10,15 0,13 10,2 10,-3 20,-10 20,-14 10,-11 30,-26 -10,-3 -10,-5 -10,-9 0,-5 -10,4 0,10 -10,0 -10,-5 0,-9 -10,-12 -10,-8 0,-5 -20,0 -10,-6 -10,-3 0,1 -10,-6 -10,4 0,7 0,5 -10,-4 0,-7 10,-11 10,0 10,-5 0,-6 0,-9 0,-6 0,-4 10,0 0,-3 0,-18 -20,-9 0,8 -20,-1 -10,-3 -10,-5 -10,3 -10,1 -10,6 z'),
+(25, 15, 'm 1680,624 10,18 0,7 0,12 10,13 10,3 0,13 0,10 10,9 0,7 0,8 0,13 0,15 -20,17 c 0,0 -20,11 -20,12 0,1 -10,13 -10,13 0,0 -10,7 -10,7 0,0 -20,2 -20,2 l -20,-4 0,-7 0,-13 0,-9 -10,5 -10,2 0,-6 -10,-6 -10,-9 -10,3 -20,5 -20,8 -20,5 -20,-5 10,-10 0,-13 0,-5 0,-18 0,-15 0,-9 10,-11 30,-10 10,-8 10,-11 0,3 20,-18 10,-4 10,7 0,-3 10,-13 10,-2 10,-2 10,4 0,10 0,9 10,7 10,8 10,-5 0,-13 10,-19 z'),
+(26, 15, 'm 1640,817 10,8 -10,10 -10,3 0,-7 0,-13 z'),
+(27, 15, 'm 1780,818 -20,13 -20,11 -10,7 0,5 0,3 10,-3 10,-9 20,-7 10,-5 0,-10 z'),
+(28, 15, 'm 1810,789 0,8 -10,12 0,11 0,5 10,-5 10,-9 10,-6 0,-5 -10,-2 0,-8 z'),
+(29, 15, 'm 1620,561 0,-5 10,1 10,2 -10,9 10,4 20,-6 0,-5 10,7 10,3 10,4 10,6 10,6 0,7 0,8 10,5 0,7 10,4 10,4 -10,2 -10,-5 -10,-6 0,-6 -10,-9 -10,0 0,10 -10,4 0,-3 -10,0 0,-4 0,-3 -10,3 0,-3 0,-4 10,-6 -10,-5 -10,-4 0,-5 -10,-1 -10,1 0,-2 0,-5 0,-3 0,-5 -10,1 z'),
+(30, 15, 'm 1590,604 -10,8 0,6 -10,0 0,-6 10,-8 z'),
+(31, 15, 'm 1570,604 0,6 -10,1 -10,0 0,-5 10,-2 z'),
+(32, 15, 'm 1540,604 -10,6 10,2 0,-4 0,-2 z'),
+(33, 15, 'm 1480,594 0,7 20,3 10,1 10,-4 -10,-4 -20,-3 z'),
+(34, 15, 'm 1580,541 -10,6 0,-2 -10,-2 -10,9 0,7 0,3 0,6 0,6 0,8 0,2 0,-6 0,-6 0,-4 10,7 0,5 10,-2 0,-8 0,-7 0,-5 0,-5 -10,5 0,-2 0,-8 0,-1 10,1 0,4 10,-3 0,-5 0,-3 z'),
+(35, 15, 'm 1560,496 20,-1 10,-3 0,5 0,5 0,6 -10,-2 0,7 0,2 0,-9 -10,-5 -10,-1 0,-2 z'),
+(36, 15, 'm 1550,435 -10,5 10,5 -10,5 0,-4 10,6 0,2 0,7 10,0 0,-6 -10,-5 10,-8 0,-6 -10,-4 z'),
+(37, 15, 'm 1540,479 -10,13 10,1 0,-10 z'),
+(38, 15, 'm 1550,466 10,10 0,4 10,-5 -10,-4 z'),
+(39, 15, 'm 1570,472 10,7 10,-1 -10,-6 z'),
+(40, 16, 'm 1480,593 0,9 -20,0 0,-4 10,-6 0,-2 10,6 z'),
+(41, 16, 'm 1530,508 c 0,1 -10,9 -10,9 l -10,10 0,7 -10,3 -10,0 0,11 0,17 10,6 0,1 10,-3 10,2 10,2 0,-9 10,-14 0,-7 0,1 0,-8 c 0,0 0,-4 0,-7 0,-2 0,-11 0,-11 l 0,-5 z'),
+(42, 16, 'm 1410,515 0,6 0,9 10,11 10,12 10,11 10,17 0,7 10,0 10,-10 0,-7 -20,-9 -10,-14 0,-9 -10,-9 -10,-7 -10,-5 0,-3 z'),
+(43, 16, 'm 1460,539 -10,4 0,0 0,-9 -10,-4 0,-10 -10,1 0,-9 0,-4 0,-3 -10,-6 0,-2 0,-7 0,-3 0,-6 0,-4 10,-6 0,-5 -10,-7 0,-9 0,-8 0,-7 -10,-5 10,-7 0,-5 10,0 0,8 0,6 10,1 0,0 10,2 0,6 10,4 0,4 0,5 -10,4 -10,7 0,3 0,-8 0,7 -10,3 0,7 0,6 0,7 0,6 10,5 0,5 0,7 10,5 0,8 10,6 0,5 z'),
+(44, 17, 'm 1440,468 10,7 0,4 10,1 0,7 0,6 10,0 0,-3 0,-8 10,4 0,-4 0,-5 0,-4 10,-5 -10,-8 0,-9 0,-6 -10,-6 0,-4 -10,-7 0,-3 -10,-7 10,-5 0,-2 10,-2 10,-1 0,-9 0,-11 10,-9 -10,-4 -10,-3 -10,-1 -10,-2 0,-1 0,-3 -10,3 0,3 0,5 -10,1 0,1 0,-3 -10,-2 0,-4 -10,-2 0,3 0,5 0,6 0,6 0,7 0,4 10,7 0,7 0,6 10,-1 0,7 0,8 10,1 0,0 10,2 0,6 10,8 0,6 -10,3 -10,6 z'),
+(45, 18, 'm 1490,378 10,-7 0,-9 10,-1 10,5 10,3 0,2 0,9 0,6 0,6 -10,5 -10,5 -10,0 -10,0 0,6 -10,6 0,-7 0,1 0,-11 0,-10 z'),
+(46, 18, 'm 1480,418 0,5 -10,5 10,7 10,-5 0,-6 z'),
+(47, 18, 'm 1540,388 0,8 -10,9 10,2 10,-2 0,-7 0,-7 z'),
+(48, 19, 'm 1500,326 0,16 0,8 -10,2 -10,-3 -10,-4 0,-2 0,10 -10,9 10,8 0,2 20,6 10,-7 0,-9 10,-1 20,11 0,-4 10,-13 -10,-5 -20,-3 0,-9 0,-5 -10,-6 z'),
+(49, 20, 'm 975,103 45,12 10,7 -10,4 -21,-3 -6,-2 7,13 20,3 10,-9 10,-1 0,-11 10,6 20,-4 20,-3 20,-1 0,-5 20,1 10,4 0,-4 -10,-10.9 0,-4.3 20,-6.1 0,7.4 10,12.9 10,6 -10,9 10,7 10,-12 0,-6 -10,-7 0,-1 -10,-5 0,-3.9 10,0.6 10,-8.6 0,0 20,-1.2 10,-9.3 40,-6.7 -50,-10.4 0,-6.8 20,0.6 50,11.7 30,4.3 10,7.3 -10,6.2 0,3.1 10,1.8 30,1.2 40,-1.8 20,11.6 0,3.3 30,-9.4 0,6.4 10,-7.6 20,-1.3 10,5 20,1.2 20,4.7 20,0 20,8 30,-3 0,3 10,-4 20,0 30,8 20,4 20,8 10,1 10,6 0,1 -30,-7 0,10 20,10 -30,6 0,9 -10,-5 -20,7 0,9 20,14 10,8 -10,8 0,9 0,4 0,1 -30,-28 0,-7 0,-10 0,-7 0,-14 0,-2 -10,-1 0,8 0,3 -10,-7 -10,6 -10,8 0,4 -20,-7 -10,1 0,0 -10,4 -10,7 0,14 -10,9 20,1 10,4 10,3 20,12 10,9 0,5 10,10 0,5 0,1 -10,-9 -10,-13 0,-7 -10,-6 -10,9 10,6 10,11 0,12 -10,9 0,9 -20,0 -10,-8 -10,-6 -10,-4 -10,2 -10,-2 0,-11 0,-12 -10,-5 -10,-5 -10,1 -10,3 -10,8 0,7 10,2 10,1 -10,16 0,0 -10,0 -10,2 0,6 -10,8 -20,5 -50,-5 -10,-8 -10,-5 -10,-3 -10,-5 10,-12 -10,-3 -10,0 -20,-1 0,15 -10,8 -10,4 0,7 -20,-2 -10,4 -10,-1 -10,7 -20,-2 0,-7 -20,-5 -10,-4 c 0,-7 -10,-17 -20,-14 l 0,9 -10,4 0,9 10,8 -10,6 -10,-3 -20,-9 0,-6 10,-5 10,-5 0,-7 -10,-3 -10,1 -10,1 0,6 -10,0 0,12 0,8 -30,-2 -10,-3 -10,-1 0,-6 0,-7 0,-10 0,-3 0,-14 -10,-2 -10,4 -22,-13 -1,-14 -2,-8 -8,-7 4,-9 -12,-9 4,-14 4,-6 -6,-6 -14,-23 13,-6 z'),
+(50, 21, 'm 1500,251 0,-14 0,-9 -10,-6 -10,-4 -10,1 -10,2 -10,9 0,7 20,3 -10,17 -10,-2 -10,3 0,6 -10,8 -20,5 0,3 10,6 0,4 10,3 10,2 10,3 0,-1 0,-3 10,-8 10,-3 0,-6 0,13 0,12 0,9 0,9 0,9 0,0 20,-6 0,-5 0,-4 0,-7 0,-7 0,-5 0,-2 10,-10 10,-9 0,-8 -10,-3 0,-1 -10,-7 z'),
+(51, 22, 'm 1490,301 0,6 0,8 0,3 10,0 0,8 0,1 10,10 0,10 20,3 0,-5 -10,-5 0,-6 -10,-6 0,-4 0,-4 0,-4 10,-3 0,-1 0,-3 0,-2 -10,-3 -10,2 0,-1 0,-3 -10,0 z'),
+(52, 23, 'm 1490,318 0,5 -10,4 0,2 -10,0 0,-18 0,-9 0,-13 0,-8 0,-4 0,6 -10,4 -10,7 0,4 0,0 -10,-3 -10,-2 -10,-3 0,-4 -10,-3 0,-3 0,-4 -50,-4 0,6 0,8 0,5 10,0 20,2 10,0 10,2 10,3 0,4 10,7 -10,7 0,7 0,4 0,2 10,0 0,2 10,0 0,-2 10,2 0,4 0,9 0,8 0,6 0,8 0,3 20,2 0,-9 0,-20 20,10 10,-2 0,-8 0,-17 0,-7 z'),
+(53, 24, 'm 1420,477 0,-10 -10,-14 0,-12 0,-2 -10,8 0,-4 -10,-7 0,-5 0,-3 0,-6 -10,-5 0,-5 0,-6 0,-7 0,-18 0,-9 0,-1 -10,4 -10,-1 0,-7 0,-2 -10,2 0,7 -10,5 -10,-5 -20,-6 -10,-5 0,-4 -10,-17 -10,-10 0,-11 -30,-17 0,-4 -10,-4 10,-6 20,-7 10,-9 0,-5 -10,-1 0,-6 10,-4 10,-8 0,-16 30,2 10,3 -10,12 10,4 10,3 10,6 10,8 0,6 0,13 10,0 20,2 10,0 20,6 10,4 0,8 -10,10 0,8 10,0 0,2 10,0 0,-2 10,2 0,12 0,10 0,7 0,6 -10,2 0,8 -10,2 0,-3 -10,-2 0,-3 -10,-3 0,3 0,8 0,2 0,8 0,5 0,6 10,8 0,11 0,5 -10,7 10,16 10,20 z'),
+(54, 25, 'm 1360,375 10,1 10,-5 0,1 0,8 0,7 0,8 0,5 0,6 0,6 -10,-5 0,-4 -10,1 0,2 -10,-1 10,-5 0,-4 -10,-6 0,-7 0,-4 0,-4 z'),
+(55, 26, 'm 1330,399 10,2 0,4 10,1 -10,5 -10,10 0,11 -10,13 0,12 -10,-1 0,-6 10,-8 -10,2 0,7 0,10 0,6 -10,0 -10,0 c 0,0 0,-8 0,-8 0,-1 0,-12 0,-12 l 0,-7 0,-1 0,6 -10,10 0,3 -10,-9 0,-8 0,-6 -10,-7 0,-7 10,-7 0,-2 0,-4 10,2 20,-1 10,-4 0,7 0,4 0,8 0,7 10,0 0,-6 10,-14 0,-10 z'),
+(56, 27, 'm 1290,439 0,4 -10,12 0,3 10,16 0,11 0,12 10,1 10,-8 0,-8 0,-9 0,-6 -20,0 0,-9 0,-10 0,-9 z'),
+(57, 27, 'm 1310,491 0,0 10,8 0,8 0,5 -10,-4 0,-6 0,-7 z'),
+(58, 27, 'm 1260,510 0,2 0,6 10,1 0,0 0,-6 z'),
+(59, 28, 'm 1330,374 10,5 10,-5 0,-6 10,-3 0,2 0,5 0,4 -10,-1 0,4 0,4 0,3 0,5 10,8 0,4 0,3 -10,-1 -10,0 0,-4 -10,-2 0,-8 0,-11 z'),
+(60, 29, 'm 1280,363 0,2 20,0 0,-3 10,7 10,2 10,3 0,6 0,8 0,10 0,9 -10,10 0,9 0,5 -10,0 0,-7 0,-10 0,-7 0,-3 10,-4 0,-5 -10,-5 0,-5 -10,-3 -10,0 -10,-1 -10,-4 0,-8 z'),
+(61, 30, 'm 1270,408 0,5 -10,-4 -10,4 -10,-1 0,-5 10,-4 -10,-7 0,-2 10,-6 -10,-9 0,-5 20,-17 20,7 -10,6 10,7 0,4 10,2 10,0 0,2 10,5 10,5 0,4 -10,5 -10,6 -10,0 -10,0 z'),
+(62, 31, 'm 1250,305 20,9 10,7 0,11 10,11 10,11 0,5 0,6 -20,0 -20,-6 0,-2 -10,8 -10,8 0,5 0,5 10,6 -10,4 0,4 -10,-1 0,-6 0,-6 -10,0 0,3 -10,1 -10,0 -10,-4 10,-15 -10,-5 0,-6 10,-2 0,1 10,0 30,-33 0,0 0,-7 10,-10 z'),
+(63, 32, 'm 1060,269 30,2 10,8 10,11 0,13 20,9 10,-4 0,-10 0,-5 -10,-7 10,-4 10,-6 -10,-10 0,-9 10,-3 0,5 20,1 20,4 10,4 0,8 10,1 20,-7 10,0 10,-2 20,1 10,0 0,5 -10,8 -20,7 -10,7 10,4 0,6 0,5 -10,6 0,7 0,1 -30,32 0,1 -10,-2 -10,3 0,5 10,5 -10,15 0,2 -20,-2 -10,-6 0,-7 -10,2 -10,2 0,-5 -10,-9 -10,-8 -10,3 -20,0 -20,-8 0,1 -10,-7 -10,4 0,7 0,6 -10,-4 10,-18 0,0 20,-5 0,-5 0,-11 0,-6 0,-4 10,0 0,-2 0,-19 -20,-9 z');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `terr_unite`
 --
 
 CREATE TABLE IF NOT EXISTS `terr_unite` (
-  `unite_id` int(11) NOT NULL AUTO_INCREMENT,
+`unite_id` int(11) NOT NULL,
   `unite_nom` varchar(34) DEFAULT NULL,
   `unite_population` int(11) DEFAULT NULL,
   `unite_superficie` int(11) DEFAULT NULL,
   `unite_continent` tinyint(4) NOT NULL,
-  `unite_territoire` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`unite_id`),
-  KEY `unite_continent` (`unite_continent`),
-  KEY `unite_territoire` (`unite_territoire`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=382 ;
+  `unite_territoire` tinyint(4) DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=382 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `terr_unite`
@@ -934,6 +1021,137 @@ INSERT INTO `terr_unite` (`unite_id`, `unite_nom`, `unite_population`, `unite_su
 (381, 'Yogyakarta', 3343651, 3186, 4, 15);
 
 --
+-- Index pour les tables exportées
+--
+
+--
+-- Index pour la table `ideo_evenement_effet`
+--
+ALTER TABLE `ideo_evenement_effet`
+ ADD PRIMARY KEY (`ee_operation_id`,`ee_jauge_id`), ADD KEY `ee_jauge_id` (`ee_jauge_id`);
+
+--
+-- Index pour la table `ideo_evenement_operation`
+--
+ALTER TABLE `ideo_evenement_operation`
+ ADD PRIMARY KEY (`eo_id`);
+
+--
+-- Index pour la table `ideo_ideologie`
+--
+ALTER TABLE `ideo_ideologie`
+ ADD PRIMARY KEY (`ideo_id`);
+
+--
+-- Index pour la table `ideo_jauge`
+--
+ALTER TABLE `ideo_jauge`
+ ADD PRIMARY KEY (`jauge_id`);
+
+--
+-- Index pour la table `ideo_jauge_caracteristique`
+--
+ALTER TABLE `ideo_jauge_caracteristique`
+ ADD PRIMARY KEY (`caract_jauge_id`,`caract_ideo_id`), ADD KEY `ideo_jauge_caract_ibfk_2` (`caract_ideo_id`);
+
+--
+-- Index pour la table `ideo_score`
+--
+ALTER TABLE `ideo_score`
+ ADD PRIMARY KEY (`score_id`), ADD KEY `score_date` (`score_date`,`score_respect_ideologie`), ADD KEY `score_date_2` (`score_date`,`score_domination_geo`), ADD KEY `score_ideologie_id` (`score_ideologie_id`);
+
+--
+-- Index pour la table `ideo_territoire_effet`
+--
+ALTER TABLE `ideo_territoire_effet`
+ ADD PRIMARY KEY (`te_operation_id`,`te_jauge_id`,`te_ideologie_id`), ADD KEY `te_jauge_id` (`te_jauge_id`), ADD KEY `te_ideologie_id` (`te_ideologie_id`);
+
+--
+-- Index pour la table `ideo_territoire_operation`
+--
+ALTER TABLE `ideo_territoire_operation`
+ ADD PRIMARY KEY (`to_id`);
+
+--
+-- Index pour la table `ideo_territoire_operation_cout`
+--
+ALTER TABLE `ideo_territoire_operation_cout`
+ ADD PRIMARY KEY (`toc_operation_id`,`toc_ideologie_id`), ADD KEY `toc_ideologie_id` (`toc_ideologie_id`);
+
+--
+-- Index pour la table `terr_continent`
+--
+ALTER TABLE `terr_continent`
+ ADD PRIMARY KEY (`continent_id`);
+
+--
+-- Index pour la table `terr_territoire`
+--
+ALTER TABLE `terr_territoire`
+ ADD PRIMARY KEY (`terr_id`);
+
+--
+-- Index pour la table `terr_territoire_path`
+--
+ALTER TABLE `terr_territoire_path`
+ ADD PRIMARY KEY (`path_id`), ADD KEY `path_territoire` (`path_territoire`);
+
+--
+-- Index pour la table `terr_unite`
+--
+ALTER TABLE `terr_unite`
+ ADD PRIMARY KEY (`unite_id`), ADD KEY `unite_continent` (`unite_continent`), ADD KEY `unite_territoire` (`unite_territoire`);
+
+--
+-- AUTO_INCREMENT pour les tables exportées
+--
+
+--
+-- AUTO_INCREMENT pour la table `ideo_evenement_operation`
+--
+ALTER TABLE `ideo_evenement_operation`
+MODIFY `eo_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT pour la table `ideo_ideologie`
+--
+ALTER TABLE `ideo_ideologie`
+MODIFY `ideo_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT pour la table `ideo_jauge`
+--
+ALTER TABLE `ideo_jauge`
+MODIFY `jauge_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT pour la table `ideo_score`
+--
+ALTER TABLE `ideo_score`
+MODIFY `score_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
+--
+-- AUTO_INCREMENT pour la table `ideo_territoire_operation`
+--
+ALTER TABLE `ideo_territoire_operation`
+MODIFY `to_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
+--
+-- AUTO_INCREMENT pour la table `terr_continent`
+--
+ALTER TABLE `terr_continent`
+MODIFY `continent_id` tinyint(4) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT pour la table `terr_territoire`
+--
+ALTER TABLE `terr_territoire`
+MODIFY `terr_id` tinyint(4) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
+--
+-- AUTO_INCREMENT pour la table `terr_territoire_path`
+--
+ALTER TABLE `terr_territoire_path`
+MODIFY `path_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=64;
+--
+-- AUTO_INCREMENT pour la table `terr_unite`
+--
+ALTER TABLE `terr_unite`
+MODIFY `unite_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=382;
+--
 -- Contraintes pour les tables exportées
 --
 
@@ -941,35 +1159,41 @@ INSERT INTO `terr_unite` (`unite_id`, `unite_nom`, `unite_population`, `unite_su
 -- Contraintes pour la table `ideo_evenement_effet`
 --
 ALTER TABLE `ideo_evenement_effet`
-  ADD CONSTRAINT `ideo_evenement_effet_ibfk_2` FOREIGN KEY (`ee_jauge_id`) REFERENCES `ideo_jauge` (`jauge_id`),
-  ADD CONSTRAINT `ideo_evenement_effet_ibfk_3` FOREIGN KEY (`ee_operation_id`) REFERENCES `ideo_evenement_operation` (`eo_id`);
+ADD CONSTRAINT `ideo_evenement_effet_ibfk_2` FOREIGN KEY (`ee_jauge_id`) REFERENCES `ideo_jauge` (`jauge_id`),
+ADD CONSTRAINT `ideo_evenement_effet_ibfk_3` FOREIGN KEY (`ee_operation_id`) REFERENCES `ideo_evenement_operation` (`eo_id`);
 
 --
 -- Contraintes pour la table `ideo_jauge_caracteristique`
 --
 ALTER TABLE `ideo_jauge_caracteristique`
-  ADD CONSTRAINT `ideo_jauge_caract_ibfk_1` FOREIGN KEY (`caract_jauge_id`) REFERENCES `ideo_jauge` (`jauge_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ideo_jauge_caract_ibfk_2` FOREIGN KEY (`caract_ideo_id`) REFERENCES `ideo_ideologie` (`ideo_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `ideo_jauge_caract_ibfk_1` FOREIGN KEY (`caract_jauge_id`) REFERENCES `ideo_jauge` (`jauge_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `ideo_jauge_caract_ibfk_2` FOREIGN KEY (`caract_ideo_id`) REFERENCES `ideo_ideologie` (`ideo_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `ideo_score`
 --
 ALTER TABLE `ideo_score`
-  ADD CONSTRAINT `ideo_score_ibfk_1` FOREIGN KEY (`score_ideologie_id`) REFERENCES `ideo_ideologie` (`ideo_id`);
+ADD CONSTRAINT `ideo_score_ibfk_1` FOREIGN KEY (`score_ideologie_id`) REFERENCES `ideo_ideologie` (`ideo_id`);
 
 --
 -- Contraintes pour la table `ideo_territoire_operation_cout`
 --
 ALTER TABLE `ideo_territoire_operation_cout`
-  ADD CONSTRAINT `ideo_territoire_operation_cout_ibfk_2` FOREIGN KEY (`toc_ideologie_id`) REFERENCES `ideo_ideologie` (`ideo_id`),
-  ADD CONSTRAINT `ideo_territoire_operation_cout_ibfk_4` FOREIGN KEY (`toc_operation_id`) REFERENCES `ideo_territoire_operation` (`to_id`) ON DELETE CASCADE;
+ADD CONSTRAINT `ideo_territoire_operation_cout_ibfk_2` FOREIGN KEY (`toc_ideologie_id`) REFERENCES `ideo_ideologie` (`ideo_id`),
+ADD CONSTRAINT `ideo_territoire_operation_cout_ibfk_4` FOREIGN KEY (`toc_operation_id`) REFERENCES `ideo_territoire_operation` (`to_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `terr_territoire_path`
+--
+ALTER TABLE `terr_territoire_path`
+ADD CONSTRAINT `terr_territoire_path_ibfk_1` FOREIGN KEY (`path_territoire`) REFERENCES `terr_territoire` (`terr_id`);
 
 --
 -- Contraintes pour la table `terr_unite`
 --
 ALTER TABLE `terr_unite`
-  ADD CONSTRAINT `terr_unite_ibfk_1` FOREIGN KEY (`unite_continent`) REFERENCES `terr_continent` (`continent_id`),
-  ADD CONSTRAINT `terr_unite_ibfk_2` FOREIGN KEY (`unite_territoire`) REFERENCES `terr_territoire` (`terr_id`);
+ADD CONSTRAINT `terr_unite_ibfk_1` FOREIGN KEY (`unite_continent`) REFERENCES `terr_continent` (`continent_id`),
+ADD CONSTRAINT `terr_unite_ibfk_2` FOREIGN KEY (`unite_territoire`) REFERENCES `terr_territoire` (`terr_id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
