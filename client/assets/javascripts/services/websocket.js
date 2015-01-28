@@ -2,7 +2,7 @@ app.service('ws', function($rootScope) {
 
 	var opened = false;
 	var ws = new WebSocket("ws://127.0.0.1:8080");
-	var onMessageCallback = {};
+	var onMessageCallback = function() {};
 	var callbacks = {};
 
 	var status = '';
