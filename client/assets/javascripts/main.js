@@ -82,6 +82,9 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 				found = true;
 
 				$scope.currentPhase.init($scope);
+
+				ws.emit('startedPhase', phase);
+
 				$scope.currentPhase.start($scope);
 				console.log($scope.currentPhase.name+' phase is started.');
 			}
