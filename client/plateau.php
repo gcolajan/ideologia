@@ -1,8 +1,11 @@
 <?php
 require 'ressources/entetes.php';
 entete('Plateau');
-$pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
+$pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 ?>
+<div ng-controller="IdeologiaCtrl" id="IdeologiaCtrl">
+		
+	
 
 	<div class="row">
 		<div id="header">
@@ -16,38 +19,48 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 			<div class="mypanel mapel">
 				<h1>Observations</h1>
 				
-				<div id="timer"><span>09:59</span></div>
+				<div id="timer"><span>{{timer}}</span></div>
+				
 
-				<h2>Adversaires</h2>
 				<h2>Historique</h2>
+				{{history}}
+
 				<h2>Détails</h2>
+				{{currentTerr.nom}}
 			</div>
 		</div>
 
-		<div class="large-8 columns" id="map">
-			<div class="mapel">
-
-				<div id="startup"><div class="conteneur">
-				<h1>Connexion</h1>
-					<div id="status"></div>
-					<ul id="waiting"></ul>
-					<div id="formPseudo">
-							<div class="row collapse">
-								<div class="columns medium-10 small-8">
-									<input type="text" name="pseudo" id="pseudo" placeholder="Pseudo" class="columns small-10" />
-								</div>
-								<div class="columns medium-2 small-4">
-									<input type="submit" value="Continuer" class="button postfix" />
-								</div>
-							</div>
-					</div>
-					<div id="rooms" style="display:none"></div>
-				</div></div>
-
-				<img src="carte.svg" /><br />
-				<h1>Ideologia</h1>
+		<div class="large-8 columns" id="map"><div class="mapel">
+			<div class="indicateurs">
+				<ul>
+					<li title="Social-politique"><i class="icon-jauge-social"></i></li>
+					<li title="Finances"><i class="icon-jauge-finances"></i></li>
+					<li title="Environnement"><i class="icon-jauge-environnement"></i></li>
+				</ul>
 			</div>
-		</div>
+
+			<div class="adversaires">
+				<h2>Adversaires</h2>
+				<ul>
+					<li class="ideo-liberal"><i class="icon-liberal"></i> Libéral</li>
+					<li class="ideo-communisme"><i class="icon-communisme"></i> Communiste</li>
+					<li class="ideo-anarchie"><i class="icon-anarchie"></i> Anarchiste</li>
+					<li class="ideo-feodal"><i class="icon-feodal"></i> Chevalier</li>
+				</ul>
+			</div>
+
+			<!-- PopUnder -->
+			<div id="startup" ng-show="showPopunder()"><div class="conteneur" ng-include="currentPhase.getPopUnder()"></div></div>
+
+			
+			<svg viewBox="0 0 1881 950">
+				<g ng-repeat="terr in territoires" fill="{{terr.couleur}}" stroke="rgba(255,255,255,0.66)" stroke-width="1" stroke-linecap="round" ng-mouseover="onTerritoire(terr)" ng-mouseleave="leaveTerritoire()">
+					<path ng-repeat="d in terr.path" d="{{d}}" />
+				</g>
+			</svg>
+			<h1>{{game}}</h1>
+		</div></div>
+
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel">
 				<h1>Commandement</h1>
@@ -56,45 +69,18 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified')
 	</div>
 
 	<dl id="plateau">
-		<?php
-		$jActives = array();
-		for($j = 1 ; $j <= 4 ; $j++)
-			$jActives[$j] = rand(1, 42);
-		
-		for ($i = 1 ; $i <= 42 ; $i++)
-		{
-			echo '
-			<dt>
-				<span class="case '.($i%5 == 0 ? 'danger' : '').'">'.$i.'</span>
+		<dt ng-repeat="square in board.squares">
+			<span class="case">{{$index+1}}</span>
+			<span class="joueurs">
+				<span class="ideology {{p.ideology.slug}}" ng-repeat="p in square.players" title="{{j.pseudo}}"></span>
+			</span>
+		</dt>
 
-				<span class="joueurs">';
-				for($j = 1 ; $j <= 4 ; $j++)
-					echo '<span class="joueur j'.$j.'"><span class="'.(($jActives[$j] == $i) ? 'active' : '').'"></span></span>';
-
-			echo'</span>
-			</dt>';
-		}
-
-		?>
 	</dl>
 
 	<div style="height:80px"></div>
+</div>
 
-	<script src="assets/javascripts/main.js?<?php echo uniqid(); ?>"></script>
-
-	<script>
-		function Equilibre(Indentifier){
-			$(Indentifier).each(function(){
-				var h=0;
-				$(">*", this);
-				$(Indentifier).each(function(){ h=Math.max(h,this.offsetHeight); }).css({'height': h+'px'});
-			});
-		}
-
-		$(document).ready(function() {
-			Equilibre(".mapel");
-		});
-	</script>
 
 <?php
 pied();

@@ -1,1 +1,0 @@
-Game.NBPLAYERS = 4;

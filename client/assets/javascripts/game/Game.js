@@ -33,3 +33,6 @@ function Game() {
 		}
 	}.bind(this);
 }
+
+
+Game.NBPLAYERS = 4;

@@ -41,11 +41,68 @@ h1 {
 	color:rgba(255,255,255,0.66);
 	text-align:center; margin:0;
 	padding:0;
-	padding-bottom:10px;
+	padding-bottom:20px;
 	text-transform: uppercase;
 	font-weight: bold;
 	font-family: Electrolize;
 	font-size:3.5rem;
+}
+
+.indicateurs {
+	position:absolute;
+	width:100%;
+}
+
+.indicateurs ul {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	background:rgba(255,255,255,0.2);
+	border-radius:0 0 6px 6px;
+	display:inline-block;
+}
+
+.indicateurs li {
+	font-size:160%;
+	padding:0 10px;
+	color:white;
+	display:inline-block;
+}
+
+.adversaires {
+	background:rgba(255,255,255,0.4);
+	position:absolute;
+	bottom:0;
+	width:100%;
+	text-align:left;
+	border-radius:0 0 6px 6px;
+}
+
+.adversaires h2 {
+	display:inline-block;
+	font-weight:normal;
+	font-size:1em;
+	margin:0;
+	padding:0 20px;
+}
+
+.adversaires ul {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	display:inline-block;
+}
+
+.adversaires li {
+	font-size:90%;
+	padding:0 10px;
+	margin:3px 3px;
+	color:white;
+	display:inline-block;
+	border:1px solid black;
+	border-radius:3px;
+	background:#222;
+	text-shadow:1px 1px 1px black;
 }
 
 .mypanel {
@@ -131,11 +188,11 @@ dl#plateau dt span.joueurs span.joueur span {
 	border-radius:4px;
 }
 
-dl#plateau dt span.joueurs span.joueur span {background:transparent;}
-dl#plateau dt span.joueurs span.joueur.j1 span.active {background-color:#8d0d1a;}
-dl#plateau dt span.joueurs span.joueur.j2 span.active {background-color:#549124;}
-dl#plateau dt span.joueurs span.joueur.j3 span.active {background-color:#882491;}
-dl#plateau dt span.joueurs span.joueur.j4 span.active {background-color:#247691;}
+dl#plateau dt span.joueurs span.ideology span {background:transparent;}
+dl#plateau dt span.joueurs span.ideology.communism {background-color:#8d0d1a;}
+dl#plateau dt span.joueurs span.ideology.feudal {background-color:#549124;}
+dl#plateau dt span.joueurs span.ideology.anarchy {background-color:#882491;}
+dl#plateau dt span.joueurs span.ideology.capitalism {background-color:#247691;}
 
 
 div#timer {
