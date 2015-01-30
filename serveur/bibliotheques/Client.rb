@@ -76,6 +76,7 @@ class Client
 				puts "#{@pseudo} est entrain de choisir un salon"
 				@listeSalons.selection(self)
 
+        # TODO: has to move INTO @listeSalons (sent after the war...)
 				@com.send('phase', 'attente')
 
 				# Test si la partie n'est pas commencée afin d'endormir le client si besoin

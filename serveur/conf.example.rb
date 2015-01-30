@@ -11,8 +11,6 @@ require 'Salon'
 require 'Partie'
 require 'GestionJoueur'
 require 'Communication'
-require 'Reception'
-require 'Emission'
 
 $FONDS_INITIAUX = 2500 # Argent au début de la partie
 $ARGENT_CASE_DEPART = 1600 # Argent au passage sur la case départ

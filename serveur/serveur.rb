@@ -26,18 +26,14 @@ listeSalons = ListeSalon.new
 nbClients = 0
 
 # Types de communication entrantes autorisées
-authorizedTypes = %w(pong pseudo join des operation deco)
+authorizedTypes = %w(pong phaseack pseudo join des operation deco)
+
 
 # Méthode activé lors de la réception d'une communication signalant que le joueur quitte le salon
 def unjoin_method(client, params)
 	puts 'Executed unjoined method !'
 	client.quitSalon
 end
-
-#Types de communication entrantes spéciales utilisant une méthode lors de leur réception
-specialTypes = {
-	'unjoin' => method(:unjoin_method)
-}
 
 EventMachine.run {
 	puts('Server is running at %d' % port)
@@ -53,9 +49,9 @@ EventMachine.run {
 		# Réaction du serveur lors de l'ouverture d'une connexion websocket
 		ws.onopen{
 			client = Client.new(listeSalons)
-			communication = Communication.new(ws, client)
-			communication.setAuthorizedTypes(authorizedTypes)
-			communication.setSpecialTypes(specialTypes)
+			communication = Communication.new(ws, client, authorizedTypes)
+      communication.addAsync('unjoin', method(:unjoin_method))
+
 
 			# On commence le ping du joueur
 			communication.startPing
@@ -97,7 +93,7 @@ EventMachine.run {
 			end
 
 			# On traite le message
-			communication.filterReception(msg)
+			communication.incomingMessage(msg)
 		}
 
 		#Réaction du serveur en cas d'erreur
