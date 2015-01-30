@@ -13,22 +13,24 @@ class ListeSalon
 	def selection(client)
 		begin
 			client.com.send("salons", getListToCommunicate)
-			indexSalon = client.com.receive('join')
 
 			# Si le salon n'existe pas, une exception est levé
 			# Client se débrouille pour notifier le salon de sa venue
-			client.salon = salonAt(indexSalon)
+			selectedSalon = salonAt(client.com.receive('join'))
 
-			if client.salon.full?
+			if selectedSalon.full?
 				@listeSalon << Salon.new
 			end
 		rescue => e
-			puts e # Salon does not exist
+			puts "ListeSalon::selection/rescue: Salon #{e} doesn't exist"
 			retry
 		end
 
 		client.com.send('joined')
 		puts 'Confirmation "join" envoyee'
+
+    client.com.emitPhase('attente')
+    client.salon = selectedSalon # salon= is redefined to send (careful!)
 	end
 
 	def getNonEmptySalon

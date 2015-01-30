@@ -22,7 +22,7 @@ class Client
 
 	def salon=(salon)
 		unless @salon.nil?
-			puts "Client could have change room without notify him!"
+			puts "Client may have changed room without notify!"
 		end
 
 		salon.join(self)
@@ -69,17 +69,14 @@ class Client
 
 			puts "#{@pseudo} vient de se connecter"
 
-			@com.send('phase', 'salons')
+			@com.emitPhase('salons')
 
 			begin
 				# On fait choisir un salon 
 				puts "#{@pseudo} est entrain de choisir un salon"
 				@listeSalons.selection(self)
 
-        # TODO: has to move INTO @listeSalons (sent after the war...)
-				@com.send('phase', 'attente')
-
-				# Test si la partie n'est pas commencée afin d'endormir le client si besoin
+        # Test si la partie n'est pas commencée afin d'endormir le client si besoin
 				if @salon.full?
 					# On réveille les amis
 					puts "WAKE UP!"
@@ -106,7 +103,7 @@ class Client
 
 
 			puts 'Debut partie'
-			@com.send('phase', 'jeu')
+			@com.emitPhase('jeu')
 
 			# Préparation du client pour le début de partie
 

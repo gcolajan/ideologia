@@ -26,5 +26,4 @@ salonsPhase.operations.insert('joined', function($scope, salon) {
 salonsPhase.userActions.insert('join', function($scope, index) {
     ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
     ws.emit('join', index);
-    console.log('salon send');
 });

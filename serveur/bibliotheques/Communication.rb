@@ -62,6 +62,7 @@ class Communication
     }
 
     # Return the last written information on that kind of data
+    # TODO: Should be protected by mutex (check for the right value)
     return @data[type]
   end
 
