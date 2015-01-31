@@ -87,11 +87,19 @@ class Salon
 			end
 		}
 
-		# On l'envoie à tous les clients du salon
-		@clients.each{ |client|
-			if (client != nil)
-				client.com.send('waitingWith', pseudos)
-			end
-		}
-	end
+    broadcastInformation('waitingWith',pseudos)
+
+  end
+
+   #Send a type of data to each client
+  def broadcastInformation(type, data)
+
+    @clients.each{
+      |client|
+      if(client != nil)
+        client.com.send(type,data)
+      end
+    }
+  end
+
 end

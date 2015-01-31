@@ -35,11 +35,6 @@ class GestionJoueur
 
   # Permit to refresh the dataset of players
 	def updatePlayerData
-		# S'il existe un événement, on l'envoie
-    # TODO Should be done when the event is triggered (info and then, see the disaster on your map)
-		if @partie.evenement != nil
-			@com.send('evenement', @partie.obtenirEvenement)
-		end
 
 		puts "Global update for \"#{@joueur.pseudo}\""
 		
@@ -117,6 +112,9 @@ class GestionJoueur
 
         # On transmet l'opération à Partie pour son application aux joueurs concernés
         @partie.appliquerOperationEvenement(operation)
+
+        # Send the id of the event to each client
+        @salon.broadcast('evenement',operation)
 
       when 'caseDepart' # Muet
 
