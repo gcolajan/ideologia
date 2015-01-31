@@ -26,16 +26,18 @@ class Communication
   # @param [string] type
   # @param [string] data
   # @param [float] delay    Only accurate if we want to transmit a delay to inform the user
-  def send(type, data='', delay=0.0)
+  def send(type, data='', delay=nil)
     if type != 'ping'
       puts "SENDED #{type}"
     end
 
     response = {'type' => type}
-    if not data.empty?
+
+    unless data.empty?
       response['data'] = data
     end
-    if delay > 0.0
+
+    unless delay.nil?
       response['delay'] = delay
     end
 
@@ -47,7 +49,7 @@ class Communication
   # @param [string] type      must be specified in @authorizedTypes
   # @param [seconds] timeout  nil/unspecified is unconditional wait
   def receive(type, timeout=nil)
-    if not @sync.has_key?(type)
+    unless @sync.has_key?(type)
       puts "Communication::receive: You are expecting for \"#{type}\" but isn't an authorized classic type."
       return nil
     end
@@ -70,7 +72,7 @@ class Communication
   # @param [string] type      The type of data you send
   # @param [string] data      The data you send
   # @param [string] expected  The kind of data you expect to receive
-  # @param [float] delay      How many secs we are ready to wait before failing (asking with delay < 0.0 may be dangerous)
+  # @param [float] delay      How many secs we are ready to wait before failing (asking with delay at nil may be dangerous)
   # @return [Object]          The last known (careful!) information with [expected] type
   def ask(type, data='', expected, delay)
     send(type, data, delay)
@@ -82,8 +84,8 @@ class Communication
   # It waits forever
   # @param [string] name    Name of the phase
   def emitPhase(name)
-    ack = ask('phase', name, 'phaseack', 0.0)
-    if (ack != name)
+    ack = ask('phase', name, 'phaseack', nil)
+    if ack != name
       puts "Communication::emitPhase: Wrong ACK on phase (expected: #{name}, received: #{ack})."
     end
   end
@@ -148,7 +150,7 @@ class Communication
     # In case of a classical communication we wakeup ours locks
     if (@sync.has_key?(type))
       # In case of
-      if not data.nil?
+      if (not data.nil?) && type != 'pong'
         @data[type] = data
       end
 

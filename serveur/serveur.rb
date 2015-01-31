@@ -59,8 +59,7 @@ EventMachine.run {
 			client.com = communication
 
 			nbClients += 1
-			puts 'connexion acceptee'
-			puts ">>> Clients = #{nbClients}"
+			puts ">>> #{nbClients} client(s)"
 
 			client.launchThread
 		}
@@ -68,8 +67,7 @@ EventMachine.run {
 		# Réaction du serveur sur fermeture de la websocket
 		ws.onclose {
 			nbClients -= 1
-			puts 'Connection closed'
-			puts "<<< Clients = #{nbClients}"
+			puts "<<< #{nbClients} client(s)"
 
 			puts ws.to_s
 			# Si le client est encore dans un salon on le déconnecte
@@ -88,10 +86,10 @@ EventMachine.run {
 			if test['type']  == 'deco'
 				condVarAttenteDebut.signal
 				client.salon.deconnexionJoueur(client)
-			end
-
-			# On traite le message
-			communication.incomingMessage(msg)
+      else
+        # On traite le message
+        communication.incomingMessage(msg)
+      end
 		}
 
 		#Réaction du serveur en cas d'erreur
