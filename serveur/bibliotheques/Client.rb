@@ -35,7 +35,7 @@ class Client
 			# Je notifie le salon que je m'en vais
 			@salon.deconnexionJoueur(self)
 
-			# Je me déréfence
+			# Je me dé-référence
 			@salon = nil
 
 			# Je libère le verroux lié à mon attente de début de partie
@@ -71,9 +71,9 @@ class Client
 
 			puts "#{@pseudo} vient de se connecter"
 
-			@com.emitPhase('salons')
-
 			begin
+        @com.emitPhase('salons')
+
 				# On fait choisir un salon 
 				puts "#{@pseudo} est entrain de choisir un salon"
 				@listeSalons.selection(self)

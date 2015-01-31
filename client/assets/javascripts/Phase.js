@@ -71,7 +71,7 @@ function Phase(name, before, starting, ending) {
      * @return boolean if the phase has been initialized or not
      */
     this.init = function(params) {
-        if (this.state != States.UNDEFINED) {
+        if (this.state != States.UNDEFINED && this.state != States.ENDED) {
             console.log('Phase-'+this.name+'::init: State must be UNDEFINED ('+this.state+')');
             return false;
         }
