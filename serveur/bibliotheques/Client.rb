@@ -64,6 +64,8 @@ class Client
 	def launchThread
 		@mainThread = Thread.new do
 
+      @com.emitPhase('introduction')
+
 			# Recuperation du pseudo
 			@pseudo = @com.receive('pseudo')
 
@@ -95,7 +97,7 @@ class Client
 
 			joueur.definirPseudo(@pseudo)
 			# À reprendre pour transmettre client et pas les éléments séparément
-			gestionJoueur = GestionJoueur.new(@com, @salon.partie, joueur, @salon)
+			gestionJoueur = GestionJoueur.new(joueur, @com, @salon)
 
 			# Le joueur de la partie connait l'instance le gérant
 			joueur.obtenirInstanceGestionJoueur(gestionJoueur)
@@ -107,12 +109,15 @@ class Client
 
 			# Préparation du client pour le début de partie
 
+      # On envoie une synthèse des personnes participant et les idéologies associées
 			puts 'Recuperation des partenaires'
-			gestionJoueur.obtenirPartenaires
+      @com.send('partenaires', @salon.partie.obtenirTableauPartenaires)
 
 			# Gestion du joueur durant toute la partie
 			puts 'Debut tour'
-			gestionJoueur.tourJoueur
+      while @salon.partie.estDemarree
+			  gestionJoueur.newTurn
+      end
 		
 			# Envoi des scores finaux au client
 			puts 'envoi score'

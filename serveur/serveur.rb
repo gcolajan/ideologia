@@ -58,8 +58,6 @@ EventMachine.run {
 
 			client.com = communication
 
-			client.com.emitPhase('introduction')
-
 			nbClients += 1
 			puts 'connexion acceptee'
 			puts ">>> Clients = #{nbClients}"

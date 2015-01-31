@@ -45,32 +45,34 @@ class Partie
 		@plateau = Plateau.new(listeTerritoires, popMondiale)
 		@joueurCourant = @listeJoueurs[0]
 	end
-	
+
+  # Permet de savoir si le temps est dépassé
+  # Retourne la durée restante
+  def timeOver?
+    return (Time.now > @heureDebut + $TEMPS_JEU)
+  end
 	
 	
 	# Retourne l'instance du joueur correspondant au thread appelant
 	def recupererInstanceJoueur(numero)
 		return @listeJoueurs[numero]
 	end
-	
-	
-	# Permet de savoir si le temps est dépassé
-	# Retourne la durée restante
-	def temps
-		if(Time.now > @heureDebut + $TEMPS_JEU)
-			finPartie()
-		end
-		return $TEMPS_JEU - (Time.now - @heureDebut).round
-	end
-	
-	
-	
-	# Met à jour le prochain joueur courant
-	def tourSuivant
-		@sem.synchronize {
-			@joueurCourant = @listeJoueurs[(@joueurCourant.numJoueur+1)%4]
-		}
-	end
+
+
+  def finTour
+    # Met à jour le prochain joueur courant (pas de mutex, les autres threads dorment encore)
+    @joueurCourant = @listeJoueurs[(@joueurCourant.numJoueur+1)%4]
+
+    # Réveil les threads-joueurs inactifs qui ne jouaient pas pendant le tour
+    @semFinTour.synchronize{
+      @finTour.broadcast()
+    }
+
+    # Vérifier que le temps n'est pas dépassé, le cas échéant déclarer la partie terminée
+    if timeOver?
+      finPartie()
+    end
+  end
 	
 	
 	
@@ -102,13 +104,7 @@ class Partie
 		return gain
 	end
 
-	
-	# Réveil les threads qui ne jouaient pas pendant le tour
-	def reveilFinTour
-		@semFinTour.synchronize{
-			@finTour.broadcast()
-		}
-	end
+
 	
 	# Endort les threads qui ne joue pas pendant le tour
 	def attendreFinTour
