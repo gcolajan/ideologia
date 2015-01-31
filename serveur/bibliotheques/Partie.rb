@@ -19,7 +19,6 @@ class Partie
 		@nbJoueurs = 4
 		@nbTerritoires = 32
 		
-		@evenement = nil
 		@estDemarree = true
 		@scores = nil
 		@listeJoueurs = []
@@ -207,24 +206,10 @@ class Partie
 					end
 				end
 		end
-		
-		@evenement = [@joueurCourant.numJoueur, operation.idEvenement]
 	end
 	
 	
-	# Retourne l'identifiant de l'événement ainsi que le numéro du joueur courant pour savoir qui a causé l'événement
-	def obtenirEvenement
-		@sem.synchronize{
-			@nbAppelObtenirEvenement = @nbAppelObtenirEvenement + 1
-		}
-		ev = @evenement
-		if(@nbAppelObtenirEvenement == 4)
-			@evenement = nil
-			@nbAppelObtenirEvenement = 0
-		end
-		return ev
-	end
-	
+
 	# Permet de créer un dictionnaire contenant les pseudos et idéologies de chaque joueur
 	# Retourne le dictionnaire
 	def obtenirTableauPartenaires
