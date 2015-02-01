@@ -1,3 +1,7 @@
+require 'json'
+require 'websocket-eventmachine-client'
+
+
 Thread.abort_on_exception = true
 
 if ARGV.size != 2 and ARGV.size != 0
@@ -17,7 +21,7 @@ elsif ARGV.size == 2
 end
 
 EventMachine.run {
-    ws = EventMachine::Client.connect(:host => adresseServeur, :port => port)
+    ws = WebSocket::EventMachine::Client.connect(:host => adresseServeur, :port => port)
 
     # Réaction du client lors de l'ouverture d'une connexion websocket
     ws.onopen do
@@ -34,7 +38,7 @@ EventMachine.run {
       test = JSON.parse(msg)
       # Si on a un message de deco on réveille le joueur et on le déconnecte du salon
       puts("type : #{test['type']}, data : #{test['data']}")
-      response = {type => test['type']}
+      response = {'type' => test['type']}
       if test['type']  == 'operation'
         response['data'] = test['data'].first()
         ws.send(JSON.generate(response))
