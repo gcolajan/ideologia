@@ -34,10 +34,17 @@ EventMachine.run {
       test = JSON.parse(msg)
       # Si on a un message de deco on réveille le joueur et on le déconnecte du salon
       puts("type : #{test['type']}, data : #{test['data']}")
+      response = {type => test['type']}
       if test['type']  == 'operation'
-        ws.send(test['data'].first())
+        response['data'] = test['data'].first()
+        ws.send(JSON.generate(response))
       elsif test['type'] == 'pseudo'
-        ws.send(Process.pid)
+        response['data'] = Process.pid
+        ws.send(JSON.generate(response))
+      elsif test['type'] == 'ping'
+        response['type'] = 'pong'
+        response['data'] = 'pong'
+        ws.send(JSON.generate(response))
       end
     end
 
