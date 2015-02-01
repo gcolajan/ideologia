@@ -7,7 +7,6 @@ require 'Plateau'
 
 class Partie
 
-	attr_reader :evenement
 	attr_reader :joueurCourant
 	attr_reader :estDemarree
 	attr_reader :plateau
