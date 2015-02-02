@@ -1,6 +1,8 @@
+#! /usr/bin/ruby
+# encoding: UTF-8
+
 require 'json'
 require 'websocket-eventmachine-client'
-
 
 Thread.abort_on_exception = true
 
@@ -42,7 +44,7 @@ EventMachine.run {
 
       if type != 'ping'
         puts("#{type} => #{data}")
-        sleep(1) # Before doing anything on reception, we wait 1s
+        sleep(1.5) # Before doing anything on reception, we wait 1s
       end
 
       if type == 'ping'
