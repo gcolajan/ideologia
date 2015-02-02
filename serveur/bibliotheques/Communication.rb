@@ -177,7 +177,7 @@ class Communication
 				receive('pong', $REPONSE_PING)
 				# If the response was too long (or not exists)
 				if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
-					puts 'Disconnected by ping timeout'
+					puts "Disconnected by ping timeout (#{@client.pseudo})"
 					close()
 					break
 				end

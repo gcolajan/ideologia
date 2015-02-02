@@ -16,7 +16,7 @@ class ListeSalon
 
 			# Si le salon n'existe pas, une exception est levé
 			# Client se débrouille pour notifier le salon de sa venue
-			selectedSalon = salonAt(client.com.receive('join'))
+			selectedSalon = salonAt(client.com.receive('join').to_i)
 
 			if selectedSalon.full?
 				@listeSalon << Salon.new
