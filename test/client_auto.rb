@@ -44,7 +44,7 @@ EventMachine.run {
 
       if type != 'ping'
         puts("#{type} => #{data}")
-        sleep(1.5) # Before doing anything on reception, we wait 1s
+        sleep(2) # Before doing anything on reception, we wait 1s
       end
 
       if type == 'ping'
