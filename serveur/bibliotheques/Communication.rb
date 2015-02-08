@@ -166,26 +166,4 @@ class Communication
       block.call(@client, params)
     end
   end
-
-	def startPing
-		# Gestion du ping
-		@pingThread = Thread.new do
-			while true
-				send 'ping'
-				pingLaunch = Time.now.to_f
-				# We are waiting for a response from the client
-				receive('pong', $REPONSE_PING)
-				# If the response was too long (or not exists)
-				if (Time.now.to_f - pingLaunch >= $REPONSE_PING)
-					puts "Disconnected by ping timeout (#{@client.pseudo})"
-					close()
-					break
-				end
-
-				# We wait a little before re-ask
-				sleep($INTERVALLE_PING_SALON)
-			end
-		end
-	end
-
 end

@@ -42,10 +42,8 @@ EventMachine.run {
       type = _msg['type']
       data = _msg['data']
 
-      if type != 'ping'
-        puts("#{type} => #{data}")
-        sleep(2) # Before doing anything on reception, we wait 1s
-      end
+      puts("#{type} => #{data}")
+      sleep(1) # Before doing anything on reception, we wait 1s
 
       if type == 'ping'
         ws.send JSON.generate({'type' => 'pong'})
@@ -54,6 +52,7 @@ EventMachine.run {
 
         case data
           when 'introduction'
+          	sleep(0.5);
             ws.send JSON.generate({'type' => 'pseudo', 'data' => 'BOT_'+Process.pid.to_s})
           when 'salons'
             # Nothing here
@@ -65,7 +64,7 @@ EventMachine.run {
             puts "Unknow phase: #{data}"
         end
       elsif type == 'salons'
-        ws.send JSON.generate({'type' => 'join', 'data' => '1'})
+        ws.send JSON.generate({'type' => 'join', 'data' => data.first().to_s})
       elsif type == 'operations'
         ws.send JSON.generate({'type' => 'operation', 'data' => data.first()})
       else

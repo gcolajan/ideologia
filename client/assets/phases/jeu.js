@@ -29,6 +29,13 @@ var jeuPhase = new Phase('jeu',
     function(scope) {
     });
 
+jeuPhase.operations.insert('partenaires', function($scope, partenairs) {
+    console.log(partenairs);
+});
+
+jeuPhase.operations.insert('updates', function($scope, updates) {
+    console.log(updates);
+});
 
 jeuPhase.userActions.insert('onTerritory', function($scope, territory) {
     $scope.currentTerr = territory;

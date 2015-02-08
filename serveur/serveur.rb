@@ -43,7 +43,8 @@ EventMachine.run {
 
 		client = nil
 		communication = nil
-		
+    ping = nil
+
 		condVarAttenteDebut = nil
 
 		# Réaction du serveur lors de l'ouverture d'une connexion websocket
@@ -52,17 +53,20 @@ EventMachine.run {
 			communication = Communication.new(ws, client, authorizedTypes)
       communication.addAsync('unjoin', method(:unjoin_method))
 
-
-			# On commence le ping du joueur
-			communication.startPing
-
-			client.com = communication
+      client.com = communication
+      client.launchThread
 
 			nbClients += 1
 			puts ">>> #{nbClients} client(s)"
 
-			client.launchThread
-		}
+      # On commence le ping du joueur
+      ping = Thread.new do
+        while true
+          sleep($INTERVALLE_PING_SALON)
+          ws.ping ''
+        end
+      end
+    }
 
 		# Réaction du serveur sur fermeture de la websocket
 		ws.onclose {
@@ -75,8 +79,9 @@ EventMachine.run {
 				client.salon.deconnexionJoueur(client)
 			end
 
-			# On tue son thread
+			# On tue ses threads
 			client.stopThread
+      ping.kill
 		}
 
 		# Réaction du serveur sur réception d'un message de la websocket
@@ -97,6 +102,5 @@ EventMachine.run {
 			puts "websockets error: #{error}"
 			puts error.backtrace
 		}
-		
 	end
 }

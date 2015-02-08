@@ -114,7 +114,7 @@ class GestionJoueur
         @partie.appliquerOperationEvenement(operation)
 
         # Send the id of the event to each client
-        @salon.broadcast('evenement',operation)
+        @salon.broadcast('evenement', operation.idEvenement)
 
       when 'caseDepart' # Muet
 

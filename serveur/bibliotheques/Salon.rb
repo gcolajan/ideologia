@@ -87,17 +87,16 @@ class Salon
 			end
 		}
 
-    broadcastInformation('waitingWith',pseudos)
+    broadcast('waitingWith',pseudos)
 
   end
 
-   #Send a type of data to each client
-  def broadcastInformation(type, data)
+  # Send a type of data to each client
+  def broadcast(type, data, delay=nil)
 
-    @clients.each{
-      |client|
-      if(client != nil)
-        client.com.send(type,data)
+    @clients.each{ |client|
+      if (client != nil)
+        client.com.send(type, data, delay)
       end
     }
   end

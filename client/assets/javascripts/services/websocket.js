@@ -7,8 +7,6 @@ app.service('ws', function($rootScope) {
 
 	var status = '';
 
-	callbacks.ping = function() { events.emit('pong'); };
-
 	window.addEventListener("beforeunload", function(event) {
 		ws.close();
 		ws = null;
