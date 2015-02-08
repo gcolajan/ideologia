@@ -15,6 +15,7 @@ salonsPhase.hasPopunder = true;
  */
 salonsPhase.operations.insert('salons', function($scope, salons) {
     $scope.salons = salons;
+    console.log(salons);
 });
 
 salonsPhase.operations.insert('joined', function($scope, salon) {

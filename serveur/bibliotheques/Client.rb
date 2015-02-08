@@ -20,16 +20,6 @@ class Client
 		}
 	end
 
-	def salon=(salon)
-		unless @salon.nil?
-			puts "Client may have changed room without notify!"
-		end
-
-		salon.join(self)
-
-		@salon = salon
-	end
-
 	def quitSalon
 		unless @salon.nil?
 			# Je notifie le salon que je m'en vais
@@ -76,7 +66,7 @@ class Client
 
 				# On fait choisir un salon 
 				puts "#{@pseudo} est entrain de choisir un salon"
-				@listeSalons.selection(self)
+				@salon = @listeSalons.selection(self)
 
         # Test si la partie n'est pas commencée afin d'endormir le client si besoin
 				if @salon.full?

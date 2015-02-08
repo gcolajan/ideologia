@@ -64,7 +64,8 @@ EventMachine.run {
             puts "Unknow phase: #{data}"
         end
       elsif type == 'salons'
-        ws.send JSON.generate({'type' => 'join', 'data' => data.first().to_s})
+      	salon, _ = data.first
+        ws.send JSON.generate({'type' => 'join', 'data' => salon.to_s})
       elsif type == 'operations'
         ws.send JSON.generate({'type' => 'operation', 'data' => data.first()})
       else

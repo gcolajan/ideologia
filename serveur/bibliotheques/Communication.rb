@@ -18,7 +18,6 @@ class Communication
 
   # Closing the communication channel with that client
   def close
-    @pingThread.kill()
     @ws.close()
   end
 
@@ -33,7 +32,7 @@ class Communication
 
     response = {'type' => type}
 
-    unless data.empty?
+    if (not data.nil?) && (not data.empty?)
       response['data'] = data
     end
 

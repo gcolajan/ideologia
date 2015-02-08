@@ -51,9 +51,11 @@ class Salon
 	end
 
 	# Connexion d'un joueur au salon
-	def join(client)
-		@semaphoreControle.synchronize{
+	def addPlayer(client)
+		@semaphoreControle.synchronize {
+
 			# Permet de dire quand un salon est plein
+      # TODO useless
 			raise StandardError, "Salon is full" if full?
 
 			# On place notre client
@@ -77,7 +79,7 @@ class Salon
 		}
 	end
 
-	#Transmet le pseudo à chaque joueur présent dans le salon
+	# Transmet le pseudo à chaque joueur présent dans le salon
 	def transmissionPseudo()
 		# On constitue une liste des pseudos
 		pseudos = []
