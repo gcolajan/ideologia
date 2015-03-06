@@ -2,11 +2,13 @@
 function Game() {
 	this.players = [];
 	this.territories = new Collection();
+	this.gauges = new Set();
+	this.ideologies = new Set();
 	this.currentPlayer = undefined;
 	this.me = undefined;
 
 	this.getMe = function() {
-		return this.players[me];
+		return this.players[this.me];
 	}.bind(this);
 
 	this.getCurrentPlayer = function() {

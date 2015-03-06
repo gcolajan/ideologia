@@ -33,15 +33,15 @@
 .icon-jauge-environnement:before {
 	content: "\e603";
 }
-.icon-anarchie:before {
+.icon-anarchy:before {
 	content: "\e601";
 }
-.icon-communisme:before {
+.icon-communism:before {
 	content: "\e602";
 }
-.icon-feodal:before {
+.icon-feudal:before {
 	content: "\e604";
 }
-.icon-liberal:before {
+.icon-capitalism:before {
 	content: "\e606";
 }

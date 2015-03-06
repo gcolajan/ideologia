@@ -42,10 +42,10 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			<div class="adversaires">
 				<h2>Adversaires</h2>
 				<ul>
-					<li class="ideo-liberal"><i class="icon-liberal"></i> Libéral</li>
-					<li class="ideo-communisme"><i class="icon-communisme"></i> Communiste</li>
-					<li class="ideo-anarchie"><i class="icon-anarchie"></i> Anarchiste</li>
-					<li class="ideo-feodal"><i class="icon-feodal"></i> Chevalier</li>
+					<li ng-repeat="player in game.players" title="{{player.ideology.playerName}}">
+						<i class="icon-{{player.ideology.slug}}"></i> {{player.pseudo}}
+					</li>
+
 				</ul>
 			</div>
 
@@ -54,7 +54,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 			
 			<svg viewBox="0 0 1881 950">
-				<g ng-repeat="terr in game.territories.list" fill="{{terr.color}}" stroke="black" stroke-width="1" stroke-linecap="round">
+				<g ng-repeat="terr in game.territories.list" fill="{{terr.color.css()}}" stroke="black" stroke-width="1" stroke-linecap="round">
 					<path ng-repeat="d in terr.path" d="{{d}}" title="{{terr.name}}" />
 				</g>
 			</svg>
@@ -63,7 +63,11 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel">
-				<h1>Commandement</h1>
+				<h1>Territoires</h1>
+
+				<ul>
+					<li ng-repeat="territory in game.getMe().territories.array">{{territory.name}}</li>
+				</ul>
 			</div>
 		</div>
 	</div>

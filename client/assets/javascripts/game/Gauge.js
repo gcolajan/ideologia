@@ -1,6 +1,15 @@
 // Jauge
-function Gauge(name, level) {
+function Gauge(name, slug, level) {
 	this.name = name;
-	this.optimalLevel = level;
-	this.currentLevel = level;
+	this.slug = slug;
+	this.optimalLevel = level || 1.0;
+	this.currentLevel = level || 1.0;
+
+	this.cloneAndConfig = function(level) {
+		return new Gauge(this.name, this.slug, level);
+	}.bind(this);
+
+	this.reset = function() {
+		this.currentLevel = this.optimalLevel;
+	}.bind(this);
 }

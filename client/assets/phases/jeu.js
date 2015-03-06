@@ -6,6 +6,7 @@ var jeuPhase = new Phase('jeu',
         $http = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('$http');
         $http.get('data.ajax.php')
             .success(function (result) {
+                // Adding territories
                 for (var id in  result['territory']) {
                     var territory = result['territory'][id];
                     scope.game.territories.push(new Territory(
@@ -15,9 +16,27 @@ var jeuPhase = new Phase('jeu',
                         territory['path']));
                 }
 
-                // result.gauge
+                // Adding gauges
+                for (var id in result['gauge']) {
+                    var gauge = result['gauge'][id];
+                    scope.game.gauges.insert(id, new Gauge(gauge['name'], gauge['slug']));
+                }
 
-                // result.ideology
+                // Adding ideologies
+                for (var id in result['ideology']) {
+                    var ideology = result['ideology'][id];
+                    scope.game.ideologies.insert(
+                        id,
+                        new Ideology(
+                            ideology['nom'],
+                            ideology['slug'],
+                            ideology['joueur'],
+                            ideology['couleur'],
+                            scope.game.gauges,
+                            ideology['jauges']
+                        )
+                    );
+                }
             })
             .error(function() {
                 console.log('Game\'s data can\'t be reached!');
@@ -32,8 +51,11 @@ jeuPhase.operations.insert('partenaires', function($scope, partners) {
     for (var p in partners)
     {
         var partner = partners[p];
-        var ideology = $scope.ideologies[partner['ideologie']];
+        var ideology = $scope.game.ideologies.get(partner['ideologie']);
         $scope.game.players.push(new Player(partner['pseudo'], ideology));
+
+        if (partner['pseudo'] == $scope.pseudo)
+            $scope.game.me = p;
     }
 });
 
