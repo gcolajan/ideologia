@@ -54,11 +54,11 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 			
 			<svg viewBox="0 0 1881 950">
-				<g ng-repeat="terr in territoires" fill="{{terr.couleur}}" stroke="rgba(255,255,255,0.66)" stroke-width="1" stroke-linecap="round" ng-mouseover="onTerritoire(terr)" ng-mouseleave="leaveTerritoire()">
-					<path ng-repeat="d in terr.path" d="{{d}}" />
+				<g ng-repeat="terr in game.territories.list" fill="{{terr.color}}" stroke="black" stroke-width="1" stroke-linecap="round">
+					<path ng-repeat="d in terr.path" d="{{d}}" title="{{terr.name}}" />
 				</g>
 			</svg>
-			<h1>{{game}}</h1>
+			<h1>{{gameName}}</h1>
 		</div></div>
 
 		<div class="large-2 columns" id="mypan">

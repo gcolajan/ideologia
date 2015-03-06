@@ -11,6 +11,7 @@ class Partie
 	attr_reader :estDemarree
 	attr_reader :plateau
 	attr_reader :nbJoueurs
+  attr_reader :listeJoueurs
 	
 	# Initialise une nouvelle partie de quatre joueurs et d'une durée de 30 minutes
 	def initialize
@@ -261,22 +262,7 @@ class Partie
 		
 		return pos
 	end
-	
-	
-	# Crée un dictionnaire contenant le numéro de chaque joueur et les territoires qu'il possède
-	# Retourne le dictionnaire
-	def territoiresPartenaires
-		terrPartenaires = {}
-		for joueur in @listeJoueurs
-			territoires = []
-			for territoire in joueur.listeTerritoires
-				territoires.push(territoire.idTerritoire)
-			end
-			terrPartenaires.merge!({joueur.numJoueur => territoires})
-		end
-		
-		return terrPartenaires
-	end
+
 	
 	
 	# Permet d'obtenir les scores de la partie

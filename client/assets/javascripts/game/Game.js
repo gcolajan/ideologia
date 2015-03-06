@@ -1,6 +1,7 @@
 // Stockage de l'état de la partie
 function Game() {
 	this.players = [];
+	this.territories = new Collection();
 	this.currentPlayer = undefined;
 	this.me = undefined;
 
@@ -31,6 +32,15 @@ function Game() {
 			default:
 				return [];
 		}
+	}.bind(this);
+
+	this.bindPlayers = function() {
+		console.log("Bind "+this.players.length);
+		for (var player in this.players) {
+			console.log(this.players[player]);
+			//this.players[player].game = this;
+		}
+
 	}.bind(this);
 }
 

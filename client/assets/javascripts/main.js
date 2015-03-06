@@ -3,7 +3,8 @@ var app = angular.module('myGame', []);
 
 app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 
-	$scope.game = 'Ideologia';
+	$scope.gameName = "Ideologia";
+	$scope.game = undefined;
 
 	$scope.currentPhase = undefined;
 	$scope.currentTerr = null;
@@ -12,7 +13,6 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 
 	$scope.salons = [];
 	$scope.adversaires = [];
-	$scope.territoires = [];
 	$scope.ideologies = [];
 
 

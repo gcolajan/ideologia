@@ -37,13 +37,24 @@ class GestionJoueur
 	def updatePlayerData
 
 		puts "Global update for \"#{@joueur.pseudo}\""
-		
+
+    playerData = []
+    @partie.listeJoueurs.each { |joueur|
+      data = {
+        'position' => joueur.position,
+        'territories' => {}
+      }
+
+      joueur.listeTerritoires.each { |territory|
+        data['territories'].merge!({territory.idTerritoire => territory.calculerDecalage()})
+      }
+
+      playerData.push(data)
+    }
+
     # Useful informations to refresh client's UI
     @com.send('updates', {
-        'listeTerritoires' => {
-            'liste' => @partie.territoiresPartenaires,
-            'synthese' => @joueur.syntheseTerritoire
-        },
+        'playersData' => playerData,
         'positions' => @partie.positionsJoueurs,
         'pcases' => @partie.presenceCases,
         'fonds' => @joueur.fondsFinanciers.to_s,
