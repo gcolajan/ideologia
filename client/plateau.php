@@ -70,6 +70,9 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			<div class="mypanel mapel">
 				<h1>Territoires</h1>
 
+				<h2>Santé : {{(game.getMe().getGlobalHealth() * 100) | number:0}} %<br />
+				Domination : {{((game.getMe().getNbTerritory() / game.territories.length) * 100) | number:0}} %</h2>
+
 				<ul class="territories">
 					<li
 							ng-repeat="territory in game.getMe().territories.array"

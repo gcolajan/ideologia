@@ -20,6 +20,17 @@ function Player(pseudo, ideology) {
 		this.health = health;
 	}.bind(this);*/
 
+	this.getGlobalHealth = function() {
+		var health = 0;
+		for (var key in this.territories.array)
+			health += this.territories.get(key).getHealth();
+		return (health / this.territories.length());
+	}.bind(this);
+
+	this.getNbTerritory = function() {
+		return this.territories.length();
+	}
+
 	this.applyOperation = function() {
 		
 	}.bind(this);

@@ -2,8 +2,12 @@ function Set() {
     this.array = {};
 }
 
+Set.prototype.length = function () {
+  return Object.keys(this.array).length;
+};
+
 Set.prototype.exists = function(key) {
-    return (this.array[key] !== undefined);
+    return (key in this.array);
 };
 
 Set.prototype.insert = function(key, value) {
@@ -31,7 +35,7 @@ Set.prototype.get = function(key) {
 
 Set.prototype.unset = function(key) {
     if (this.exists(key))
-        this.array.splice(key, 1);
+        delete this.array[key];
 };
 
 Set.prototype.toJSON = function() {
