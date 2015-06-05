@@ -31,7 +31,7 @@ Set.prototype.get = function(key) {
 
 Set.prototype.unset = function(key) {
     if (this.exists(key))
-        this.array[key] = undefined;
+        this.array.splice(key, 1);
 };
 
 Set.prototype.toJSON = function() {
