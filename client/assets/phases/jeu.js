@@ -60,7 +60,16 @@ jeuPhase.operations.insert('partenaires', function($scope, partners) {
 });
 
 jeuPhase.operations.insert('joueurCourant', function($scope, currentPlayer) {
-    console.log("Current player is "+currentPlayer);
+    $scope.game.currentPlayer = currentPlayer;
+
+    // Mode Quick-DEBUG
+    if ($scope.game.me == currentPlayer)
+    {
+        ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
+        ws.emit('des');
+        console.log("Asking for des");
+    }
+
 });
 
 jeuPhase.operations.insert('updates', function($scope, updates) {
@@ -73,7 +82,7 @@ jeuPhase.operations.insert('updates', function($scope, updates) {
             var territory = $scope.game.territories.get(id, "id");
 
             // Updating health of the territory
-            territory.setHealth(updates['playersData'][i]['territories'][id]);
+            territory.shift = updates['playersData'][i]['territories'][id];
 
             // If the territory has changed of owner
             if (!player.territories.exists(id))
@@ -92,6 +101,9 @@ jeuPhase.operations.insert('updates', function($scope, updates) {
 
                 // We give the territory to that player
                 player.territories.insert(id, territory);
+                territory.color = player.ideology.color.clone();
+                territory.color.hueVariation();
+                territory.color.alpha = 0.5;
             }
         }
     }
@@ -101,17 +113,35 @@ jeuPhase.operations.insert('updates', function($scope, updates) {
     pcases
     fonds
     jauges*/
-
-    console.log("To process: "+updates);
 });
 
-jeuPhase.userActions.insert('onTerritory', function($scope, territory) {
-    $scope.currentTerr = territory;
-    $scope.oldColor = $scope.currentTerr.couleur;
-    $scope.currentTerr.couleur = 'rgba(100,30,168,0.6)';
+jeuPhase.operations.insert('evenement', function($scope, event) {
+    console.log("Event has been encountered: "+event);
 });
 
-jeuPhase.userActions.insert('leaveTerritory', function($scope, _) {
-    $scope.currentTerr.couleur = $scope.oldColor;
-    $scope.currentTerr = null;
+jeuPhase.operations.insert('des', function($scope, des) {
+    console.log("Des: "+des);
+});
+
+jeuPhase.operations.insert('position', function($scope, pos) {
+    console.log("Changed own position");
+    $scope.game.getMe().position = pos;
+});
+
+jeuPhase.operations.insert('gain', function($scope, gain) {
+    console.log("Current money: "+gain);
+});
+
+jeuPhase.operations.insert('operations', function($scope, operations) {
+    console.log("You should chose between those operations");
+    console.log(operations);
+
+    // Mode Quick-DEBUG
+    ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
+    ws.emit('operation', operations[0]);
+    console.log("Operation "+operations[0]+" sent");
+});
+
+jeuPhase.operations.insert('score', function($scope, score) {
+    console.log(score);
 });

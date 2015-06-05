@@ -272,3 +272,20 @@ div#rooms div div p {
 div#rooms div div input {
 	background:#008cba;
 }
+
+ul.territories {
+	list-style-type: none;
+	margin:0;
+	padding:0;
+}
+
+ul.territories li {
+	line-height:30px;
+	margin:15px 10px;
+	border:1px solid #222;
+	border-left:5px solid;
+	background:white;
+	color:#222;
+	padding-left:10px;
+	box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}

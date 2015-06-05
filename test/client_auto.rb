@@ -25,6 +25,9 @@ end
 EventMachine.run {
     ws = WebSocket::EventMachine::Client.connect(:host => adresseServeur, :port => port)
 
+    myName = nil;
+    myId = nil;
+
     # Réaction du client lors de l'ouverture d'une connexion websocket
     ws.onopen do
       puts("Client connected")
@@ -43,17 +46,19 @@ EventMachine.run {
       data = _msg['data']
 
       puts("#{type} => #{data}")
-      sleep(1) # Before doing anything on reception, we wait 1s
 
       if type == 'ping'
+      	sleep(0.2)
         ws.send JSON.generate({'type' => 'pong'})
       elsif type == 'phase'
+      	sleep(0.2)
         ws.send JSON.generate({'type' => 'phaseack', 'data' => data})
 
         case data
           when 'introduction'
-          	sleep(0.5);
-            ws.send JSON.generate({'type' => 'pseudo', 'data' => 'BOT_'+Process.pid.to_s})
+          	myName = 'BOT_'+Process.pid.to_s;
+          	sleep(1.5)
+            ws.send JSON.generate({'type' => 'pseudo', 'data' => myName})
           when 'salons'
             # Nothing here
           when 'attente'
@@ -65,9 +70,23 @@ EventMachine.run {
         end
       elsif type == 'salons'
       	salon, _ = data.first
+      	sleep(0.2)
         ws.send JSON.generate({'type' => 'join', 'data' => salon.to_s})
       elsif type == 'operations'
+      	sleep(0.2)
         ws.send JSON.generate({'type' => 'operation', 'data' => data.first()})
+      elsif type == 'partenaires'
+        data.each do |id, partner|
+          if partner['pseudo'] == myName
+            myId = id
+            break
+          end
+        end
+      elsif type == 'joueurCourant'
+        if myId == data
+       	  sleep(0.2)
+          ws.send JSON.generate({'type' => 'des', 'data' => ''})
+        end
       else
         # I don't care
       end

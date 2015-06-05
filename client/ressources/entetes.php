@@ -39,6 +39,8 @@ function entete($titre) {
 
 function pied() {
 	echo '
+	<script src="assets/javascripts/tools.js"></script>
+	<script src="assets/javascripts/rgb.js"></script>
 	<script src="assets/javascripts/Color.js?'.uniqid().'"></script>
 	<script src="assets/javascripts/Collection.js?'.uniqid().'"></script>
 	<script src="assets/javascripts/Set.js?'.uniqid().'"></script>

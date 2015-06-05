@@ -7,6 +7,8 @@ function Game() {
 	this.currentPlayer = undefined;
 	this.me = undefined;
 
+	this.hoveredTerritory = null;
+
 	this.getMe = function() {
 		return this.players[this.me];
 	}.bind(this);
@@ -48,3 +50,4 @@ function Game() {
 
 
 Game.NBPLAYERS = 4;
+Game.THRESHOLD = 30; // Maximum shift authorized (TODO: binding server)

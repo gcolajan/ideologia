@@ -3,11 +3,12 @@ var app = angular.module('myGame', []);
 
 app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 
+	$scope.pseudo = undefined;
+
 	$scope.gameName = "Ideologia";
 	$scope.game = undefined;
 
 	$scope.currentPhase = undefined;
-	$scope.currentTerr = null;
 
 	$scope.board = undefined;
 
