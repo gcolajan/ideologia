@@ -29,7 +29,7 @@ function Color(rgba, ga, blue, alpha) {
             this.red = rgba[0];
             this.green = rgba[1];
             this.blue = rgba[2];
-            this.alpha = (rgba.length < 3) ? 1.0 : rgba[3];
+            this.alpha = (rgba.length < 4) ? 1.0 : rgba[3];
         }
     }
     else if (rgba == undefined) { // Not defined

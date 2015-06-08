@@ -6,7 +6,18 @@ function Territory(id, name, position, path) {
 	this.position = position;
 	this.path = path;
 	this.color = new Color(Math.round(Math.random()*255), 0.5);
+	this.gauges = new Set();
 	this.shift = 0;
+
+	this.updateState = function(gaugesState) {
+		this.shift = 0;
+		for (var id in gaugesState)
+		{
+			var curGauge = this.gauges.get(id);
+			curGauge.currentLevel = (gaugesState[id] / 100.0);
+			this.shift += curGauge.getShift();
+		}
+	}.bind(this);
 
 	this.getHealth = function() {
 		var health = 1 - (this.shift / Game.THRESHOLD);

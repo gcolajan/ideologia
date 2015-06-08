@@ -10,4 +10,13 @@ function Ideology(name, slug, playerName, color, gaugesSet, confGauges) {
 
 	for (var id in confGauges)
 		this.optimalGauges.insert(id, gaugesSet.get(id).cloneAndConfig(confGauges[id]))
+
+	this.getNewGauges = function() {
+		var gauges = new Set();
+
+		for (var id in this.optimalGauges.array)
+			gauges.insert(id, this.optimalGauges.get(id).clone());
+
+		return gauges;
+	}
 }

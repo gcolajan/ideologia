@@ -21,33 +21,60 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 				<div id="timer"><span>{{timer}}</span></div>
 
+				<ul class="players">
+					<li ng-repeat="player in game.players" title="{{player.ideology.playerName}}" title="{{player.ideology.playerName}}">
+						<i ng-style="{'color':player.ideology.color.css()}" class="icon-{{player.ideology.slug}}"></i> {{player.pseudo}}
+					</li>
+				</ul>
 
-				<h2>Historique</h2>
-				{{history}}
+				<ul class="barcharts stats" title="Domination géographique">
+					<li ng-repeat="p in game.players"> <!-- Domination -->
+						<span ng-style="{'height':((p.territories.length() / game.territories.length) * 100)+'%', 'background-color':p.ideology.color.css()}"></span>
+						<span class="number">{{((p.territories.length() / game.territories.length) * 100) | number:0}} %</span>
+					</li>
+				</ul>
 
-				<h2>Détails</h2>
-				{{game.hoveredTerritory.name}}
+				<ul class="barcharts stats inverted" title="Santé des idéologies">
+					<li ng-repeat="p in game.players"> <!-- Health -->
+						<span ng-style="{'height':p.getGlobalHealth() * 100+'%', 'background-color':p.ideology.color.css()}"></span>
+						<span class="number">{{(p.getGlobalHealth() * 100) | number:0}} %</span>
+					</li>
+				</ul>
+
+
+				<div class="details" ng-show="game.hoveredTerritory != undefined">
+					<h2>Détails</h2>
+					<dl>
+						<dt>Territoire</dt>
+						<dd>{{game.hoveredTerritory.name}}</dd>
+
+						<dt>Propriétaire</dt>
+						<dd>{{game.getOwnerOf(game.hoveredTerritory).pseudo}}</dd>
+
+						<dt>Stabilité</dt>
+						<dd ng-style="{'color':game.hoveredTerritory.getHealthColor().css()}">{{(game.hoveredTerritory.getHealth() * 100) | number:0}} %</dd>
+					</dl>
+
+					<ul class="barcharts">
+						<li ng-repeat="gauge in game.hoveredTerritory.gauges.array">
+							<span ng-style="{'height':gauge.currentLevel*100+'%', 'background-color':gauge.getHealthColor().css()}"></span>
+							<span ng-style="{'height':gauge.optimalLevel*100+'%'}" class="optimal"></span>
+							<span class="number">{{gauge.currentLevel*100 | number:0}} %</span>
+							<span class="legend" ng-class="'icon-jauge-'+gauge.slug"></span>
+						</li>
+					</ul>
+				</div>
+
+				<div ng-hide="game.hoveredTerritory != undefined">
+					<h2>Historique</h2>
+					{{history}}
+				</div>
+
+
 			</div>
 		</div>
 
 		<div class="large-8 columns" id="map"><div class="mapel">
-			<div class="indicateurs">
-				<ul>
-					<li title="Social-politique"><i class="icon-jauge-social"></i></li>
-					<li title="Finances"><i class="icon-jauge-finances"></i></li>
-					<li title="Environnement"><i class="icon-jauge-environnement"></i></li>
-				</ul>
-			</div>
-
-			<div class="adversaires">
-				<h2>Adversaires</h2>
-				<ul>
-					<li ng-repeat="player in game.players" title="{{player.ideology.playerName}}">
-						<i class="icon-{{player.ideology.slug}}"></i> {{player.pseudo}}
-					</li>
-
-				</ul>
-			</div>
 
 			<!-- PopUnder -->
 			<div id="startup" ng-show="showPopunder()"><div class="conteneur" ng-include="currentPhase.getPopUnder()"></div></div>
@@ -68,19 +95,18 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel">
-				<h1>Territoires</h1>
-
-				<h2>Santé : {{(game.getMe().getGlobalHealth() * 100) | number:0}} %<br />
-				Domination : {{((game.getMe().getNbTerritory() / game.territories.length) * 100) | number:0}} %</h2>
+				<h1>Territoires possédés</h1>
 
 				<ul class="territories">
 					<li
+							class="fade"
 							ng-repeat="territory in game.getMe().territories.array"
 							ng-class="{active: territory.id == game.hoveredTerritory.id}"
 							ng-mouseenter="game.hoveredTerritory = territory"
 							ng-mouseleave="game.hoveredTerritory = undefined"
 							ng-style="{'border-color':territory.getHealthColor().css()}">
 						{{territory.name}}
+						<span class="risk" ng-show="territory.shift >= game.getThreshold()">!</span>
 					</li>
 				</ul>
 			</div>

@@ -12,6 +12,55 @@ h1 {
 	text-align:center;
 }
 
+/*
+BARCHATS
+*/
+
+ul.barcharts {
+	margin:0;
+	padding:0;
+	list-style-type: none;
+	height:150px;
+	display: flex;
+}
+
+ul.barcharts li {
+	margin:0;
+	padding:0;
+	display:inline-block;
+	width:33.33%;
+	height:100%;
+	position:relative;
+}
+
+ul.barcharts li span {
+	width:100%;
+	position:absolute;
+	bottom:0;
+}
+
+ul.barcharts li span.optimal {
+	border-top:1px solid white;
+}
+
+ul.barcharts li span.number {
+	height:50%;
+	text-align:center;
+	font-size:small;
+	text-shadow: 0 0 1px black;
+}
+
+ul.barcharts li span.legend {
+	text-align:center;
+	font-size:x-large;
+	padding:10px 0;
+	text-shadow: 0 0 1px black;
+}
+
+/*
+	CSS
+*/
+
 .row.full-width {
 	width:99%;
 	max-width:99%;
@@ -111,6 +160,7 @@ h1 {
 	background:#383838;
 	color:white;
 	border-bottom-width: 15px;
+	overflow: auto;
 	/*box-shadow: 2px 2px 0.5rem #222222;*/
 }
 
@@ -169,30 +219,6 @@ dl#plateau dt span.case {
 dl#plateau dt span.case.danger {
 	border-bottom:2px solid red;
 }
-
-dl#plateau dt span.joueurs {
-	display:table;
-	background:#CCCCCC;
-	width:100%;
-}
-
-dl#plateau dt span.joueurs span.joueur {
-	display:table-cell;
-	margin:0;
-}
-
-dl#plateau dt span.joueurs span.joueur span {
-	height:8px;
-	display:block;
-	margin:1px;
-	border-radius:4px;
-}
-
-dl#plateau dt span.joueurs span.ideology span {background:transparent;}
-dl#plateau dt span.joueurs span.ideology.communism {background-color:#8d0d1a;}
-dl#plateau dt span.joueurs span.ideology.feudal {background-color:#549124;}
-dl#plateau dt span.joueurs span.ideology.anarchy {background-color:#882491;}
-dl#plateau dt span.joueurs span.ideology.capitalism {background-color:#247691;}
 
 
 div#timer {
@@ -280,12 +306,91 @@ ul.territories {
 }
 
 ul.territories li {
-	line-height:30px;
-	margin:15px 10px;
+	line-height:25px;
+	margin:9px 6px;
 	border:1px solid #222;
-	border-left:5px solid;
+	border-left:4px solid;
 	background:white;
 	color:#222;
 	padding-left:10px;
 	box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+ul.territories li span.risk {
+	color:red;
+	float:right;
+	padding:0 5px;
+	font-weight: bold;
+}
+
+div.health p {
+	text-align:center;
+	color:white;
+	text-shadow: 1px 1px 1px black;
+}
+
+ul.barcharts.stats {
+	height:80px;
+	color:white;
+	opacity:0.8;
+}
+
+ul.barcharts.stats li span.number {
+	height:auto;
+}
+
+ul.barcharts.stats.inverted li span {
+	top: 0;
+}
+
+ul.barcharts.stats.inverted li span:first-child {
+	border-top:1px solid #222;
+}
+
+
+ul.barcharts.stats li {
+	width:25%;
+}
+
+
+ul.players {
+	list-style-type: none;
+	margin:0;
+}
+
+ul.players li {
+	padding: 0 5px;
+}
+
+div.details dl {
+	width:100%;
+	overflow: hidden;
+}
+
+div.details dl dt {
+	float:left;
+	width:50%;
+	clear:both;
+}
+
+div.details dl dd {
+	float:right;
+	width:50%;
+}
+
+.fade.ng-enter {
+	transition:0.5s linear all;
+	opacity:0;
+}
+
+.fade.ng-enter.ng-enter-active {
+	opacity:1;
+}
+
+.fade.ng-leave {
+	transition:1s linear all;
+	opacity:1;
+}
+.fade.ng-leave.ng-leave-active {
+	opacity:0;
 }

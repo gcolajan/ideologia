@@ -27,10 +27,10 @@
 .icon-jauge-social:before {
 	content: "\e600";
 }
-.icon-jauge-finances:before {
+.icon-jauge-economic:before {
 	content: "\e605";
 }
-.icon-jauge-environnement:before {
+.icon-jauge-environmental:before {
 	content: "\e603";
 }
 .icon-anarchy:before {

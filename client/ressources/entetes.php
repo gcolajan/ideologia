@@ -45,7 +45,9 @@ function pied() {
 	<script src="assets/javascripts/Collection.js?'.uniqid().'"></script>
 	<script src="assets/javascripts/Set.js?'.uniqid().'"></script>
 
-	<script src="assets/javascripts/angular.min.js"></script>'."\n";
+	<script src="assets/javascripts/angular.min.js"></script>
+	<script src="assets/javascripts/angular-route.min.js"></script>
+	<script src="assets/javascripts/angular-animate.min.js"></script>'."\n";
 
 	if($dir = opendir('./assets/javascripts/game'))
 		while (($file = readdir($dir)) !== false)

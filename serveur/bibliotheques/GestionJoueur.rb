@@ -46,7 +46,7 @@ class GestionJoueur
       }
 
       joueur.listeTerritoires.each { |territory|
-        data['territories'].merge!({territory.idTerritoire => territory.calculerDecalage()})
+        data['territories'].merge!({territory.idTerritoire => territory.etatJauges()})
       }
 
       playerData.push(data)
@@ -58,7 +58,7 @@ class GestionJoueur
         'positions' => @partie.positionsJoueurs,
         'pcases' => @partie.presenceCases,
         'fonds' => @joueur.fondsFinanciers.to_s,
-        'jauges'=> @joueur.syntheseJauge
+        #'jauges'=> @joueur.syntheseJauge
         #'syntheseTerritoires' => @joueur.syntheseTerritoire
     })
 	end

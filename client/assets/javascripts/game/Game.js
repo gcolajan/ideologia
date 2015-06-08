@@ -13,6 +13,13 @@ function Game() {
 		return this.players[this.me];
 	}.bind(this);
 
+	this.getGauges = function() {
+		if (this.hoveredTerritory == null)
+			return undefined; //this.getMe().getGaugeSynthesis();
+		else
+			return this.hoveredTerritory.gauges.array;
+	}.bind(this);
+
 	this.getCurrentPlayer = function() {
 		return this.players[currentPlayer];
 	}.bind(this);
@@ -46,8 +53,23 @@ function Game() {
 		}
 
 	}.bind(this);
+
+	this.getThreshold = function() {
+		return Game.THRESHOLD;
+	}.bind(this);
+
+	this.getOwnerOf = function(territory) {
+		if (territory == undefined)
+			return undefined;
+
+		for (var p in this.players)
+			if (this.players[p].territories.exists(territory.id))
+				return this.players[p];
+
+		return undefined;
+	}.bind(this);
 }
 
 
 Game.NBPLAYERS = 4;
-Game.THRESHOLD = 30; // Maximum shift authorized (TODO: binding server)
+Game.THRESHOLD = 0.30; // Maximum shift authorized (TODO: binding server)

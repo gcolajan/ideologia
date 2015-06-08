@@ -1,5 +1,5 @@
 "use strict";
-var app = angular.module('myGame', []);
+var app = angular.module('myGame', ['ngAnimate']);
 
 app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 

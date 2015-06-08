@@ -67,7 +67,6 @@ jeuPhase.operations.insert('joueurCourant', function($scope, currentPlayer) {
     {
         ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
         ws.emit('des');
-        console.log("Asking for des");
     }
 
 });
@@ -81,9 +80,6 @@ jeuPhase.operations.insert('updates', function($scope, updates) {
         {
             var territory = $scope.game.territories.get(id, "id");
 
-            // Updating health of the territory
-            territory.shift = updates['playersData'][i]['territories'][id];
-
             // If the territory has changed of owner
             if (!player.territories.exists(id))
             {
@@ -93,21 +89,19 @@ jeuPhase.operations.insert('updates', function($scope, updates) {
                     var curPlayer = $scope.game.players[p];
                     if (curPlayer.territories.exists(id))
                     {
-                        // We delete it from his list
-                        curPlayer.territories.unset(id);
+                        curPlayer.losingTerritory(id);
                         break;
                     }
                 }
 
                 // We give the territory to that player
-                player.territories.insert(id, territory);
-                territory.color = player.ideology.color.clone();
-                territory.color.hueVariation();
-                territory.color.alpha = 0.5;
+                player.addTerritory(territory)
             }
+
+            // Updating health of the territory
+            territory.updateState(updates['playersData'][i]['territories'][id]);
         }
     }
-
     /*
     playersData
     pcases
@@ -116,30 +110,25 @@ jeuPhase.operations.insert('updates', function($scope, updates) {
 });
 
 jeuPhase.operations.insert('evenement', function($scope, event) {
-    console.log("Event has been encountered: "+event);
+    //console.log("Event has been encountered: "+event);
 });
 
 jeuPhase.operations.insert('des', function($scope, des) {
-    console.log("Des: "+des);
+    //console.log("Des: "+des);
 });
 
 jeuPhase.operations.insert('position', function($scope, pos) {
-    console.log("Changed own position");
     $scope.game.getMe().position = pos;
 });
 
 jeuPhase.operations.insert('gain', function($scope, gain) {
-    console.log("Current money: "+gain);
+    //console.log("Current money: "+gain);
 });
 
 jeuPhase.operations.insert('operations', function($scope, operations) {
-    console.log("You should chose between those operations");
-    console.log(operations);
-
     // Mode Quick-DEBUG
     ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
     ws.emit('operation', operations[0]);
-    console.log("Operation "+operations[0]+" sent");
 });
 
 jeuPhase.operations.insert('score', function($scope, score) {

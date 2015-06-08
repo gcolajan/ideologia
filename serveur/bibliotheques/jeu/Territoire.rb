@@ -38,7 +38,16 @@ class Territoire
 		@joueurPossesseur.listeTerritoires.delete(self)
 		appropriationTerritoire(joueur)
 		joueur.listeTerritoires.push(self)
-	end
+  end
+
+  # Retourne un tableau avec l'état des jauges {1..3 => float}
+  def etatJauges()
+    etats = {}
+    (1..3).each { |i|
+      etats.merge!(i => @listeJauges[i].niveau)
+    }
+    return etats
+  end
 	
 	# Permet de calculer le décalage de chaque jauge
 	# Retourne le décalage total du territoire
