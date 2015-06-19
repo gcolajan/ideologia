@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.12deb2
+-- version 4.4.6.1deb1
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost
--- Généré le :  Mer 28 Janvier 2015 à 18:19
--- Version du serveur :  5.5.40-1
--- Version de PHP :  5.6.5-1
+-- Généré le :  Ven 19 Juin 2015 à 21:39
+-- Version du serveur :  5.5.43-0+deb8u1
+-- Version de PHP :  5.6.9-0+deb8u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -56,7 +56,7 @@ INSERT INTO `ideo_evenement_effet` (`ee_operation_id`, `ee_jauge_id`, `ee_variat
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_evenement_operation` (
-`eo_id` int(11) NOT NULL,
+  `eo_id` int(11) NOT NULL,
   `eo_nom` varchar(32) NOT NULL,
   `eo_description` varchar(255) NOT NULL,
   `eo_destination` tinyint(4) NOT NULL
@@ -79,7 +79,7 @@ INSERT INTO `ideo_evenement_operation` (`eo_id`, `eo_nom`, `eo_description`, `eo
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_ideologie` (
-`ideo_id` int(11) NOT NULL,
+  `ideo_id` int(11) NOT NULL,
   `ideo_joueur` varchar(32) NOT NULL,
   `ideo_nom` varchar(32) NOT NULL,
   `ideo_slug` varchar(16) NOT NULL,
@@ -105,7 +105,7 @@ INSERT INTO `ideo_ideologie` (`ideo_id`, `ideo_joueur`, `ideo_nom`, `ideo_slug`,
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_jauge` (
-`jauge_id` int(11) NOT NULL,
+  `jauge_id` int(11) NOT NULL,
   `jauge_nom` varchar(32) NOT NULL,
   `jauge_slug` varchar(32) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -158,13 +158,13 @@ INSERT INTO `ideo_jauge_caracteristique` (`caract_ideo_id`, `caract_jauge_id`, `
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_score` (
-`score_id` int(11) NOT NULL,
+  `score_id` int(11) NOT NULL,
   `score_date` datetime NOT NULL,
   `score_pseudo` varchar(32) NOT NULL,
   `score_ideologie_id` int(11) NOT NULL,
   `score_respect_ideologie` float NOT NULL,
   `score_domination_geo` float NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `ideo_score`
@@ -174,31 +174,7 @@ INSERT INTO `ideo_score` (`score_id`, `score_date`, `score_pseudo`, `score_ideol
 (5, '2013-03-26 18:28:22', 'A', 1, 14.2857, 0.21875),
 (6, '2013-03-26 18:28:22', 'B', 2, 8.44444, 0.28125),
 (7, '2013-03-26 18:28:22', 'C', 3, 15.5, 0.25),
-(8, '2013-03-26 18:28:22', 'D', 4, 11.75, 0.25),
-(9, '2014-09-14 19:05:41', 'Gautier', 1, 0, 0.25),
-(10, '2014-09-14 19:05:41', 'c', 2, 0, 0.25),
-(11, '2014-09-14 19:05:41', 'a', 3, 0, 0.25),
-(12, '2014-09-14 19:05:41', 'b', 4, 0, 0.25),
-(13, '2014-09-15 08:47:37', 'g', 1, 2.25, 0.25),
-(14, '2014-09-15 08:47:37', 'a', 2, 0, 0.25),
-(15, '2014-09-15 08:47:37', 'b', 3, 3.875, 0.25),
-(16, '2014-09-15 08:47:37', 'c', 4, 4.125, 0.25),
-(17, '2015-01-18 15:54:27', 'p1', 1, 0, 0.25),
-(18, '2015-01-18 15:54:27', 'p2', 2, 0, 0.25),
-(19, '2015-01-18 15:54:27', 'p3', 3, 0, 0.25),
-(20, '2015-01-18 15:54:27', 'p4', 4, 0, 0.25),
-(21, '2015-01-18 16:00:04', 'p1', 1, 3, 0.25),
-(22, '2015-01-18 16:00:04', 'p2', 2, 4.375, 0.25),
-(23, '2015-01-18 16:00:04', 'p3', 3, 4.5, 0.25),
-(24, '2015-01-18 16:00:04', 'p4', 4, 3.875, 0.25),
-(25, '2015-01-23 22:57:37', 'Selenium', 1, 0, 0.25),
-(26, '2015-01-23 22:57:37', 'Selenium', 2, 0, 0.25),
-(27, '2015-01-23 22:57:37', 'Selenium', 3, 0, 0.25),
-(28, '2015-01-23 22:57:37', 'Selenium', 4, 0, 0.25),
-(29, '2015-01-23 23:18:52', 'a', 1, 3.125, 0.25),
-(30, '2015-01-23 23:18:52', 'b', 2, 0, 0.25),
-(31, '2015-01-23 23:18:52', 'c', 3, 2.625, 0.25),
-(32, '2015-01-23 23:18:52', 'd', 4, 1.375, 0.25);
+(8, '2013-03-26 18:28:22', 'D', 4, 11.75, 0.25);
 
 -- --------------------------------------------------------
 
@@ -238,18 +214,6 @@ INSERT INTO `ideo_territoire_effet` (`te_operation_id`, `te_jauge_id`, `te_ideol
 (2, 3, 2, 0, 1.052),
 (2, 3, 3, 0, 1.052),
 (2, 3, 4, 3, 1),
-(5, 1, 1, -3, 1),
-(5, 1, 2, -4, 1),
-(5, 1, 3, -3, 1),
-(5, 1, 4, 3, 1),
-(5, 2, 1, -1, 1),
-(5, 2, 2, 2, 1),
-(5, 2, 3, -3, 1),
-(5, 2, 4, -2, 1),
-(5, 3, 1, 4, 1),
-(5, 3, 2, -3, 1),
-(5, 3, 3, -2, 1),
-(5, 3, 4, -3, 1),
 (6, 1, 1, 3, 1),
 (6, 1, 2, 3, 1),
 (6, 1, 3, 3, 1),
@@ -355,64 +319,6 @@ INSERT INTO `ideo_territoire_effet` (`te_operation_id`, `te_jauge_id`, `te_ideol
 (16, 3, 2, -4, 1),
 (16, 3, 3, -4, 1),
 (16, 3, 4, -4, 1),
-(17, 1, 1, 3, 1),
-(17, 1, 2, -3, 1),
-(17, 1, 3, -3, 1),
-(17, 1, 4, 3, 1),
-(17, 2, 1, -3, 1),
-(17, 2, 2, -3, 1),
-(17, 2, 3, -3, 1),
-(17, 3, 1, 4, 1),
-(17, 3, 2, 5, 1),
-(17, 3, 3, -3, 1),
-(17, 3, 4, 4, 1),
-(18, 1, 1, -3, 1),
-(18, 1, 2, -3, 1),
-(18, 1, 3, -3, 1),
-(18, 1, 4, 3, 1),
-(18, 3, 1, 4, 1),
-(18, 3, 2, 2, 1),
-(18, 3, 3, 2, 1),
-(18, 3, 4, 3, 1),
-(19, 3, 1, 0, 0.98),
-(19, 3, 2, 0, 0.98),
-(19, 3, 3, 0, 0.98),
-(19, 3, 4, 0, 0.98),
-(20, 1, 1, 5, 1),
-(20, 1, 2, 5, 1),
-(20, 1, 3, 5, 1),
-(20, 1, 4, 5, 1),
-(20, 2, 1, -2, 1),
-(20, 2, 2, -2, 1),
-(20, 2, 3, -2, 1),
-(20, 2, 4, -2, 1),
-(20, 3, 1, -2, 1),
-(20, 3, 2, -2, 1),
-(20, 3, 3, -2, 1),
-(20, 3, 4, -2, 1),
-(21, 1, 1, 3, 1),
-(21, 1, 2, 3, 1),
-(21, 1, 3, 3, 1),
-(21, 1, 4, 3, 1),
-(21, 2, 1, 3, 1),
-(21, 2, 2, 3, 1),
-(21, 2, 3, 3, 1),
-(21, 2, 4, 3, 1),
-(22, 1, 4, 4, 1),
-(22, 2, 1, 3, 1),
-(22, 2, 2, 3, 1),
-(22, 2, 3, 3, 1),
-(22, 2, 4, 3, 1),
-(22, 3, 1, 5, 1),
-(22, 3, 2, 5, 1),
-(22, 3, 3, 5, 1),
-(22, 3, 4, 5, 1),
-(23, 1, 1, 2, 1),
-(23, 1, 4, -3, 1),
-(23, 3, 1, 2, 1),
-(23, 3, 2, 2, 1),
-(23, 3, 3, 2, 1),
-(23, 3, 4, 2, 1),
 (24, 1, 1, 3, 1),
 (24, 1, 2, -3, 1),
 (24, 1, 3, -3, 1),
@@ -430,7 +336,7 @@ INSERT INTO `ideo_territoire_effet` (`te_operation_id`, `te_jauge_id`, `te_ideol
 --
 
 CREATE TABLE IF NOT EXISTS `ideo_territoire_operation` (
-`to_id` int(11) NOT NULL,
+  `to_id` int(11) NOT NULL,
   `to_nom` varchar(32) NOT NULL,
   `to_description` varchar(255) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
@@ -534,7 +440,7 @@ INSERT INTO `ideo_territoire_operation_cout` (`toc_operation_id`, `toc_ideologie
 --
 
 CREATE TABLE IF NOT EXISTS `terr_continent` (
-`continent_id` tinyint(4) NOT NULL,
+  `continent_id` tinyint(4) NOT NULL,
   `continent_nom` varchar(32) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
@@ -558,7 +464,7 @@ INSERT INTO `terr_continent` (`continent_id`, `continent_nom`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `terr_territoire` (
-`terr_id` tinyint(4) NOT NULL,
+  `terr_id` tinyint(4) NOT NULL,
   `terr_nom` varchar(32) NOT NULL,
   `terr_position` tinyint(4) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
@@ -608,7 +514,7 @@ INSERT INTO `terr_territoire` (`terr_id`, `terr_nom`, `terr_position`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `terr_territoire_path` (
-`path_id` int(11) NOT NULL,
+  `path_id` int(11) NOT NULL,
   `path_territoire` tinyint(4) NOT NULL,
   `path_d` text NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
@@ -689,7 +595,7 @@ INSERT INTO `terr_territoire_path` (`path_id`, `path_territoire`, `path_d`) VALU
 --
 
 CREATE TABLE IF NOT EXISTS `terr_unite` (
-`unite_id` int(11) NOT NULL,
+  `unite_id` int(11) NOT NULL,
   `unite_nom` varchar(34) DEFAULT NULL,
   `unite_population` int(11) DEFAULT NULL,
   `unite_superficie` int(11) DEFAULT NULL,
@@ -1028,79 +934,90 @@ INSERT INTO `terr_unite` (`unite_id`, `unite_nom`, `unite_population`, `unite_su
 -- Index pour la table `ideo_evenement_effet`
 --
 ALTER TABLE `ideo_evenement_effet`
- ADD PRIMARY KEY (`ee_operation_id`,`ee_jauge_id`), ADD KEY `ee_jauge_id` (`ee_jauge_id`);
+  ADD PRIMARY KEY (`ee_operation_id`,`ee_jauge_id`),
+  ADD KEY `ee_jauge_id` (`ee_jauge_id`);
 
 --
 -- Index pour la table `ideo_evenement_operation`
 --
 ALTER TABLE `ideo_evenement_operation`
- ADD PRIMARY KEY (`eo_id`);
+  ADD PRIMARY KEY (`eo_id`);
 
 --
 -- Index pour la table `ideo_ideologie`
 --
 ALTER TABLE `ideo_ideologie`
- ADD PRIMARY KEY (`ideo_id`);
+  ADD PRIMARY KEY (`ideo_id`);
 
 --
 -- Index pour la table `ideo_jauge`
 --
 ALTER TABLE `ideo_jauge`
- ADD PRIMARY KEY (`jauge_id`);
+  ADD PRIMARY KEY (`jauge_id`);
 
 --
 -- Index pour la table `ideo_jauge_caracteristique`
 --
 ALTER TABLE `ideo_jauge_caracteristique`
- ADD PRIMARY KEY (`caract_jauge_id`,`caract_ideo_id`), ADD KEY `ideo_jauge_caract_ibfk_2` (`caract_ideo_id`);
+  ADD PRIMARY KEY (`caract_jauge_id`,`caract_ideo_id`),
+  ADD KEY `ideo_jauge_caract_ibfk_2` (`caract_ideo_id`);
 
 --
 -- Index pour la table `ideo_score`
 --
 ALTER TABLE `ideo_score`
- ADD PRIMARY KEY (`score_id`), ADD KEY `score_date` (`score_date`,`score_respect_ideologie`), ADD KEY `score_date_2` (`score_date`,`score_domination_geo`), ADD KEY `score_ideologie_id` (`score_ideologie_id`);
+  ADD PRIMARY KEY (`score_id`),
+  ADD KEY `score_date` (`score_date`,`score_respect_ideologie`),
+  ADD KEY `score_date_2` (`score_date`,`score_domination_geo`),
+  ADD KEY `score_ideologie_id` (`score_ideologie_id`);
 
 --
 -- Index pour la table `ideo_territoire_effet`
 --
 ALTER TABLE `ideo_territoire_effet`
- ADD PRIMARY KEY (`te_operation_id`,`te_jauge_id`,`te_ideologie_id`), ADD KEY `te_jauge_id` (`te_jauge_id`), ADD KEY `te_ideologie_id` (`te_ideologie_id`);
+  ADD PRIMARY KEY (`te_operation_id`,`te_jauge_id`,`te_ideologie_id`),
+  ADD KEY `te_jauge_id` (`te_jauge_id`),
+  ADD KEY `te_ideologie_id` (`te_ideologie_id`);
 
 --
 -- Index pour la table `ideo_territoire_operation`
 --
 ALTER TABLE `ideo_territoire_operation`
- ADD PRIMARY KEY (`to_id`);
+  ADD PRIMARY KEY (`to_id`);
 
 --
 -- Index pour la table `ideo_territoire_operation_cout`
 --
 ALTER TABLE `ideo_territoire_operation_cout`
- ADD PRIMARY KEY (`toc_operation_id`,`toc_ideologie_id`), ADD KEY `toc_ideologie_id` (`toc_ideologie_id`);
+  ADD PRIMARY KEY (`toc_operation_id`,`toc_ideologie_id`),
+  ADD KEY `toc_ideologie_id` (`toc_ideologie_id`);
 
 --
 -- Index pour la table `terr_continent`
 --
 ALTER TABLE `terr_continent`
- ADD PRIMARY KEY (`continent_id`);
+  ADD PRIMARY KEY (`continent_id`);
 
 --
 -- Index pour la table `terr_territoire`
 --
 ALTER TABLE `terr_territoire`
- ADD PRIMARY KEY (`terr_id`);
+  ADD PRIMARY KEY (`terr_id`);
 
 --
 -- Index pour la table `terr_territoire_path`
 --
 ALTER TABLE `terr_territoire_path`
- ADD PRIMARY KEY (`path_id`), ADD KEY `path_territoire` (`path_territoire`);
+  ADD PRIMARY KEY (`path_id`),
+  ADD KEY `path_territoire` (`path_territoire`);
 
 --
 -- Index pour la table `terr_unite`
 --
 ALTER TABLE `terr_unite`
- ADD PRIMARY KEY (`unite_id`), ADD KEY `unite_continent` (`unite_continent`), ADD KEY `unite_territoire` (`unite_territoire`);
+  ADD PRIMARY KEY (`unite_id`),
+  ADD KEY `unite_continent` (`unite_continent`),
+  ADD KEY `unite_territoire` (`unite_territoire`);
 
 --
 -- AUTO_INCREMENT pour les tables exportées
@@ -1110,47 +1027,47 @@ ALTER TABLE `terr_unite`
 -- AUTO_INCREMENT pour la table `ideo_evenement_operation`
 --
 ALTER TABLE `ideo_evenement_operation`
-MODIFY `eo_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+  MODIFY `eo_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT pour la table `ideo_ideologie`
 --
 ALTER TABLE `ideo_ideologie`
-MODIFY `ideo_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+  MODIFY `ideo_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT pour la table `ideo_jauge`
 --
 ALTER TABLE `ideo_jauge`
-MODIFY `jauge_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+  MODIFY `jauge_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT pour la table `ideo_score`
 --
 ALTER TABLE `ideo_score`
-MODIFY `score_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
+  MODIFY `score_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=197;
 --
 -- AUTO_INCREMENT pour la table `ideo_territoire_operation`
 --
 ALTER TABLE `ideo_territoire_operation`
-MODIFY `to_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
+  MODIFY `to_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT pour la table `terr_continent`
 --
 ALTER TABLE `terr_continent`
-MODIFY `continent_id` tinyint(4) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+  MODIFY `continent_id` tinyint(4) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT pour la table `terr_territoire`
 --
 ALTER TABLE `terr_territoire`
-MODIFY `terr_id` tinyint(4) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
+  MODIFY `terr_id` tinyint(4) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
 --
 -- AUTO_INCREMENT pour la table `terr_territoire_path`
 --
 ALTER TABLE `terr_territoire_path`
-MODIFY `path_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=64;
+  MODIFY `path_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=64;
 --
 -- AUTO_INCREMENT pour la table `terr_unite`
 --
 ALTER TABLE `terr_unite`
-MODIFY `unite_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=382;
+  MODIFY `unite_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=382;
 --
 -- Contraintes pour les tables exportées
 --
@@ -1159,41 +1076,41 @@ MODIFY `unite_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=382;
 -- Contraintes pour la table `ideo_evenement_effet`
 --
 ALTER TABLE `ideo_evenement_effet`
-ADD CONSTRAINT `ideo_evenement_effet_ibfk_2` FOREIGN KEY (`ee_jauge_id`) REFERENCES `ideo_jauge` (`jauge_id`),
-ADD CONSTRAINT `ideo_evenement_effet_ibfk_3` FOREIGN KEY (`ee_operation_id`) REFERENCES `ideo_evenement_operation` (`eo_id`);
+  ADD CONSTRAINT `ideo_evenement_effet_ibfk_2` FOREIGN KEY (`ee_jauge_id`) REFERENCES `ideo_jauge` (`jauge_id`),
+  ADD CONSTRAINT `ideo_evenement_effet_ibfk_3` FOREIGN KEY (`ee_operation_id`) REFERENCES `ideo_evenement_operation` (`eo_id`);
 
 --
 -- Contraintes pour la table `ideo_jauge_caracteristique`
 --
 ALTER TABLE `ideo_jauge_caracteristique`
-ADD CONSTRAINT `ideo_jauge_caract_ibfk_1` FOREIGN KEY (`caract_jauge_id`) REFERENCES `ideo_jauge` (`jauge_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `ideo_jauge_caract_ibfk_2` FOREIGN KEY (`caract_ideo_id`) REFERENCES `ideo_ideologie` (`ideo_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ideo_jauge_caract_ibfk_1` FOREIGN KEY (`caract_jauge_id`) REFERENCES `ideo_jauge` (`jauge_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ideo_jauge_caract_ibfk_2` FOREIGN KEY (`caract_ideo_id`) REFERENCES `ideo_ideologie` (`ideo_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `ideo_score`
 --
 ALTER TABLE `ideo_score`
-ADD CONSTRAINT `ideo_score_ibfk_1` FOREIGN KEY (`score_ideologie_id`) REFERENCES `ideo_ideologie` (`ideo_id`);
+  ADD CONSTRAINT `ideo_score_ibfk_1` FOREIGN KEY (`score_ideologie_id`) REFERENCES `ideo_ideologie` (`ideo_id`);
 
 --
 -- Contraintes pour la table `ideo_territoire_operation_cout`
 --
 ALTER TABLE `ideo_territoire_operation_cout`
-ADD CONSTRAINT `ideo_territoire_operation_cout_ibfk_2` FOREIGN KEY (`toc_ideologie_id`) REFERENCES `ideo_ideologie` (`ideo_id`),
-ADD CONSTRAINT `ideo_territoire_operation_cout_ibfk_4` FOREIGN KEY (`toc_operation_id`) REFERENCES `ideo_territoire_operation` (`to_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `ideo_territoire_operation_cout_ibfk_2` FOREIGN KEY (`toc_ideologie_id`) REFERENCES `ideo_ideologie` (`ideo_id`),
+  ADD CONSTRAINT `ideo_territoire_operation_cout_ibfk_4` FOREIGN KEY (`toc_operation_id`) REFERENCES `ideo_territoire_operation` (`to_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `terr_territoire_path`
 --
 ALTER TABLE `terr_territoire_path`
-ADD CONSTRAINT `terr_territoire_path_ibfk_1` FOREIGN KEY (`path_territoire`) REFERENCES `terr_territoire` (`terr_id`);
+  ADD CONSTRAINT `terr_territoire_path_ibfk_1` FOREIGN KEY (`path_territoire`) REFERENCES `terr_territoire` (`terr_id`);
 
 --
 -- Contraintes pour la table `terr_unite`
 --
 ALTER TABLE `terr_unite`
-ADD CONSTRAINT `terr_unite_ibfk_1` FOREIGN KEY (`unite_continent`) REFERENCES `terr_continent` (`continent_id`),
-ADD CONSTRAINT `terr_unite_ibfk_2` FOREIGN KEY (`unite_territoire`) REFERENCES `terr_territoire` (`terr_id`);
+  ADD CONSTRAINT `terr_unite_ibfk_1` FOREIGN KEY (`unite_continent`) REFERENCES `terr_continent` (`continent_id`),
+  ADD CONSTRAINT `terr_unite_ibfk_2` FOREIGN KEY (`unite_territoire`) REFERENCES `terr_territoire` (`terr_id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
