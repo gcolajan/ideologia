@@ -7,7 +7,95 @@ function Game() {
 	this.currentPlayer = undefined;
 	this.me = undefined;
 
+	this.events = new Set();
+	this.operations = new Set();
+
 	this.hoveredTerritory = null;
+
+	var that = this; // scope of "this"
+	var $http = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('$http');
+	$http.get('data.ajax.php')
+		.success(function (result) {
+			// Adding territories
+			for (var id in  result['territory']) {
+				var territory = result['territory'][id];
+				that.territories.push(new Territory(
+					id,
+					territory['name'],
+					territory['pos'],
+					territory['path']));
+			}
+
+			// Adding gauges
+			for (var id in result['gauge']) {
+				var gauge = result['gauge'][id];
+				that.gauges.insert(id, new Gauge(gauge['name'], gauge['slug']));
+			}
+
+			// Adding ideologies
+			for (var id in result['ideology']) {
+				var ideology = result['ideology'][id];
+				that.ideologies.insert(
+					id,
+					new Ideology(
+						id,
+						ideology['name'],
+						ideology['slug'],
+						ideology['player'],
+						ideology['color'],
+						that.gauges,
+						ideology['gauges']
+					)
+				);
+			}
+
+			for (var id in result['events']) {
+				var event = result['events'][id];
+				that.events.insert(
+					id,
+					new Event(
+						id,
+						event['name'],
+						event['desc'],
+						event['dest'],
+						new Effects(
+							event['effects']['abs'],
+							event['effects']['rel']
+						)
+					)
+				);
+			}
+
+			for (var id in result['operations']) {
+				var operation = result['operations'][id];
+				var curOperation = new Operation(
+					id,
+					event['name'],
+					event['desc']
+				);
+
+				for (var ideo in operation['effects']) {
+					var effect = operation['effects'][ideo];
+					curOperation.addEffect(
+						ideo,
+						new Effects(
+							effect['abs'],
+							effect['rel']
+						),
+						effect['cost']
+					);
+				}
+
+				that.events.insert(
+					id,
+					curOperation
+				);
+			}
+		})
+		.error(function() {
+			console.log('Game\'s data can\'t be reached!');
+		});
+
 
 	this.getMe = function() {
 		return this.players[this.me];
@@ -21,7 +109,7 @@ function Game() {
 	}.bind(this);
 
 	this.getCurrentPlayer = function() {
-		return this.players[currentPlayer];
+		return this.players[this.currentPlayer];
 	}.bind(this);
 
 	this.amICurrent = function() {

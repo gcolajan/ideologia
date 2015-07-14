@@ -2,45 +2,6 @@
 var jeuPhase = new Phase('jeu',
     function(scope) {
         scope.game = new Game();
-
-        $http = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('$http');
-        $http.get('data.ajax.php')
-            .success(function (result) {
-                // Adding territories
-                for (var id in  result['territory']) {
-                    var territory = result['territory'][id];
-                    scope.game.territories.push(new Territory(
-                        id,
-                        territory['nom'],
-                        territory['position'],
-                        territory['path']));
-                }
-
-                // Adding gauges
-                for (var id in result['gauge']) {
-                    var gauge = result['gauge'][id];
-                    scope.game.gauges.insert(id, new Gauge(gauge['name'], gauge['slug']));
-                }
-
-                // Adding ideologies
-                for (var id in result['ideology']) {
-                    var ideology = result['ideology'][id];
-                    scope.game.ideologies.insert(
-                        id,
-                        new Ideology(
-                            ideology['nom'],
-                            ideology['slug'],
-                            ideology['joueur'],
-                            ideology['couleur'],
-                            scope.game.gauges,
-                            ideology['jauges']
-                        )
-                    );
-                }
-            })
-            .error(function() {
-                console.log('Game\'s data can\'t be reached!');
-            });
     },
     function(scope) {
     },
