@@ -1,4 +1,5 @@
 # encoding: UTF-8
+require "../../serveur/conf.rb"
 
 class Client
 
@@ -59,24 +60,20 @@ class Client
 			# Recuperation du pseudo
 			@pseudo = @com.receive('pseudo')
 
-			puts "#{@pseudo} vient de se connecter"
+			$LOGGER.info "#{@pseudo} vient de se connecter"
 
 			begin
         @com.emitPhase('salons')
 
-				# On fait choisir un salon 
-				puts "#{@pseudo} est entrain de choisir un salon"
+				# On fait choisir un salon
 				@salon = @listeSalons.selection(self)
 
         # Test si la partie n'est pas commencée afin d'endormir le client si besoin
 				if @salon.full?
 					# On réveille les amis
-					puts "WAKE UP!"
 					@salon.wakeup()
 				else
-					puts "#{@pseudo} (#{@num}) commence à attendre"
 					wait()
-					puts "#{@pseudo} est réveillé"
 				end
 
 				# Au réveil, je vérifie que le client ne m'a pas réveillé pour changer de salon
@@ -92,25 +89,19 @@ class Client
 			# Le joueur de la partie connait l'instance le gérant
 			joueur.obtenirInstanceGestionJoueur(gestionJoueur)
 
-
-
-			puts 'Debut partie'
 			@com.emitPhase('jeu')
 
 			# Préparation du client pour le début de partie
 
       # On envoie une synthèse des personnes participant et les idéologies associées
-			puts 'Recuperation des partenaires'
       @com.send('partenaires', @salon.partie.obtenirTableauPartenaires)
 
 			# Gestion du joueur durant toute la partie
-			puts 'Debut tour'
       while @salon.partie.estDemarree
 			  gestionJoueur.newTurn
       end
 		
 			# Envoi des scores finaux au client
-			puts 'envoi score'
 			@com.send('score', @salon.partie.obtenirScores)
 
 			# On ferme la ws

@@ -1,3 +1,5 @@
+require "../../serveur/conf.rb"
+
 class Communication
 
 	def initialize(ws, client, initTypes=[])
@@ -26,9 +28,6 @@ class Communication
   # @param [string] data
   # @param [float] delay    Only accurate if we want to transmit a delay to inform the user
   def send(type, data='', delay=nil)
-    if type != 'ping'
-      puts "SENDED #{type}"
-    end
 
     response = {'type' => type}
 
@@ -49,12 +48,11 @@ class Communication
   # @param [seconds] timeout  nil/unspecified is unconditional wait
   def receive(type, timeout=nil)
     unless @sync.has_key?(type)
-      puts "Communication::receive: You are expecting for \"#{type}\" but isn't an authorized classic type."
+       $LOGGER.error "Communication::receive: You are expecting for \"#{type}\" but isn't an authorized classic type."
       return nil
     end
 
     # TODO add a boolean to inform if the information is arrived in time
-    # startTime = Time.now.to_f # (Time.now.to_f - pingLaunch >= timeout)
 
     locks = @sync[type]
 
@@ -85,7 +83,7 @@ class Communication
   def emitPhase(name)
     ack = ask('phase', name, 'phaseack', nil)
     if ack != name
-      puts "Communication::emitPhase: Wrong ACK on phase (expected: #{name}, received: #{ack})."
+      $LOGGER.error "Communication::emitPhase: Wrong ACK on phase (expected: #{name}, received: #{ack})."
     end
   end
 
@@ -100,7 +98,7 @@ class Communication
   # @return [boolean]
   def addSync(type)
     if hasReceptionType?(type)
-      puts "Communication::addAuthorizedType: #{type} is already defined."
+      $LOGGER.error "Communication::addAuthorizedType: #{type} is already defined."
       return false
     end
 
@@ -114,7 +112,7 @@ class Communication
 
   def addAsync(type, block, args=nil)
     if hasReceptionType?(type)
-      puts "Communication::addCallbackType: #{type} is already defined."
+      $LOGGER.error "Communication::addCallbackType: #{type} is already defined."
       return false
     end
 
@@ -125,7 +123,7 @@ class Communication
 
   def setAsyncArgs(type, args)
     if not @async.has_key?(type)
-      puts "Communication::setAuthorizedTypesArgs: cannot add args on undefined callback type \"#{type}\"."
+      $LOGGER.error "Communication::setAuthorizedTypesArgs: cannot add args on undefined callback type \"#{type}\"."
     else
       @async[type][1] = args
     end
@@ -142,7 +140,7 @@ class Communication
 
     # If the operation is unknown, we refuse it
     if not hasReceptionType?(type)
-      puts "Reception unauthorized: #{msg}"
+      $LOGGER.error "Reception unauthorized: #{msg}"
       return
     end
 

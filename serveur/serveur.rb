@@ -31,7 +31,7 @@ authorizedTypes = %w(pong phaseack pseudo join des operation deco)
 
 # Méthode activé lors de la réception d'une communication signalant que le joueur quitte le salon
 def unjoin_method(client, params)
-	puts 'Executed unjoined method !'
+	$LOGGER.info 'Executed unjoined method !'
 	client.quitSalon
 end
 
@@ -57,7 +57,7 @@ EventMachine.run {
       client.launchThread
 
 			nbClients += 1
-			puts ">>> #{nbClients} client(s)"
+      $LOGGER.info ">>> #{nbClients} client(s)"
 
       # On commence le ping du joueur
       ping = EventMachine.add_periodic_timer( $INTERVALLE_PING_SALON ) { ws.ping ''}
@@ -65,10 +65,10 @@ EventMachine.run {
 
 		# Réaction du serveur sur fermeture de la websocket
 		ws.onclose { |params|
-      puts params
+      $LOGGER.debug params
 
 			nbClients -= 1
-			puts "<<< #{nbClients} client(s)"
+      $LOGGER.info "<<< #{nbClients} client(s)"
 
 			puts ws.to_s
 			# Si le client est encore dans un salon on le déconnecte
@@ -96,8 +96,8 @@ EventMachine.run {
 
 		#Réaction du serveur en cas d'erreur
 		ws.onerror { |error|
-			puts "websockets error: #{error}"
-			puts error.backtrace
+      $LOGGER.error "websockets error: #{error}"
+      $LOGGER.info error.backtrace
 		}
 	end
 }

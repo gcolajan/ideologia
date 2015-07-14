@@ -20,6 +20,9 @@ $INTERVALLE_PING_PARTIE = 30 # Temps entre deux ping envoyés au client (en seco
 $INTERVALLE_PING_SALON = 2 # Temps entre deux ping envoyés au client (en secondes) lors du salon
 $REPONSE_PING = 1 # Temps maximal pour le client pour répondre au ping (en secondes)
 
+$FILE_LOGGER = "/logs"
+$LOGGER = Logger.new($FILE_LOGGER, shift_age="monthly")
+
 # Connexion SQL
 $host="localhost"
 $user="root"

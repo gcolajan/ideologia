@@ -65,9 +65,6 @@ class GestionJoueur
 
 	def currentPlayerTurn
 
-		# DEBUG
-		puts "#{@joueur.pseudo} joue"
-
 		# On attend le lance de des
 		@com.receive('des',10)
 		# On calcule les des
@@ -106,8 +103,6 @@ class GestionJoueur
         # Transmission des identifiants d'opération possibles et attente d'un choix
         idAction = @com.ask('operations', listeId, 'operation', 30)
 
-        puts "L'action choisie est #{idAction}"
-
         # Repercussion du choix (l'action proposée sera la première si la réponse n'est pas correcte)
         @partie.appliquerOperationTerritoire(
             Operation.new(
@@ -130,7 +125,7 @@ class GestionJoueur
       when 'caseDepart' # Muet
 
       else
-       puts 'GestionJoueur::action: unknown case.'
+        $LOGGER.error 'GestionJoueur::action: unknown case.'
     end
   end
 end

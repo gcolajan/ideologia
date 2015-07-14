@@ -34,7 +34,6 @@ class Territoire
 	
 	# Permet le transfert d'un territoire à un autre joueur
 	def transfert(joueur)
-		puts @idTerritoire.to_s+" passe de "+@joueurPossesseur.numJoueur.to_s+" -> "+joueur.numJoueur.to_s
 		@joueurPossesseur.listeTerritoires.delete(self)
 		appropriationTerritoire(joueur)
 		joueur.listeTerritoires.push(self)

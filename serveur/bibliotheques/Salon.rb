@@ -35,7 +35,7 @@ class Salon
 
 	# Sur déconnexion du salon on envoie les pseudo des personnes restantes et on mets à jour les tableaux
 	def deconnexionJoueur(client, code=nil)
-		puts "#{client.pseudo} est parti du salon"
+
 		@semaphoreControle.synchronize{
 
 			@clients[@clients.index(client)] = nil
@@ -57,8 +57,6 @@ class Salon
 		@semaphoreControle.synchronize {
 
 			# Permet de dire quand un salon est plein
-      # TODO useless
-			raise StandardError, "Salon is full" if full?
 
 			# On place notre client
 			indexJoueur = @clients.index(nil)
