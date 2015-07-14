@@ -1,5 +1,6 @@
 // Idéologies
-function Ideology(name, slug, playerName, color, gaugesSet, confGauges) {
+function Ideology(id, name, slug, playerName, color, gaugesSet, confGauges) {
+	this.id = id;
 	this.name = name;
 	this.slug = slug;
 	this.playerName = playerName;

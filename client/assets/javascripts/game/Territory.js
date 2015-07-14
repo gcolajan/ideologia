@@ -5,6 +5,7 @@ function Territory(id, name, position, path) {
 	this.name = name;
 	this.position = position;
 	this.path = path;
+	this.pathViewBox = undefined;
 	this.color = new Color(Math.round(Math.random()*255), 0.5);
 	this.gauges = new Set();
 	this.shift = 0;
@@ -29,6 +30,12 @@ function Territory(id, name, position, path) {
 
 	this.getHealthColor = function() {
 		return Health2Color(this.getHealth());
+	}.bind(this);
+
+	this.getViewBox = function() {
+		if (this.pathViewBox == undefined)
+			this.pathViewBox = new AutoViewBox(this.path);
+		return this.pathViewBox;
 	}.bind(this);
 }
 

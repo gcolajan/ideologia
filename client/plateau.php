@@ -79,7 +79,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			<!-- PopUnder -->
 			<div id="startup" ng-show="showPopunder()"><div class="conteneur" ng-include="currentPhase.getPopUnder()"></div></div>
 
-
+			<!-- Map -->
 			<svg viewBox="0 0 1881 950">
 				<g
 						ng-repeat="terr in game.territories.list"
@@ -91,6 +91,19 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 				</g>
 			</svg>
 			<h1>{{gameName}}</h1>
+
+			<!-- Select operation -->
+			<div id="selectOperation" ng-show="game.hoveredTerritory != null" style="border:1px solid black">
+				<svg viewBox="{{hoveredTerritory.getViewBox().get()}}">
+					<g
+							fill="rgba(255,255,255,0.33)"
+							stroke="black"
+							stroke-width="3">
+						<path ng-repeat="d in hoveredTerritory.path" d="{{d}}" />
+					</g>
+				</svg>
+				<!-- Nom territoire, propriétaire, liste des opérations et affichage des effets (via matrice JSON obtenue en début de partie)-->
+			</div>
 		</div></div>
 
 		<div class="large-2 columns" id="mypan">
