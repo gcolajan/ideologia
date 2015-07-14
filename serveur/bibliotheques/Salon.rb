@@ -34,13 +34,15 @@ class Salon
 	end
 
 	# Sur déconnexion du salon on envoie les pseudo des personnes restantes et on mets à jour les tableaux
-	def deconnexionJoueur(client)
+	def deconnexionJoueur(client, code=nil)
 		puts "#{client.pseudo} est parti du salon"
 		@semaphoreControle.synchronize{
 
 			@clients[@clients.index(client)] = nil
+			if(code != 4000)
+				transmissionPseudo()
+			end
 
-			transmissionPseudo()
 
 			@nbJoueur -= 1
 		}

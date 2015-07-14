@@ -17,8 +17,8 @@ class Communication
 
 
   # Closing the communication channel with that client
-  def close
-    @ws.close()
+  def close(code=nil)
+    @ws.close(code=code)
   end
 
 

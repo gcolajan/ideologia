@@ -114,7 +114,7 @@ class Client
 			@com.send('score', @salon.partie.obtenirScores)
 
 			# On ferme la ws
-			@com.close
+			@com.close(code=4000)
 		end
 	end
 

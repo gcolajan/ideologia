@@ -64,14 +64,16 @@ EventMachine.run {
     }
 
 		# Réaction du serveur sur fermeture de la websocket
-		ws.onclose {
+		ws.onclose { |params|
+      puts params
+
 			nbClients -= 1
 			puts "<<< #{nbClients} client(s)"
 
 			puts ws.to_s
 			# Si le client est encore dans un salon on le déconnecte
 			unless client.salon.nil?
-				client.salon.deconnexionJoueur(client)
+				client.salon.deconnexionJoueur(client, code=params[:code])
 			end
 
 			# On tue ses threads
