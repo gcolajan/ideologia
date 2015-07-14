@@ -60,12 +60,7 @@ EventMachine.run {
 			puts ">>> #{nbClients} client(s)"
 
       # On commence le ping du joueur
-      ping = Thread.new do
-        while true
-          sleep($INTERVALLE_PING_SALON)
-          ws.ping ''
-        end
-      end
+      ping = EventMachine.add_periodic_timer( $INTERVALLE_PING_SALON ) { ws.ping ''}
     }
 
 		# Réaction du serveur sur fermeture de la websocket
@@ -81,7 +76,7 @@ EventMachine.run {
 
 			# On tue ses threads
 			client.stopThread
-      ping.kill
+      ping.cancel
 		}
 
 		# Réaction du serveur sur réception d'un message de la websocket
