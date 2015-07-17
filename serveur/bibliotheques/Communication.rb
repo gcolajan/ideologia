@@ -1,5 +1,3 @@
-require "../../serveur/conf.rb"
-
 class Communication
 
 	def initialize(ws, client, initTypes=[])

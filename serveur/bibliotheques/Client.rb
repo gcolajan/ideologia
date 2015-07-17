@@ -1,6 +1,3 @@
-# encoding: UTF-8
-require "../../serveur/conf.rb"
-
 class Client
 
 	attr_accessor :com
