@@ -33,7 +33,7 @@ function Territory(id, name, position, path) {
 	}.bind(this);
 
 	this.getViewBox = function() {
-		if (this.pathViewBox == undefined)
+		if (typeof this.pathViewBox === 'undefined')
 			this.pathViewBox = new AutoViewBox(this.path);
 		return this.pathViewBox;
 	}.bind(this);

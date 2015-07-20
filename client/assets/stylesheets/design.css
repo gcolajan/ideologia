@@ -5,7 +5,8 @@ body {
 	min-height: 100%;
 	/*background:url('../images/fond.png') !important;
 	background-size:cover !important;*/
-	background:linear-gradient(to bottom, #EEEEEE, #CCCCCC) fixed !important;
+	background:url('../images/fond.jpg') !important;
+	background-size:cover;
 }
 
 h1 {
@@ -75,14 +76,6 @@ ul.barcharts li span.legend {
 
 #map {
 	text-align:center;
-	background:radial-gradient(#20458f, #0c1934);
-	/*background:radial-gradient(#545454, #121212);*/
-	background:radial-gradient(rgba(221,221,221,0.3), rgba(255,255,255,0.8));
-	background:url('../images/fond.jpg');
-	background-size:cover;
-	border:1px solid #222222;
-	box-shadow: 2px 2px 0.5rem #222222;
-	border-radius:6px;
 	padding:0;
 }
 
@@ -107,7 +100,6 @@ ul.barcharts li span.legend {
 	margin:0;
 	padding:0;
 	background:rgba(255,255,255,0.2);
-	border-radius:0 0 6px 6px;
 	display:inline-block;
 }
 
@@ -124,7 +116,6 @@ ul.barcharts li span.legend {
 	bottom:0;
 	width:100%;
 	text-align:left;
-	border-radius:0 0 6px 6px;
 }
 
 .adversaires h2 {
@@ -149,31 +140,22 @@ ul.barcharts li span.legend {
 	color:white;
 	display:inline-block;
 	border:1px solid black;
-	border-radius:3px;
 	background:#222;
 	text-shadow:1px 1px 1px black;
 }
 
 .mypanel {
 	margin:0;
-	border:1px solid #222222;
-	background:#383838;
 	color:white;
-	border-bottom-width: 15px;
 	overflow: auto;
-	/*box-shadow: 2px 2px 0.5rem #222222;*/
 }
 
 .mypanel h1 {
-	background:#202020;
-	color:#EEEEEE;
-	text-shadow: 1px 1px 2px #000b22;
-	font-size:1.2rem;
-	line-height:2rem;
-	margin:0;
+	text-transform: uppercase;
 	font-weight: bold;
-	font-family: 'Cabin', sans-serif;
-
+	font-family: Electrolize;
+	font-size:1.4rem;
+	color:rgba(255,255,255,0.8);
 }
 
 .mypanel h2 {
@@ -196,6 +178,8 @@ dl#plateau {
 	position:fixed;
 	bottom:0;
 	border-top:1px solid rgba(221,221,221,0.5);
+
+	display:none;
 }
 
 dl#plateau dt {
@@ -233,7 +217,6 @@ div#timer span {
 	font-size:1.5rem;
 	padding:7px;
 	background:#161616;
-	border-radius:3px;
 	box-shadow:1px 1px 1px rgba(200,200,200,0.5);
 	display:inline-block;
 }
@@ -254,7 +237,6 @@ div#startup div.conteneur {
 	height:50%;
 
 	padding:30px;
-	border-radius:12px;
 	background:rgba(255,255,255,0.8);
 	border:1px solid rgba(255,255,255,0.6);
 	overflow:auto;
@@ -303,21 +285,30 @@ ul.territories {
 	list-style-type: none;
 	margin:0;
 	padding:0;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: Electrolize;
+	font-size:1rem;
+}
+
+ul.territories li:before {
+	content:">";
+}
+
+ul.territories li.risk:before {
+	content:"×";
+	text-shadow: 1px 1px 5px white;
 }
 
 ul.territories li {
-	line-height:25px;
+	line-height:30px;
 	margin:9px 6px;
-	border:1px solid #222;
-	border-left:4px solid;
-	background:white;
 	color:#222;
 	padding-left:10px;
-	box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
 ul.territories li span.risk {
-	color:red;
+	color:white;
 	float:right;
 	padding:0 5px;
 	font-weight: bold;
@@ -393,4 +384,90 @@ div.details dl dd {
 }
 .fade.ng-leave.ng-leave-active {
 	opacity:0;
+}
+
+div#selectOperation {
+	position:absolute;
+	height:100%;
+	width:100%;
+	height:100%;
+	line-height: 100%;
+}
+
+div#selectOperation div.conteneur {
+	position:absolute;
+	left:15%;
+	top:20%;
+	width:70%;
+	height:55%;
+
+	padding:30px;
+	background:rgba(255,255,255,0.8);
+	border:1px solid rgba(255,255,255,0.6);
+	overflow:auto;
+}
+
+div#selectOperation div.conteneur h1 {
+	color:#161616;
+	font-size:1.6em;
+}
+
+div#wsmsg {
+	position:absolute;
+	left:15%;
+	top:10%;
+	width:70%;
+	color:darkred;
+	padding:30px;
+	background:rgba(0,0,0,0.2);
+	border-bottom:2px solid darkred;
+	font-family: Electrolize;
+	font-weight: bold;
+	font-size:1rem;
+}
+
+div#tracking {
+	position:fixed;
+	bottom:0;
+	width:100%;
+	height:20%;
+	display:none;
+}
+
+div.territoryFrame {
+	background-color:white;
+	float:left;
+	width:200px;
+	height:200px;
+	text-align:center;
+	line-height:200px;
+}
+
+div.territoryFrame svg {
+	max-height:200px;
+	max-width:200px;
+	margin:0;
+	line-height: normal;
+	vertical-align:middle;
+	display:inline-block;
+}
+
+div.operationsFrame {
+	margin-left:220px;
+	text-align:left;
+}
+
+div.operationsFrame ul {
+	list-style-type: none;
+	margin:0;
+	padding:0;
+}
+
+div.operationsFrame ul li {
+	line-height:50px;
+}
+
+div.effectsFrame {
+	margin-top:20px;
+	background:white;
 }

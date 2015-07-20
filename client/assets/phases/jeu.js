@@ -88,10 +88,22 @@ jeuPhase.operations.insert('gain', function($scope, gain) {
 
 jeuPhase.operations.insert('operations', function($scope, operations) {
     // Mode Quick-DEBUG
-    ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
-    ws.emit('operation', operations[0]);
+    //ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
+    //ws.emit('operation', operations[0]);
+
+    $scope.game.makeUserChose(operations);
 });
 
 jeuPhase.operations.insert('score', function($scope, score) {
     console.log(score);
+});
+
+
+jeuPhase.userActions.insert('sendOperation', function($scope, operationId) {
+    // Emitting some data to the server
+    ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
+    ws.emit('operation', operationId);
+
+    // Operation has been chosen, we close the popup
+    $scope.game.choseOperation = false;
 });

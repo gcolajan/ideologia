@@ -11,6 +11,8 @@ function Game() {
 	this.operations = new Set();
 
 	this.hoveredTerritory = null;
+	this.choseOperation = false;
+	this.currentOperations = [];
 
 	var that = this; // scope of "this"
 	var $http = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('$http');
@@ -70,8 +72,8 @@ function Game() {
 				var operation = result['operations'][id];
 				var curOperation = new Operation(
 					id,
-					event['name'],
-					event['desc']
+					operation['name'],
+					operation['desc']
 				);
 
 				for (var ideo in operation['effects']) {
@@ -86,7 +88,7 @@ function Game() {
 					);
 				}
 
-				that.events.insert(
+				that.operations.insert(
 					id,
 					curOperation
 				);
@@ -155,6 +157,20 @@ function Game() {
 				return this.players[p];
 
 		return undefined;
+	}.bind(this);
+
+	this.territoryAt = function(position) {
+		return this.territories.get(position, 'position');
+	}.bind(this);
+
+	this.getCurrentTerritory = function() {
+		if (typeof this.me !== 'undefined')
+			return this.territoryAt(this.getMe().position);
+	}.bind(this);
+
+	this.makeUserChose = function(operationsId) {
+		this.currentOperations = operationsId;
+		this.choseOperation = true;
 	}.bind(this);
 }
 

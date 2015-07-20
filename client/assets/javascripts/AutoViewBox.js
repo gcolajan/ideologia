@@ -12,7 +12,7 @@ function AutoViewBox(path) {
     for (var d in path)
     {
         var first = true;
-        var tmpPath = path[d].substr(2);
+        var tmpPath = path[d].substr(2, path[d].length-4);
 
         // Splitting on space to have coordinates
         tmpPath = tmpPath.split(" ");
@@ -22,27 +22,30 @@ function AutoViewBox(path) {
             // Splitting on "," to get X & Y
             var c = tmpPath[coord].split(",");
 
+            var x = Number(c[0]);
+            var y = Number(c[1]);
+
             if (!initialized)
             {
                 initialized = true;
-                this.infX = c[0];
-                this.supX = c[0];
-                this.infY = c[1];
-                this.supY = c[1];
+                this.infX = x;
+                this.supX = x;
+                this.infY = y;
+                this.supY = y;
 
                 first = false;
-                curX = c[0];
-                curY = c[1];
+                curX = x;
+                curY = y;
             }
             else
             {
                 if (first) {
                     first = false;
-                    curX = c[0];
-                    curY = c[1];
+                    curX = x;
+                    curY = y;
                 } else {
-                    curX += c[0];
-                    curY += c[1];
+                    curX += x;
+                    curY += y;
                 }
 
                 if (curX < this.infX)
@@ -59,8 +62,17 @@ function AutoViewBox(path) {
         }
     }
 
-    this.get = function() {
-        return this.infX+" "+this.infY+" " +this.supX+" "+this.supY;
+    this.get = function(margin) {
+        if (typeof margin === 'undefined')
+            margin = 0;
+
+        return (this.infX-margin) +
+            " " +
+            (this.infY-margin) +
+            " " +
+            ((this.supX-this.infX)+(2*margin)) +
+            " " +
+            ((this.supY-this.infY)+(2*margin));
     }.bind(this);
 
 }

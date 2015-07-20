@@ -1,49 +1,72 @@
 app.service('ws', function($rootScope) {
 
 	var opened = false;
-	var ws = new WebSocket("ws://127.0.0.1:8080");
+	var ws;
 	var onMessageCallback = function() {};
+	var onConnexionOpened = function() {};
+	var onUnreachableServer = function() {};
+	var onInterruptedSocket = function() {};
+	var onClose = function() {};
 	var callbacks = {};
 
-	var status = '';
+	var declareEvents = function(ws) {
 
-	window.addEventListener("beforeunload", function(event) {
-		ws.close();
-		ws = null;
-	});
+		window.addEventListener("beforeunload", function(event) {
+			ws.close();
+			ws = null;
+		});
 
-	ws.onopen = function() {
-		status = 'WS opened';
-		opened = true;
+
+		ws.onopen = function() {
+			opened = true;
+			onConnexionOpened();
+		};
+
+		ws.onclose = function() {
+			if (!opened)
+				onUnreachableServer();
+			else
+				onInterruptedSocket();
+
+			opened = false;
+			onClose();
+		};
+
+		ws.onmessage = function(e) {
+			var msg = JSON.parse(e.data);
+			var args = '';
+			if (msg.data !== undefined)
+				args = msg.data;
+
+			if (callbacks[msg.type]) {
+				$rootScope.$apply(callbacks[msg.type](args));
+			}
+			else {
+				$rootScope.$apply(onMessageCallback(msg.type, args));
+			}
+		};
 	};
-
-	ws.onclose = function() {
-		if (!opened)
-			console.log('Impossible d\'établir la connexion');
-		else
-			console.log('Connexion interrompue !');
-
-		console.log('WS closed');
-	};
-
-	ws.onmessage = function(e) {
-		var msg = JSON.parse(e.data);
-		var args = '';
-		if (msg.data !== undefined)
-			args = msg.data;
-
-		if (callbacks[msg.type]) {
-			$rootScope.$apply(callbacks[msg.type](args));
-		}
-		else {
-			$rootScope.$apply(onMessageCallback(msg.type, args));
-		}
-	};
-
 
 	var events = {
-		setOnMessageCallback: function(fct) {
-			onMessageCallback = fct;
+		open: function(host, port) {
+			var socket = new WebSocket("ws://"+host+":"+port);
+			declareEvents(socket);
+			ws = socket;
+		},
+		setOnMessageCallback: function(callback) {
+			onMessageCallback = callback;
+		},
+		setOnConnexionOpened: function(callback) {
+			onConnexionOpened = callback;
+		},
+		setOnUnreachableServer: function(callback) {
+			onUnreachableServer = callback;
+		},
+		setOnInterruptedSocket: function(callback) {
+			onInterruptedSocket = callback;
+		},
+		setOnClose: function(callback) {
+			onClose = callback;
 		},
 		// For global purpose
 		on: function(eventName, callback) {

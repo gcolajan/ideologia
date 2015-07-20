@@ -8,12 +8,12 @@ function entete($titre) {
 		
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		
-		<link rel="stylesheet" href="assets/stylesheets/normalize.css?'.uniqid().'" />
-		<link rel="stylesheet" href="assets/stylesheets/design.css?'.uniqid().'" />
+		<link rel="stylesheet" href="assets/stylesheets/normalize.css" />
+		<link rel="stylesheet" href="assets/stylesheets/design.css" />
 		<link rel="stylesheet" href="assets/stylesheets/foundation.min.css" />
 		<link rel="stylesheet" href="assets/stylesheets/fonts.css" />
 		<link href="//fonts.googleapis.com/css?family=Cabin:700|Electrolize" rel="stylesheet" type="text/css" />
-		
+
 		<script src="assets/javascripts/jquery.min.js"></script>
 	</head>
 	<body ng-app="myGame">
@@ -35,15 +35,14 @@ function entete($titre) {
 ';
 }
 
-// 	<script src="//jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
-
 function pied() {
 	echo '
 	<script src="assets/javascripts/tools.js"></script>
 	<script src="assets/javascripts/rgb.js"></script>
-	<script src="assets/javascripts/Color.js?'.uniqid().'"></script>
-	<script src="assets/javascripts/Collection.js?'.uniqid().'"></script>
-	<script src="assets/javascripts/Set.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/Color.js"></script>
+	<script src="assets/javascripts/AutoViewBox.js"></script>
+	<script src="assets/javascripts/Collection.js"></script>
+	<script src="assets/javascripts/Set.js"></script>
 
 	<script src="assets/javascripts/angular.min.js"></script>
 	<script src="assets/javascripts/angular-route.min.js"></script>
@@ -53,19 +52,21 @@ function pied() {
 		while (($file = readdir($dir)) !== false)
 			if ($file != '.' AND $file != '..')
 				echo '
-	<script src="assets/javascripts/game/'.$file.'?'.time().'"></script>';
+	<script src="assets/javascripts/game/'.$file.'"></script>';
 
 	echo '
 
-	<script src="assets/javascripts/Phase.js?'.uniqid().'"></script>
-	<script src="assets/phases/introduction.js?'.uniqid().'"></script>
-	<script src="assets/phases/salons.js?'.uniqid().'"></script>
-	<script src="assets/phases/attente.js?'.uniqid().'"></script>
-	<script src="assets/phases/jeu.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/Phase.js"></script>
+	<script src="assets/phases/introduction.js"></script>
+	<script src="assets/phases/salons.js"></script>
+	<script src="assets/phases/attente.js"></script>
+	<script src="assets/phases/jeu.js"></script>
 
-	<script src="assets/javascripts/main.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/main.js"></script>
 
-	<script src="assets/javascripts/services/websocket.js?'.uniqid().'"></script>
+	<script src="assets/javascripts/controllers/Ideologia.js"></script>
+	<script src="assets/javascripts/services/websocket.js"></script>
+	<script src="assets/javascripts/directives/vbox.js"></script>
 
 	<script>
 		function Equilibre(Indentifier){
@@ -77,6 +78,10 @@ function pied() {
 		}
 
 		$(document).ready(function() {
+			Equilibre(".mapel");
+		});
+
+		$(window).resize(function() {
 			Equilibre(".mapel");
 		});
 	</script>

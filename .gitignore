@@ -4,3 +4,4 @@ connexionSQL.php
 conf.rb
 *.log
 .idea
+serveur/logs

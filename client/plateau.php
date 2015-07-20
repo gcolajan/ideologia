@@ -5,7 +5,10 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 ?>
 <div ng-controller="IdeologiaCtrl" id="IdeologiaCtrl">
 
-
+	<div id="tracking">
+		<svg>
+		</svg>
+	</div>
 
 	<div class="row">
 		<div id="header">
@@ -17,7 +20,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel">
-				<h1>Observations</h1>
+				<h1 ng-click="moreData()">Observations</h1>
 
 				<div id="timer"><span>{{timer}}</span></div>
 
@@ -76,8 +79,39 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 		<div class="large-8 columns" id="map"><div class="mapel">
 
+			<!-- WebSocket state message -->
+			<div id="wsmsg" ng-show="wsInfo">{{wsMsg}}</div>
+
 			<!-- PopUnder -->
 			<div id="startup" ng-show="showPopunder()"><div class="conteneur" ng-include="currentPhase.getPopUnder()"></div></div>
+
+			<!-- Select operation -->
+			<div id="selectOperation" ng-show="game.choseOperation">
+				<div class="conteneur">
+					<h1>{{game.getCurrentTerritory().name}}</h1>
+					<div class="territoryFrame">
+						<svg vbox="{{game.getCurrentTerritory().getViewBox().get(10)}}">
+							<g fill="#222222">
+								<path ng-repeat="d in game.getCurrentTerritory().path" d="{{d}}" />
+							</g>
+						</svg>
+					</div>
+
+					<div class="operationsFrame">
+						<ul>
+							<li ng-click="trigger('sendOperation', id)" ng-repeat="id in game.currentOperations">{{game.operations.get(id).name}} ({{game.operations.get(id).getCost(game.getMe().ideology.id)}} $)</li>
+						</ul>
+					</div>
+
+					<div style="clear:both;"></div>
+
+					<div class="effectsFrame">
+						Territoire possédé par <strong>{{game.getOwnerOf(game.getCurrentTerritory()).pseudo}}</strong>
+					</div>
+
+					<!-- Nom territoire, propriétaire, liste des opérations et affichage des effets (via matrice JSON obtenue en début de partie)-->
+				</div>
+			</div>
 
 			<!-- Map -->
 			<svg viewBox="0 0 1881 950">
@@ -91,19 +125,6 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 				</g>
 			</svg>
 			<h1>{{gameName}}</h1>
-
-			<!-- Select operation -->
-			<div id="selectOperation" ng-show="game.hoveredTerritory != null" style="border:1px solid black">
-				<svg viewBox="{{hoveredTerritory.getViewBox().get()}}">
-					<g
-							fill="rgba(255,255,255,0.33)"
-							stroke="black"
-							stroke-width="3">
-						<path ng-repeat="d in hoveredTerritory.path" d="{{d}}" />
-					</g>
-				</svg>
-				<!-- Nom territoire, propriétaire, liste des opérations et affichage des effets (via matrice JSON obtenue en début de partie)-->
-			</div>
 		</div></div>
 
 		<div class="large-2 columns" id="mypan">
@@ -114,12 +135,11 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 					<li
 							class="fade"
 							ng-repeat="territory in game.getMe().territories.array"
-							ng-class="{active: territory.id == game.hoveredTerritory.id}"
+							ng-class="{active: territory.id == game.hoveredTerritory.id, risk: territory.shift >= game.getThreshold()}"
 							ng-mouseenter="game.hoveredTerritory = territory"
 							ng-mouseleave="game.hoveredTerritory = undefined"
-							ng-style="{'border-color':territory.getHealthColor().css()}">
+							ng-style="{'color':territory.getHealthColor().css()}">
 						{{territory.name}}
-						<span class="risk" ng-show="territory.shift >= game.getThreshold()">!</span>
 					</li>
 				</ul>
 			</div>
