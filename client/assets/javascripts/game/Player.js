@@ -10,6 +10,10 @@ function Player(pseudo, ideology) {
 		return '<span style="color:'+this.ideology.color.css()+'" title="'+this.ideology.playerName+'">'+this.pseudo+'</span>';
 	}.bind(this);
 
+	this.getIconified = function() {
+		return '<span style="color:'+this.ideology.color.css()+'" title="'+this.ideology.playerName+'"><i class="icon-'+this.ideology.slug+'"></i></span>';
+	}.bind(this);
+
 	this.getGlobalHealth = function() {
 		var health = 0;
 		for (var key in this.territories.array)

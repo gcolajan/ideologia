@@ -13,6 +13,10 @@ h1 {
 	text-align:center;
 }
 
+.bold {
+	font-weight: bold;
+}
+
 /*
 BARCHATS
 */
@@ -83,7 +87,6 @@ ul.barcharts li span.legend {
 	color:rgba(255,255,255,0.66);
 	text-align:center; margin:0;
 	padding:0;
-	padding-bottom:20px;
 	text-transform: uppercase;
 	font-weight: bold;
 	font-family: Electrolize;
@@ -91,16 +94,14 @@ ul.barcharts li span.legend {
 }
 
 #history {
-	position:absolute;
-	z-index:-1;
-	bottom:0;
-	left:0;
 	text-align:left;
+	position:absolute;
+	bottom:0;
 }
 
 #history ul {
 	list-style-type: none;
-	font-size: 0.7em;
+	font-size: 0.8em;
 	font-color:#666666;
 	margin:0;
 	padding:0;
@@ -343,10 +344,25 @@ ul.barcharts.stats li {
 ul.players {
 	list-style-type: none;
 	margin:0;
+	margin:auto;
+	width:320px;
+	margin-top:-5%;
 }
 
 ul.players li {
-	padding: 0 5px;
+	transition: background-color 0.5s ease;
+	padding: 8px;
+	display:inline-block;
+	width:50%;
+	font-family: Electrolize;
+}
+
+ul.players li.active {
+	background-color:rgba(255,255,255,0.4);
+}
+
+ul.players li i {
+	font-size:150%;
 }
 
 div.details dl {
@@ -405,7 +421,15 @@ div#tracking {
 }
 
 div.territoryFrame {
-	background-color:rgba(255,255,255,0.6);
+}
+
+div.territoryFrame h3 {
+	text-align:center;
+	font-family: Electrolize;
+	font-size:1.3em;
+}
+
+div.territoryFrame div {
 	margin:auto;
 	width:180px;
 	height:180px;
@@ -413,7 +437,7 @@ div.territoryFrame {
 	line-height:180px;
 }
 
-div.territoryFrame svg {
+div.territoryFrame div svg {
 	max-height:180px;
 	max-width:180px;
 	margin:0;

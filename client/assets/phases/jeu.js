@@ -28,10 +28,7 @@ jeuPhase.operations.insert('joueurCourant', function($scope, currentPlayer) {
     {
         ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
         ws.emit('des');
-        $scope.game.history.add("Vous jouez");
     }
-    else
-        $scope.game.history.add($scope.game.getCurrentPlayer().pseudo+" joue");
 });
 
 jeuPhase.operations.insert('playersData', function($scope, data) {
@@ -98,6 +95,14 @@ jeuPhase.operations.insert('operations', function($scope, operations) {
     //ws.emit('operation', operations[0]);
 
     $scope.game.makeUserChose(operations);
+});
+
+jeuPhase.operations.insert('appliedOperation', function($scope, operationId) {
+    $scope.game.history.add(
+        '<span style="color:'+$scope.game.getOwnerOf($scope.game.concernedTerritory).ideology.color.css()+';">'+$scope.game.concernedTerritory.name+'</span> :' +
+        ' «&nbsp;'+$scope.game.operations.get(operationId, 'id').name+'&nbsp;» '+
+        $scope.game.getCurrentPlayer().getIconified()
+    );
 });
 
 jeuPhase.operations.insert('score', function($scope, score) {

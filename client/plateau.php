@@ -27,7 +27,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 				<div class="territoryFrame">
 					<div>
 						<svg vbox="{{game.concernedTerritory.getViewBox().get(10)}}">
-							<g fill="#222222">
+							<g fill="rgba(255,255,255,0.6)">
 								<path ng-repeat="d in game.concernedTerritory.path" d="{{d}}" />
 							</g>
 						</svg>
@@ -48,6 +48,12 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 					<!-- affichage des effets appliqués (via matrice JSON obtenue en début de partie) -->
 				</div>
+
+				<div id="history">
+					<ul>
+						<li ng-repeat="msg in game.history.data" title="{{msg.time}}"><span ng-bind-html="msg.content | html"></span> </li>
+					</ul>
+				</div>
 			</div>
 			</div>
 		</div>
@@ -60,6 +66,9 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			<!-- PopUnder -->
 			<div id="startup" ng-show="showPopunder()"><div class="conteneur" ng-include="currentPhase.getPopUnder()"></div></div>
 
+
+			<h1>{{gameName}}</h1>
+
 			<!-- Map -->
 			<svg viewBox="0 0 1881 950">
 				<g
@@ -68,15 +77,17 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 						ng-mouseenter="game.hoveredTerritory = terr"
 						ng-mouseleave="game.hoveredTerritory = undefined"
 						stroke="{{terr.id == game.concernedTerritory.id ? 'red' : 'black'}}" stroke-width="{{(terr.id == game.hoveredTerritory.id || terr.id == game.concernedTerritory.id) ? 3 : 1}}" stroke-linecap="round">
-					<path ng-repeat="d in terr.path" d="{{d}}" title="{{terr.name}}" />
+					<path ng-repeat="d in terr.path" d="{{d}}" />
 				</g>
 			</svg>
-			<div id="history">
-				<ul>
-					<li ng-repeat="msg in game.history.data"><span class="date">[{{msg.time}}]</span> <span ng-bind-html="msg.content | html"></span> </li>
-				</ul>
-			</div>
-			<h1>{{gameName}}</h1>
+
+			<ul class="players">
+				<li ng-repeat="player in game.players" ng-class="{active: game.getCurrentPlayer() == player}" title="{{player.ideology.playerName}}">
+					<i ng-style="{'color':player.ideology.color.css()}" class="icon-{{player.ideology.slug}}"></i>
+					<br />
+					<span ng-class="{bold: player == game.getMe()}">{{player.pseudo}}<span>
+				</li>
+			</ul>
 		</div></div>
 
 		<div class="large-2 columns" id="mypan">
@@ -126,12 +137,6 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 	</div>
 
 	<div class="partners">
-		<ul class="players">
-			<li ng-repeat="player in game.players" title="{{player.ideology.playerName}}" title="{{player.ideology.playerName}}">
-				<i ng-style="{'color':player.ideology.color.css()}" class="icon-{{player.ideology.slug}}"></i> {{player.pseudo}}
-			</li>
-		</ul>
-
 		<ul class="barcharts stats" title="Domination géographique">
 			<li ng-repeat="p in game.players"> <!-- Domination -->
 				<span ng-style="{'height':((p.territories.length() / game.territories.length) * 100)+'%', 'background-color':p.ideology.color.css()}"></span>
