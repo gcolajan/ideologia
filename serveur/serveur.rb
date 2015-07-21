@@ -60,7 +60,7 @@ EventMachine.run {
       $LOGGER.info ">>> #{nbClients} client(s)"
 
       # On commence le ping du joueur
-      ping = EventMachine.add_periodic_timer( $INTERVALLE_PING_SALON ) { ws.ping ''}
+      ping = EventMachine.add_periodic_timer( $INTERVALLE_PING_SALON ) { ws.ping }
     }
 
 		# Réaction du serveur sur fermeture de la websocket

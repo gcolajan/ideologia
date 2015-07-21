@@ -91,14 +91,17 @@ class GestionJoueur
         # Transmission des identifiants d'opération possibles et attente d'un choix
         idAction = @com.ask('operations', listeId, 'operation', 30)
 
+
+        appliedAction = ((idAction.to_i.integer?) && listeId.include?(idAction)) ? idAction : listeId[0]
         # Repercussion du choix (l'action proposée sera la première si la réponse n'est pas correcte)
         @partie.appliquerOperationTerritoire(
             Operation.new(
-                ((idAction.to_i.integer?) && listeId.include?(idAction)) ? idAction : listeId[0],
+                appliedAction,
                 @partie.joueurCourant.ideologie.numero
             ),
             caseCourante.territoire
         )
+        @salon.broadcast("appliedOperation", appliedAction)
 
       when 'caseEvenement'
         # On réclame une opération sur événement
