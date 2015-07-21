@@ -7,8 +7,6 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
 
     $scope.currentPhase = undefined;
 
-    $scope.board = undefined;
-
     $scope.salons = [];
     $scope.adversaires = [];
     $scope.ideologies = [];

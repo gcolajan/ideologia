@@ -41,6 +41,7 @@ function pied() {
 	<script src="assets/javascripts/rgb.js"></script>
 	<script src="assets/javascripts/Color.js"></script>
 	<script src="assets/javascripts/AutoViewBox.js"></script>
+	<script src="assets/javascripts/History.js"></script>
 	<script src="assets/javascripts/Collection.js"></script>
 	<script src="assets/javascripts/Set.js"></script>
 
@@ -67,6 +68,7 @@ function pied() {
 	<script src="assets/javascripts/controllers/Ideologia.js"></script>
 	<script src="assets/javascripts/services/websocket.js"></script>
 	<script src="assets/javascripts/directives/vbox.js"></script>
+	<script src="assets/javascripts/filters/html.js"></script>
 
 	<script>
 		function Equilibre(Indentifier){

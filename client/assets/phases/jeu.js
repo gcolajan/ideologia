@@ -28,19 +28,22 @@ jeuPhase.operations.insert('joueurCourant', function($scope, currentPlayer) {
     {
         ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
         ws.emit('des');
+        $scope.game.history.add("Vous jouez");
     }
-
+    else
+        $scope.game.history.add($scope.game.getCurrentPlayer().pseudo+" joue");
 });
 
-jeuPhase.operations.insert('updates', function($scope, updates) {
-    for (var i = 0 ; i < updates['playersData'].length ; ++i)
+jeuPhase.operations.insert('playersData', function($scope, data) {
+    // When we receive an update about player's data, if we haven't chosen our operation, it's too late...
+    $scope.game.choseOperation = false;
+
+    for (var i = 0 ; i < data.length ; ++i)
     {
         var player = $scope.game.players[i];
-        player.position = updates['playersData'][i]['position'];
-        for (var id in updates['playersData'][i]['territories'])
+        for (var id in data[i])
         {
             var territory = $scope.game.territories.get(id, "id");
-
             // If the territory has changed of owner
             if (!player.territories.exists(id))
             {
@@ -57,17 +60,13 @@ jeuPhase.operations.insert('updates', function($scope, updates) {
 
                 // We give the territory to that player
                 player.addTerritory(territory)
+                $scope.game.history.add(territory.name+' : '+curPlayer.getColoured()+" => "+player.getColoured());
             }
 
             // Updating health of the territory
-            territory.updateState(updates['playersData'][i]['territories'][id]);
+            territory.updateState(data[i][id]);
         }
     }
-    /*
-    playersData
-    pcases
-    fonds
-    jauges*/
 });
 
 jeuPhase.operations.insert('evenement', function($scope, event) {
@@ -78,8 +77,15 @@ jeuPhase.operations.insert('des', function($scope, des) {
     //console.log("Des: "+des);
 });
 
-jeuPhase.operations.insert('position', function($scope, pos) {
-    $scope.game.getMe().position = pos;
+jeuPhase.operations.insert('jcPosition', function($scope, pos) {
+    // We put the current player on the right square
+    $scope.game.getCurrentPlayer().position = pos;
+
+    // Returns the territory on which is the current player
+    $scope.game.concernedTerritory = $scope.game.territoryAt(pos);
+
+    // Define the currentPlay
+    $scope.game.currentPlayDescription = "Somebody is playing"; // Vous-X joue(z) sur (votre territoire/le territoire de X/son territoire) || Vous-X a(vez) déclenché une case évenement || Vous-X vous êtes/s'est arrêté sur la case départ
 });
 
 jeuPhase.operations.insert('gain', function($scope, gain) {

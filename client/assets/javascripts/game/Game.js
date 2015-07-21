@@ -7,10 +7,14 @@ function Game() {
 	this.currentPlayer = undefined;
 	this.me = undefined;
 
+	this.history = new History(10);
+
 	this.events = new Set();
 	this.operations = new Set();
 
-	this.hoveredTerritory = null;
+	this.hoveredTerritory = undefined;
+	this.concernedTerritory = undefined;
+
 	this.choseOperation = false;
 	this.currentOperations = [];
 
@@ -161,11 +165,6 @@ function Game() {
 
 	this.territoryAt = function(position) {
 		return this.territories.get(position, 'position');
-	}.bind(this);
-
-	this.getCurrentTerritory = function() {
-		if (typeof this.me !== 'undefined')
-			return this.territoryAt(this.getMe().position);
 	}.bind(this);
 
 	this.makeUserChose = function(operationsId) {

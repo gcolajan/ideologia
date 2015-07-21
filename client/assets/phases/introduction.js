@@ -1,7 +1,5 @@
 var introductionPhase = new Phase('introduction',
     function(scope) {
-        scope.board = new Board();
-        scope.board.init();
     },
     function(scope) {
     },

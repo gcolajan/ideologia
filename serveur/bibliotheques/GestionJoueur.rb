@@ -36,31 +36,19 @@ class GestionJoueur
   # Permit to refresh the dataset of players
 	def updatePlayerData
 
-		puts "Global update for \"#{@joueur.pseudo}\""
-
     playerData = []
     @partie.listeJoueurs.each { |joueur|
-      data = {
-        'position' => joueur.position,
-        'territories' => {}
-      }
+      territories = {}
 
       joueur.listeTerritoires.each { |territory|
-        data['territories'].merge!({territory.idTerritoire => territory.etatJauges()})
+        territories[territory.idTerritoire] = territory.etatJauges()
       }
 
-      playerData.push(data)
+      playerData.push(territories)
     }
 
-    # Useful informations to refresh client's UI
-    @com.send('updates', {
-        'playersData' => playerData,
-        'positions' => @partie.positionsJoueurs,
-        'pcases' => @partie.presenceCases,
-        'fonds' => @joueur.fondsFinanciers.to_s,
-        #'jauges'=> @joueur.syntheseJauge
-        #'syntheseTerritoires' => @joueur.syntheseTerritoire
-    })
+    # Useful informations about territories to refresh client's UI
+    @com.send('playersData', playerData)
 	end
 
 	def currentPlayerTurn
@@ -77,13 +65,13 @@ class GestionJoueur
 		caseCourante, passageDepart = @partie.progression(de1+de2)
 
 		# Envoi de la nouvelle position
-		@com.send('position', caseCourante.numCase.to_s)
+		@com.client.salon.broadcast('jcPosition', caseCourante.numCase.to_s)
 
 		# Récupération de la rétribution du joueur
 		gain = @partie.recupererGain(passageDepart)
 
 		# Renseignement du gain obtenu
-		@com.send('gain', gain.to_s)
+		@com.send('gain', gain.to_s) #@joueur.fondsFinanciers.to_s
 
 		# Permet de faire les différentes actions sur la case courante
 		action(caseCourante)

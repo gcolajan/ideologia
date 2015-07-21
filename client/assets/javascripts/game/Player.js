@@ -6,19 +6,9 @@ function Player(pseudo, ideology) {
 	this.position = 0;
 	this.territories = new Set();
 
-	/*this.updateTerritory = function(owner, health) {
-		// TO REIMPLEM
-
-		if (owner != this.owner) {
-			if (this.owner !== undefined)
-				this.owner.territories.unset(this.id);
-
-			owner.territories.insert(this.id, this);
-			this.owner = owner;
-		}
-
-		this.health = health;
-	}.bind(this);*/
+	this.getColoured = function() {
+		return '<span style="color:'+this.ideology.color.css()+'" title="'+this.ideology.playerName+'">'+this.pseudo+'</span>';
+	}.bind(this);
 
 	this.getGlobalHealth = function() {
 		var health = 0;

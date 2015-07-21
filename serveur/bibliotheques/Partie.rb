@@ -222,49 +222,6 @@ class Partie
 	end
 	
 	
-	# Retourne un dictionnaire contenant toutes les positions des joueurs
-	def positionsJoueurs
-		pos = {}
-		for joueur in @listeJoueurs
-			pos.merge!({joueur.numJoueur => joueur.position})
-		end
-		return pos
-	end
-	
-	
-	# Retourne un dictionnaire donnant, pour chaque case les joueurs présents
-	def presenceCases
-		pCases = {}
-		for i in 0..41
-			pCases.merge!({i => []})
-		end
-		
-		pJoueurs = positionsJoueurs()
-		for i in 0..(@nbJoueurs-1)
-			for j in 0..(@nbJoueurs-1)
-				if (i != j)
-					if (not(pCases[pJoueurs[i]].include?(i)))
-						pCases[pJoueurs[i]].push(i)
-					end
-					if (not(pCases[pJoueurs[j]].include?(j)))
-						pCases[pJoueurs[j]].push(j)
-					end
-				end
-			end 
-		end
-		
-		pos = []
-		for i in 0..41
-			if pCases[i].length != 0 
-				pos.push({"case" => i, "joueurs" => pCases[i]})
-			end
-		end
-		
-		return pos
-	end
-
-	
-	
 	# Permet d'obtenir les scores de la partie
 	def obtenirScores
 		if @scores == nil

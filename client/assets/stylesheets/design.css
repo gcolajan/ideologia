@@ -90,24 +90,25 @@ ul.barcharts li span.legend {
 	font-size:3.5rem;
 }
 
-.indicateurs {
+#history {
 	position:absolute;
-	width:100%;
+	z-index:-1;
+	bottom:0;
+	left:0;
+	text-align:left;
 }
 
-.indicateurs ul {
-	list-style-type:none;
+#history ul {
+	list-style-type: none;
+	font-size: 0.7em;
+	font-color:#666666;
 	margin:0;
 	padding:0;
-	background:rgba(255,255,255,0.2);
-	display:inline-block;
 }
 
-.indicateurs li {
-	font-size:160%;
-	padding:0 10px;
-	color:white;
-	display:inline-block;
+#history ul li span.date {
+	font-size:90%;
+	padding-right:20px;
 }
 
 .adversaires {
@@ -150,22 +151,17 @@ ul.barcharts li span.legend {
 	overflow: auto;
 }
 
-.mypanel h1 {
+.mypanel h2 {
 	text-transform: uppercase;
 	font-weight: bold;
 	font-family: Electrolize;
-	font-size:1.4rem;
+	font-size:1.2rem;
 	color:rgba(255,255,255,0.8);
+	text-align:center;
 }
 
-.mypanel h2 {
-	color:#DFDFDF;
-	font-size:1.1rem;
-	font-weight:bold;
-	font-family: 'Cabin', sans-serif;
-	background:#222222;
-	padding:2px;
-	padding-left:25px;
+div.menuSep {
+	height:30px;
 }
 
 dl#plateau {
@@ -301,7 +297,7 @@ ul.territories li.risk:before {
 }
 
 ul.territories li {
-	line-height:30px;
+	line-height:26px;
 	margin:9px 6px;
 	color:#222;
 	padding-left:10px;
@@ -386,32 +382,6 @@ div.details dl dd {
 	opacity:0;
 }
 
-div#selectOperation {
-	position:absolute;
-	height:100%;
-	width:100%;
-	height:100%;
-	line-height: 100%;
-}
-
-div#selectOperation div.conteneur {
-	position:absolute;
-	left:15%;
-	top:20%;
-	width:70%;
-	height:55%;
-
-	padding:30px;
-	background:rgba(255,255,255,0.8);
-	border:1px solid rgba(255,255,255,0.6);
-	overflow:auto;
-}
-
-div#selectOperation div.conteneur h1 {
-	color:#161616;
-	font-size:1.6em;
-}
-
 div#wsmsg {
 	position:absolute;
 	left:15%;
@@ -435,17 +405,17 @@ div#tracking {
 }
 
 div.territoryFrame {
-	background-color:white;
-	float:left;
-	width:200px;
-	height:200px;
+	background-color:rgba(255,255,255,0.6);
+	margin:auto;
+	width:180px;
+	height:180px;
 	text-align:center;
-	line-height:200px;
+	line-height:180px;
 }
 
 div.territoryFrame svg {
-	max-height:200px;
-	max-width:200px;
+	max-height:180px;
+	max-width:180px;
 	margin:0;
 	line-height: normal;
 	vertical-align:middle;
@@ -453,7 +423,6 @@ div.territoryFrame svg {
 }
 
 div.operationsFrame {
-	margin-left:220px;
 	text-align:left;
 }
 
@@ -464,10 +433,26 @@ div.operationsFrame ul {
 }
 
 div.operationsFrame ul li {
-	line-height:50px;
 }
 
 div.effectsFrame {
 	margin-top:20px;
-	background:white;
+}
+
+div.hoveredTerritory span.owner {
+
+}
+
+div.hoveredTerritory span.stability {
+	display:block;
+	width:52px;
+	height:52px;
+	margin:auto;
+	line-height:52px;
+	text-align:center;
+	border-radius: 100%;
+	font-weight:bold;
+	font-family: Electrolize;
+	text-shadow: 1px 1px 2px black;
+	font-size:0.9em;
 }
