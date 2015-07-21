@@ -65,7 +65,7 @@ class GestionJoueur
 		caseCourante, passageDepart = @partie.progression(de1+de2)
 
 		# Envoi de la nouvelle position
-		@com.client.salon.broadcast('jcPosition', caseCourante.numCase.to_s)
+		@salon.broadcast('jcPosition', caseCourante.numCase.to_s)
 
 		# Récupération de la rétribution du joueur
 		gain = @partie.recupererGain(passageDepart)
