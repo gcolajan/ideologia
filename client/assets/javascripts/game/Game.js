@@ -14,6 +14,7 @@ function Game() {
 
 	this.hoveredTerritory = undefined;
 	this.concernedTerritory = undefined;
+	this.lastConcernedTerritory = undefined;
 
 	this.choseOperation = false;
 	this.currentOperations = [];
@@ -170,6 +171,17 @@ function Game() {
 	this.makeUserChose = function(operationsId) {
 		this.currentOperations = operationsId;
 		this.choseOperation = true;
+	}.bind(this);
+
+	this.getShownTerritory = function() {
+		if (typeof this.hoveredTerritory !== 'undefined')
+			return this.hoveredTerritory;
+		else if (typeof this.concernedTerritory !== 'undefined')
+			return this.concernedTerritory;
+
+		// Fallback is "Europe occidentale"
+		return this.territories.get(3, "id");
+
 	}.bind(this);
 }
 

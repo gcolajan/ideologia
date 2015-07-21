@@ -82,20 +82,20 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel" ng-show="currentPhase.name == 'jeu'">
 				<!-- Details on hovered territory -->
-				<h2>{{game.hoveredTerritory.name}}</h2>
+				<h2>{{game.getShownTerritory().name}}</h2>
 
 				<div class="hoveredTerritory">
 					<span class="owner">
-						{{game.getOwnerOf(game.hoveredTerritory).pseudo}}
+						{{game.getOwnerOf(game.getShownTerritory()).pseudo}}
 					</span>
 
-					<span class="stability" ng-style="{'background-color':game.hoveredTerritory.getHealthColor().css()}">
-						{{(game.hoveredTerritory.getHealth() * 100) | number:0}} %
+					<span class="stability" ng-style="{'background-color':game.getShownTerritory().getHealthColor().css()}">
+						{{(game.getShownTerritory().getHealth() * 100) | number:0}} %
 					</span>
 				</div>
 
 				<ul class="barcharts">
-					<li ng-repeat="gauge in game.hoveredTerritory.gauges.array">
+					<li ng-repeat="gauge in game.getShownTerritory().gauges.array">
 						<span ng-style="{'height':gauge.currentLevel*100+'%', 'background-color':gauge.getHealthColor().css()}"></span>
 						<span ng-style="{'height':gauge.optimalLevel*100+'%'}" class="optimal"></span>
 						<span class="number">{{gauge.currentLevel*100 | number:0}} %</span>
@@ -119,6 +119,8 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 						{{territory.name}}
 					</li>
 				</ul>
+
+				+ indicateur évolution
 			</div>
 		</div>
 	</div>

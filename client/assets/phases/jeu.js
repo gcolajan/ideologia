@@ -81,11 +81,11 @@ jeuPhase.operations.insert('jcPosition', function($scope, pos) {
     // We put the current player on the right square
     $scope.game.getCurrentPlayer().position = pos;
 
+    var terr = $scope.game.territoryAt(pos);
+    if (terr !== null)
+        $scope.game.lastConcernedTerritory = terr;
     // Returns the territory on which is the current player
-    $scope.game.concernedTerritory = $scope.game.territoryAt(pos);
-
-    // Define the currentPlay
-    $scope.game.currentPlayDescription = "Somebody is playing"; // Vous-X joue(z) sur (votre territoire/le territoire de X/son territoire) || Vous-X a(vez) déclenché une case évenement || Vous-X vous êtes/s'est arrêté sur la case départ
+    $scope.game.concernedTerritory = terr;
 });
 
 jeuPhase.operations.insert('gain', function($scope, gain) {
