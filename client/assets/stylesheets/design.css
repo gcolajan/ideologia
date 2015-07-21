@@ -75,15 +75,14 @@ ul.barcharts li span.legend {
 	text-align:center;
 }
 
-#header {
-}
+
 
 #map {
 	text-align:center;
 	padding:0;
 }
 
-#map div h1 {
+#map div h1, #header h1 {
 	color:rgba(255,255,255,0.66);
 	text-align:center; margin:0;
 	padding:0;
@@ -91,6 +90,10 @@ ul.barcharts li span.legend {
 	font-weight: bold;
 	font-family: Electrolize;
 	font-size:3.5rem;
+}
+
+#header h1 {
+	padding-top:50px;
 }
 
 #history {
@@ -237,6 +240,10 @@ div#startup div.conteneur {
 	background:rgba(255,255,255,0.8);
 	border:1px solid rgba(255,255,255,0.6);
 	overflow:auto;
+}
+
+div#startup.intro div.conteneur {
+	top:12%;
 }
 
 div#startup div.conteneur h1 {

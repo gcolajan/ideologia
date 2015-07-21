@@ -7,11 +7,24 @@ entete('Ideologia');
 		<h1>Ideologia</h1>
 	</div>
 
-	<div id="accueil">	
-		<form method="post" action="plateau.php">
-			<input type="hidden" name="pseudo" value="<?php echo uniqid(); ?>" />
-			<input type="submit" value="Jouer !" />
-		</form>
+	<div id="startup" class="intro">
+		<div class="conteneur">
+			<p>Ideologia est un projet initié par 8 étudiants.</p>
+
+			<p>Nous sommes actuellement deux développeurs sur ce projet, les principes sont troubles mais nous tâcherons de vous les fournir sous peu.</p>
+
+			<p>Nous vous proposons quelques mots clés :</p>
+			<ul>
+				<li>jeu de plateau</li>
+				<li>domination géographique</li>
+				<li>prévalence idéologique</li>
+			</ul>
+
+			<form method="get" action="plateau.php" class="text-center">
+				<input type="submit" value="Jouer !" class="button"  />
+			</form>
+		</div>
+
 	</div>
 
 <?php
