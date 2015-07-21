@@ -1,7 +1,5 @@
 class Communication
 
-  attr_accessor :client
-
 	def initialize(ws, client, initTypes=[])
 		@ws         = ws
 		@client     = client
