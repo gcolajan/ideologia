@@ -70,7 +70,9 @@ class Salon
 			if full?
 				# Réveil des joueurs un par un
 				@clients.each { |client|
-					client.signal
+					unless client.nil?
+					  client.signal
+          end
 				}
 			end
 

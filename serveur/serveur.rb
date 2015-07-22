@@ -70,7 +70,7 @@ EventMachine.run {
 			nbClients -= 1
       $LOGGER.info "<<< #{nbClients} client(s)"
 
-			puts ws.to_s
+			$LOGGER.info ws.to_s
 			# Si le client est encore dans un salon on le déconnecte
 			unless client.salon.nil?
 				client.salon.deconnexionJoueur(client, code=params[:code])
@@ -97,7 +97,7 @@ EventMachine.run {
 		#Réaction du serveur en cas d'erreur
 		ws.onerror { |error|
       $LOGGER.error "websockets error: #{error}"
-      $LOGGER.info error.backtrace
+      $LOGGER.error error.backtrace
 		}
 	end
 }
