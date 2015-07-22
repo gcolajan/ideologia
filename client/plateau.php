@@ -23,20 +23,25 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			<div ng-show="currentPhase.name == 'jeu'">
 				<h2>Action en cours</h2>
 
-				<!-- Concerned territory (by the current player) -->
-				<div class="territoryFrame">
-					<div>
-						<svg vbox="{{game.concernedTerritory.getViewBox().get(10)}}">
-							<g fill="rgba(255,255,255,0.6)">
-								<path ng-repeat="d in game.concernedTerritory.path" d="{{d}}" />
-							</g>
-						</svg>
-					</div>
-					<h3>{{game.concernedTerritory.name}}</h3>
-				</div>
-
 				<!-- Who's playing on what -->
-				{{game.currentPlayDescription}}
+				<div class="currentAction" ng-bind-html="game.currentPlayDescription | html"></div>
+
+				<!--
+				<div class="partners">
+					<ul class="barcharts stats" title="Domination géographique">
+						<li ng-repeat="p in game.players">
+							<span ng-style="{'height':((p.territories.length() / game.territories.length) * 100)+'%', 'background-color':p.ideology.color.css()}"></span>
+							<span class="number">{{((p.territories.length() / game.territories.length) * 100) | number:0}} %</span>
+						</li>
+					</ul>
+
+					<ul class="barcharts stats inverted" title="Santé des idéologies">
+						<li ng-repeat="p in game.players">
+							<span ng-style="{'height':p.getGlobalHealth() * 100+'%', 'background-color':p.ideology.color.css()}"></span>
+							<span class="number">{{(p.getGlobalHealth() * 100) | number:0}} %</span>
+						</li>
+					</ul>
+				</div>--
 
 				<!-- Select operation -->
 				<div class="selectOperation" ng-show="game.choseOperation">
@@ -93,19 +98,28 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel" ng-show="currentPhase.name == 'jeu'">
 				<!-- Details on hovered territory -->
-				<h2>{{game.getShownTerritory().name}}</h2>
+				<h2 class="nowrap">{{game.getShownTerritory().name}}</h2>
+
+				<!-- Concerned territory (by the current player) -->
+				<div class="territoryFrame">
+					<svg vbox="{{game.getShownTerritory().getViewBox().get(10)}}">
+						<g fill="rgba(255,255,255,0.6)">
+							<path ng-repeat="d in game.getShownTerritory().path" d="{{d}}" />
+						</g>
+					</svg>
+				</div>
 
 				<div class="hoveredTerritory">
-					<span class="owner">
-						{{game.getOwnerOf(game.getShownTerritory()).pseudo}}
-					</span>
+					<span class="owner" ng-bind-html="game.getOwnerOf(game.getShownTerritory()).getIconified() | html"></span>
+
+					<br />
 
 					<span class="stability" ng-style="{'background-color':game.getShownTerritory().getHealthColor().css()}">
 						{{(game.getShownTerritory().getHealth() * 100) | number:0}} %
 					</span>
 				</div>
 
-				<ul class="barcharts">
+				<ul class="barcharts hoveredTerrChart">
 					<li ng-repeat="gauge in game.getShownTerritory().gauges.array">
 						<span ng-style="{'height':gauge.currentLevel*100+'%', 'background-color':gauge.getHealthColor().css()}"></span>
 						<span ng-style="{'height':gauge.optimalLevel*100+'%'}" class="optimal"></span>
@@ -113,6 +127,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 						<span class="legend" ng-class="'icon-jauge-'+gauge.slug"></span>
 					</li>
 				</ul>
+
 
 				<div class="menuSep"></div>
 
@@ -134,22 +149,6 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 				+ indicateur évolution
 			</div>
 		</div>
-	</div>
-
-	<div class="partners">
-		<ul class="barcharts stats" title="Domination géographique">
-			<li ng-repeat="p in game.players"> <!-- Domination -->
-				<span ng-style="{'height':((p.territories.length() / game.territories.length) * 100)+'%', 'background-color':p.ideology.color.css()}"></span>
-				<span class="number">{{((p.territories.length() / game.territories.length) * 100) | number:0}} %</span>
-			</li>
-		</ul>
-
-		<ul class="barcharts stats inverted" title="Santé des idéologies">
-			<li ng-repeat="p in game.players"> <!-- Health -->
-				<span ng-style="{'height':p.getGlobalHealth() * 100+'%', 'background-color':p.ideology.color.css()}"></span>
-				<span class="number">{{(p.getGlobalHealth() * 100) | number:0}} %</span>
-			</li>
-		</ul>
 	</div>
 
 	<dl id="plateau">

@@ -176,8 +176,8 @@ function Game() {
 	this.getShownTerritory = function() {
 		if (typeof this.hoveredTerritory !== 'undefined')
 			return this.hoveredTerritory;
-		else if (typeof this.concernedTerritory !== 'undefined')
-			return this.concernedTerritory;
+		else if (typeof this.lastConcernedTerritory !== 'undefined')
+			return this.lastConcernedTerritory;
 
 		// Fallback is "Europe occidentale"
 		return this.territories.get(3, "id");

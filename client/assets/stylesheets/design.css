@@ -17,6 +17,11 @@ h1 {
 	font-weight: bold;
 }
 
+.nowrap {
+	white-space: nowrap;
+	overflow: hidden;
+}
+
 /*
 BARCHATS
 */
@@ -25,7 +30,7 @@ ul.barcharts {
 	margin:0;
 	padding:0;
 	list-style-type: none;
-	height:150px;
+	height:120px;
 	display: flex;
 }
 
@@ -166,6 +171,7 @@ ul.barcharts li span.legend {
 
 div.menuSep {
 	height:30px;
+	clear:both;
 }
 
 dl#plateau {
@@ -305,7 +311,7 @@ ul.territories li.risk:before {
 }
 
 ul.territories li {
-	line-height:26px;
+	line-height:22px;
 	margin:9px 6px;
 	color:#222;
 	padding-left:10px;
@@ -428,25 +434,16 @@ div#tracking {
 }
 
 div.territoryFrame {
-}
-
-div.territoryFrame h3 {
-	text-align:center;
-	font-family: Electrolize;
-	font-size:1.3em;
-}
-
-div.territoryFrame div {
 	margin:auto;
-	width:180px;
-	height:180px;
+	width:150px;
+	height:150px;
 	text-align:center;
-	line-height:180px;
+	line-height:150px;
 }
 
-div.territoryFrame div svg {
-	max-height:180px;
-	max-width:180px;
+div.territoryFrame svg {
+	max-height:150px;
+	max-width:150px;
 	margin:0;
 	line-height: normal;
 	vertical-align:middle;
@@ -470,8 +467,14 @@ div.effectsFrame {
 	margin-top:20px;
 }
 
-div.hoveredTerritory span.owner {
+div.hoveredTerritory {
+	text-align:center;
+	width:80px;
+	float:right;
+}
 
+div.hoveredTerritory span.owner i {
+	font-size:220%;
 }
 
 div.hoveredTerritory span.stability {
@@ -479,6 +482,7 @@ div.hoveredTerritory span.stability {
 	width:52px;
 	height:52px;
 	margin:auto;
+	margin-top:15px;
 	line-height:52px;
 	text-align:center;
 	border-radius: 100%;
@@ -486,4 +490,13 @@ div.hoveredTerritory span.stability {
 	font-family: Electrolize;
 	text-shadow: 1px 1px 2px black;
 	font-size:0.9em;
+}
+
+ul.hoveredTerrChart {
+	margin-right:80px;
+}
+
+div.currentAction {
+	text-align:center;
+	font-size:90%;
 }

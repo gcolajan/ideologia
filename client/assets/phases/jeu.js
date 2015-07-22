@@ -80,7 +80,34 @@ jeuPhase.operations.insert('jcPosition', function($scope, pos) {
 
     var terr = $scope.game.territoryAt(pos);
     if (terr !== null)
+    {
         $scope.game.lastConcernedTerritory = terr;
+
+        if ($scope.game.amICurrent())
+            $scope.game.currentPlayDescription = "<strong>Vous</strong> êtes sur ";
+        else
+            $scope.game.currentPlayDescription = $scope.game.getCurrentPlayer().getColoured()+" est sur ";
+
+        var currentOwner = $scope.game.getOwnerOf(terr);
+        if ($scope.game.getMe() == currentOwner)
+            $scope.game.currentPlayDescription += "<em>votre</em> territoire";
+        else if ($scope.game.getCurrentPlayer() == currentOwner)
+            $scope.game.currentPlayDescription += "son propre territoire";
+        else
+            $scope.game.currentPlayDescription += "le territoire de "+currentOwner.getColoured();
+
+        $scope.game.currentPlayDescription += '.';
+    }
+    else
+    {
+        if ($scope.game.amICurrent())
+            $scope.game.currentPlayDescription = "Vous êtes";
+        else
+            $scope.game.currentPlayDescription = $scope.game.getCurrentPlayer().getColoured()+" est";
+
+        $scope.game.currentPlayDescription += " sur une case à action spécifique.";
+    }
+
     // Returns the territory on which is the current player
     $scope.game.concernedTerritory = terr;
 });
