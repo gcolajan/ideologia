@@ -5,3 +5,4 @@ conf.rb
 *.log
 .idea
 serveur/logs
+*.concat.js

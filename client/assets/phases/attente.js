@@ -16,4 +16,4 @@ attentePhase.operations.insert('waitingWith', function($scope, adversaires) {
 attentePhase.userActions.insert('changeRoom', function($scope, args) {
     ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
     ws.emit('unjoin');
-})
+});

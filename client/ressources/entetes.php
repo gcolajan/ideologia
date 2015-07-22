@@ -14,7 +14,7 @@ function entete($titre) {
 		<link rel="stylesheet" href="assets/stylesheets/fonts.css" />
 		<link href="//fonts.googleapis.com/css?family=Cabin:700|Electrolize" rel="stylesheet" type="text/css" />
 
-		<script src="assets/javascripts/jquery.min.js"></script>
+		<script src="assets/javascripts/vendors/jquery/jquery.min.js"></script>
 	</head>
 	<body ng-app="myGame">
 
@@ -37,38 +37,14 @@ function entete($titre) {
 
 function pied() {
 	echo '
-	<script src="assets/javascripts/tools.js"></script>
-	<script src="assets/javascripts/rgb.js"></script>
-	<script src="assets/javascripts/Color.js"></script>
-	<script src="assets/javascripts/AutoViewBox.js"></script>
-	<script src="assets/javascripts/History.js"></script>
-	<script src="assets/javascripts/Collection.js"></script>
-	<script src="assets/javascripts/Set.js"></script>
+	<script src="assets/javascripts/vendors/angular/angular.min.js"></script>
+	<script src="assets/javascripts/vendors/angular/angular-route.min.js"></script>
+	<script src="assets/javascripts/vendors/angular/angular-animate.min.js"></script>
 
-	<script src="assets/javascripts/angular.min.js"></script>
-	<script src="assets/javascripts/angular-route.min.js"></script>
-	<script src="assets/javascripts/angular-animate.min.js"></script>'."\n";
-
-	if($dir = opendir('./assets/javascripts/game'))
-		while (($file = readdir($dir)) !== false)
-			if ($file != '.' AND $file != '..')
-				echo '
-	<script src="assets/javascripts/game/'.$file.'"></script>';
-
-	echo '
-
-	<script src="assets/javascripts/Phase.js"></script>
-	<script src="assets/phases/introduction.js"></script>
-	<script src="assets/phases/salons.js"></script>
-	<script src="assets/phases/attente.js"></script>
-	<script src="assets/phases/jeu.js"></script>
-
-	<script src="assets/javascripts/main.js"></script>
-
-	<script src="assets/javascripts/controllers/Ideologia.js"></script>
-	<script src="assets/javascripts/services/websocket.js"></script>
-	<script src="assets/javascripts/directives/vbox.js"></script>
-	<script src="assets/javascripts/filters/html.js"></script>
+	<script src="assets/javascripts/tools.concat.js"></script>
+	<script src="assets/javascripts/game.concat.js"></script>
+	<script src="assets/phases/phases.concat.js"></script>
+	<script src="assets/javascripts/app.concat.js"></script>
 
 	<script>
 		function Equilibre(Indentifier){
