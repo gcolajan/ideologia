@@ -37,7 +37,10 @@ class Communication
       response['delay'] = delay
     end
 
-    @ws.send JSON.generate(response)
+    unless @ws.nil?
+      @ws.send JSON.generate(response)
+    end
+
   end
 
 
