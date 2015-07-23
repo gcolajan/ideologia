@@ -131,43 +131,11 @@ class Partie
 	# Retourne 4 identifiants d'opération à choisir par le client
 	# Une opération peut avoir un coût négatif qui va permettre au joueur de gagner de l'argent
 	def genererIdOperationsProposees
-		
-		listeIdObtenus = []
-		
-		begin
-			dbh = Mysql.new($host, $user, $mdp, $bdd)
-			# On prend un nombre aléatoire entre 1 et 4
-			nb = rand(4)
-			if (nb == 0) # Dans ce cas, on choisi 3 opérations au coût positif et une opération au coût négatif
-				nb = 3
-				res = dbh.query("SELECT toc_operation_id
-								FROM ideo_territoire_operation_cout
-								WHERE toc_ideologie_id = "+@joueurCourant.ideologie.numero.to_s+"
-								AND toc_cout < 0
-								ORDER BY RAND()
-								LIMIT 1")
-				data = res.fetch_hash()
-				listeIdObtenus.push(data['toc_operation_id'])
-			else
-				nb = 4
-			end
-
-			res = dbh.query("SELECT toc_operation_id
-							FROM ideo_territoire_operation_cout
-							WHERE toc_ideologie_id = "+@joueurCourant.ideologie.numero.to_s+"
-							AND toc_cout BETWEEN 0 AND "+@joueurCourant.fondsFinanciers.to_s+"
-							ORDER BY RAND()
-							LIMIT "+nb.to_s)
-			while(data = res.fetch_hash())
-				listeIdObtenus.push(data['toc_operation_id'])
-			end
-		rescue Mysql::Error => e
-			puts e
-		ensure
-			dbh.close if dbh
-		end
-		
-		return listeIdObtenus
+		return Datastore.instance.getOperations(
+        @joueurCourant.ideologie.numero,
+        rand(4) == 0 ? 1 : 0, # In 25% of cases, we get a negative-cost operation
+        4,
+        @joueurCourant.fondsFinanciers)
 	end
 	
 	
@@ -246,24 +214,15 @@ class Partie
 	# Instanciation des territoires (pour Joueur et CaseTerritoire)
 	# Retourne la liste des territoires afin que Partie les répartissent et la population mondiale pour la case départ
 	def obtenirTerritoires
+    territoires = Datastore.instance.getTerritoriesPopulation()
 		listeTerritoireObtenus = []
-		begin
-			dbh = Mysql.real_connect($host, $user, $mdp, $bdd)
-			res = dbh.query("SELECT terr_id, terr_position, 
-								(SELECT SUM(unite_population) 
-								FROM terr_unite 
-								WHERE unite_territoire = terr_id) AS popTerritoire 
-							FROM terr_territoire")
-			popMondiale = 0
-			while(data = res.fetch_hash())
-				listeTerritoireObtenus.push(Territoire.new(data["terr_id"].to_i, data["popTerritoire"].to_i, data["terr_position"].to_i))
-				popMondiale += data["popTerritoire"].to_i
-			end	
-		rescue Mysql::Error => e
-			puts e.error
-		ensure
-			dbh.close if dbh
-		end
+
+    popMondiale = 0
+    territoires.each { |id,info|
+      listeTerritoireObtenus.push(Territoire.new(id, info['population'], info['position']))
+      popMondiale += info['population']
+    }
+
 		return listeTerritoireObtenus, popMondiale
 	end
 	
@@ -274,19 +233,14 @@ class Partie
 	# Instanciation des idéologies pour Joueur
 	# Retourne une liste de toutes les idéologies
 	def obtenirIdeologies
-		listeIdeologiesObtenues = []
-		begin
-			dbh = Mysql.new($host, $user, $mdp, $bdd)
-			res = dbh.query("SELECT ideo_id FROM ideo_ideologie")
-			while(data = res.fetch_hash())
-				listeIdeologiesObtenues.push(Ideologie.new(data['ideo_id'].to_i))
-			end
-		rescue Mysql::Error => e
-			puts e
-		ensure
-			dbh.close if dbh
-		end
-		return listeIdeologiesObtenues
+    ideologies = Datastore.instance.getIdeologies()
+    ideoInstances = []
+
+    ideologies.each { |id|
+      ideoInstances.push(Ideologie.new(id))
+    }
+
+    return ideoInstances
 	end
 	
 	
@@ -323,7 +277,8 @@ class Partie
 			values += "(NOW(), '"+joueur.pseudo+"', "+joueur.ideologie.numero.to_s+", "+respectIdeo.to_s+", "+dominationGeo.to_s+"), "
 			@scores.merge!(joueur.numJoueur => [respectIdeo, dominationGeo])
 		end
-		
+
+    # TODO change method to store score into file
 		begin
 			dbh = Mysql.new($host, $user, $mdp, $bdd)
 			values = values[0..-3]
