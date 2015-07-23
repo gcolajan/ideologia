@@ -101,7 +101,7 @@ class GestionJoueur
             ),
             caseCourante.territoire
         )
-        @salon.broadcast("appliedOperation", appliedAction)
+        @salon.broadcast("appliedOperation", appliedAction.to_s)
 
       when 'caseEvenement'
         # On réclame une opération sur événement

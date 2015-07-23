@@ -134,8 +134,7 @@ class Partie
 		return Datastore.instance.getOperations(
         @joueurCourant.ideologie.numero,
         rand(4) == 0 ? 1 : 0, # In 25% of cases, we get a negative-cost operation
-        4,
-        @joueurCourant.fondsFinanciers)
+        4)
 	end
 	
 	
@@ -279,15 +278,7 @@ class Partie
 		end
 
     # TODO change method to store score into file
-		begin
-			dbh = Mysql.new($host, $user, $mdp, $bdd)
-			values = values[0..-3]
-			res = dbh.query("INSERT INTO ideo_score (score_date, score_pseudo, score_ideologie_id, score_respect_ideologie, score_domination_geo) VALUES"+values)
-		rescue Mysql::Error => e
-			puts e
-		ensure
-			dbh.close if dbh
-		end
+		# dbh.query("INSERT INTO ideo_score (score_date, score_pseudo, score_ideologie_id, score_respect_ideologie, score_domination_geo) VALUES"+values)
 	end
 	
 end

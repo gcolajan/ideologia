@@ -81,7 +81,7 @@ class Joueur
     jauges = {}
 
     Datastore.instance.getJaugesInfo(@ideologie.numero).each { |id, info|
-      jauges.merge!(id => Jauge.new(info['ideal'], info['plus'], info['minus']))
+      jauges.merge!(id.to_i => Jauge.new(info['ideal'], info['plus'], info['minus']))
     }
 
     return jauges

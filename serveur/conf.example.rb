@@ -1,6 +1,5 @@
 require 'json'
 require 'thread'
-require 'mysql'
 require 'em-websocket'
 require 'logger'
 

@@ -31,8 +31,8 @@ class Operation
     cost, effects = Datastore.instance.getOperationEffect(numIdeo, idOp)
 
     @cout = cost
-    effects.each{ |id, effect|
-      @listeEffet.merge!(id => Effet.new(effect['abs'], effect['rel']))
+    [1,2,3].each{ |i| # for our 3 gauges, we bind the effect
+      @listeEffet.merge!(i => Effet.new(effects['abs'][i.to_s], effects['rel'][i.to_s]))
     }
 	end
 	
@@ -42,8 +42,8 @@ class Operation
 
     @idEvenement = id
     @destination = dest
-    effects.each{ |jauge, effect|
-      @listeEffet.merge!(jauge => Effet.new(effect['abs'], effect['rel']))
+    [1,2,3].each{ |i| # for our 3 gauges, we bind the effect
+      @listeEffet.merge!(i => Effet.new(effects['abs'][i.to_s], effects['rel'][i.to_s]))
     }
 	end
 	

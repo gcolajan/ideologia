@@ -19,14 +19,16 @@ class Territoire
 		@joueurPossesseur = joueur
 		@listeJauges = {}
 		for i in (1..3)
-			@listeJauges.merge!(i => Jauge.new(@joueurPossesseur.listeJaugesPourCopie[i.to_s]))
-		end
+			@listeJauges.merge!(i => Jauge.new(@joueurPossesseur.listeJaugesPourCopie[i]))
+    end
 	end
 	
 	# Permet d'appliquer une opération à un territoire
 	# Si c'est une action et que le joueur n'est pas le joueur possesseur on transfère le territoire
 	def recoitOperation(operation, joueur)
-		operation.listeEffet.each{|key, value| @listeJauges[key.to_i].appliquerEffet(value)}
+		operation.listeEffet.each{ |key, value|
+      @listeJauges[key.to_i].appliquerEffet(value)
+    }
 		if(calculerDecalage() > @seuil && joueur != @joueurPossesseur && joueur != nil)
 			transfert(joueur)
 		end
