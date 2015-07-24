@@ -37,6 +37,26 @@ function Territory(id, name, position, path) {
 			this.pathViewBox = new AutoViewBox(this.path);
 		return this.pathViewBox;
 	}.bind(this);
+
+	this.getSimulation = function(effects) {
+		var shift = 0;
+		var myGauges = new Set();
+
+		for (var id = 1 ; id <= 3 ; id++) {
+			myGauges.insert(id, this.gauges.array[id].duplicate());
+		}
+
+		effects.apply(myGauges);
+
+		for (var id = 1 ; id <= 3 ; id++)
+			shift += myGauges.get(id).getShift();
+
+		return {
+			gauges: myGauges,
+			evolution: Math.round(((this.shift - shift)/Game.THRESHOLD)*100),
+			changeOwnership: shift>Game.THRESHOLD
+		};
+	}.bind(this);
 }
 
 Territory.hoverColor = new Color(128, 0.2);

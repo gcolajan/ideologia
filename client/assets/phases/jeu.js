@@ -34,6 +34,9 @@ jeuPhase.operations.insert('joueurCourant', function($scope, currentPlayer) {
 jeuPhase.operations.insert('playersData', function($scope, data) {
     // When we receive an update about player's data, if we haven't chosen our operation, it's too late...
     $scope.game.choseOperation = false;
+    // The choice/simulation is over
+    $scope.game.selectedOperation = undefined;
+    $scope.game.currentSimulation = undefined;
 
     for (var i = 0 ; i < data.length ; ++i)
     {
@@ -135,7 +138,6 @@ jeuPhase.operations.insert('appliedOperation', function($scope, operationId) {
 jeuPhase.operations.insert('score', function($scope, score) {
     console.log(score);
 });
-
 
 jeuPhase.userActions.insert('sendOperation', function($scope, operationId) {
     // Emitting some data to the server

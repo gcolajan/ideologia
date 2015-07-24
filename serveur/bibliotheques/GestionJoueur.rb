@@ -86,18 +86,18 @@ class GestionJoueur
     case type
       when 'caseTerritoire'
         # Génération des opérations sur un territoire
-        listeId = @partie.genererIdOperationsProposees()
+        listeId = @partie.genererIdOperationsProposees(caseCourante.territoire.joueurPossesseur.ideologie)
 
         # Transmission des identifiants d'opération possibles et attente d'un choix
-        idAction = @com.ask('operations', listeId, 'operation', 30)
+        idAction = @com.ask('operations', listeId, 'operation', 30).to_i
 
 
-        appliedAction = ((idAction.to_i.integer?) && listeId.include?(idAction)) ? idAction : listeId[0]
+        appliedAction = ((idAction.integer?) && listeId.include?(idAction)) ? idAction : listeId[0]
         # Repercussion du choix (l'action proposée sera la première si la réponse n'est pas correcte)
         @partie.appliquerOperationTerritoire(
             Operation.new(
                 appliedAction,
-                @partie.joueurCourant.ideologie.numero
+                caseCourante.territoire.joueurPossesseur.ideologie.numero
             ),
             caseCourante.territoire
         )

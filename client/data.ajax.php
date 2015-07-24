@@ -49,7 +49,7 @@ foreach($reqGauges as $row)
 *******************/
 
 $reqIdeo = $dbh->query('SELECT ideo_id, ideo_joueur, ideo_nom, ideo_slug, ideo_r, ideo_g, ideo_b,
-caract_jauge_id, caract_ideal
+caract_jauge_id, caract_ideal, caract_coeff_diminution, caract_coeff_augmentation
 FROM ideo_ideologie
 JOIN ideo_jauge_caracteristique ON caract_ideo_id = ideo_id
 ORDER BY ideo_id, caract_jauge_id');
@@ -65,7 +65,10 @@ foreach($reqIdeo as $row) {
 			'gauges'  => array());
 
 	if (!isset($data['ideology'][$row['ideo_id']]['gauges'][$row['caract_jauge_id']]))
-		$data['ideology'][$row['ideo_id']]['gauges'][$row['caract_jauge_id']] = floatval($row['caract_ideal']);
+		$data['ideology'][$row['ideo_id']]['gauges'][$row['caract_jauge_id']] = array(
+			'ideal' => floatval($row['caract_ideal']),
+			'minus' => floatval($row['caract_coeff_diminution']),
+			'plus'  => floatval($row['caract_coeff_augmentation']));
 }
 
 

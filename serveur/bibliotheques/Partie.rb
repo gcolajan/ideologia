@@ -130,9 +130,9 @@ class Partie
 	
 	# Retourne 4 identifiants d'opération à choisir par le client
 	# Une opération peut avoir un coût négatif qui va permettre au joueur de gagner de l'argent
-	def genererIdOperationsProposees
+	def genererIdOperationsProposees(ideologie)
 		return Datastore.instance.getOperations(
-        @joueurCourant.ideologie.numero,
+        ideologie.numero,
         rand(4) == 0 ? 1 : 0, # In 25% of cases, we get a negative-cost operation
         4)
 	end

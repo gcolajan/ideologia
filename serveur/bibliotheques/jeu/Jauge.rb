@@ -24,7 +24,7 @@ class Jauge
 		effetPourcentage = effet.effetPourcentage
 
 		nouveauNiveau = (@niveau*effetPourcentage)+effetAbsolu
-    
+
 		if (@niveau >= nouveauNiveau)
 			nouveauNiveau *= @coeffAugmentation
 		else 

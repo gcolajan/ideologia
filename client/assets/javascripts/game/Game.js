@@ -16,6 +16,9 @@ function Game() {
 	this.concernedTerritory = undefined;
 	this.lastConcernedTerritory = undefined;
 
+	this.selectedOperation = undefined;
+	this.currentSimulation = undefined;
+
 	this.choseOperation = false;
 	this.currentOperations = [];
 
@@ -108,13 +111,6 @@ function Game() {
 		return this.players[this.me];
 	}.bind(this);
 
-	this.getGauges = function() {
-		if (this.hoveredTerritory == null)
-			return undefined; //this.getMe().getGaugeSynthesis();
-		else
-			return this.hoveredTerritory.gauges.array;
-	}.bind(this);
-
 	this.getCurrentPlayer = function() {
 		return this.players[this.currentPlayer];
 	}.bind(this);
@@ -183,6 +179,17 @@ function Game() {
 		return this.territories.get(3, "id");
 
 	}.bind(this);
+
+	this.setSelectedOperation = function(id) {
+		this.selectedOperation = this.operations.get(id);
+		this.currentSimulation = this.concernedTerritory.getSimulation(
+			this.selectedOperation.getEffect(
+				this.getOwnerOf(
+					this.concernedTerritory
+				).ideology.id
+			)
+		);
+	}
 }
 
 
