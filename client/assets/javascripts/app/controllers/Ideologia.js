@@ -3,7 +3,7 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
     $scope.pseudo = undefined;
 
     $scope.gameName = "Ideologia";
-    $scope.game = undefined;
+    $scope.game = new Game();
 
     $scope.currentPhase = undefined;
 

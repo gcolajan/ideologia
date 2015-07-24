@@ -1,7 +1,6 @@
 // Jeu phase
 var jeuPhase = new Phase('jeu',
     function(scope) {
-        scope.game = new Game();
     },
     function(scope) {
     },
