@@ -7,7 +7,7 @@ function Game() {
 	this.currentPlayer = undefined;
 	this.me = undefined;
 
-	this.history = new History(6);
+	this.history = new History(8);
 
 	this.events = new Set();
 	this.operations = new Set();

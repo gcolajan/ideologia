@@ -2,7 +2,7 @@ body {
 	font-family:Verdana, Tahoma, Helvetica, Arial;
 	margin:0;
 	padding:0;
-	min-height: 100%;
+	height:100%;
 	/*background:url('../images/fond.png') !important;
 	background-size:cover !important;*/
 	background:url('../images/fond.jpg') !important;
@@ -83,7 +83,9 @@ ul.barcharts li span.legend {
 	text-align:center;
 }
 
-
+#front {
+	height:16px;
+}
 
 #map {
 	text-align:center;
@@ -105,22 +107,28 @@ ul.barcharts li span.legend {
 }
 
 #history {
+	font-family: Electrolize;
+	font-size: 50%;
 	text-align:left;
-	position:absolute;
+	position:fixed;
 	bottom:0;
+	z-index:-1;
 }
 
 #history ul {
 	list-style-type: none;
-	font-size: 0.8em;
 	font-color:#666666;
 	margin:0;
 	padding:0;
 }
 
-#history ul li span.date {
-	font-size:90%;
-	padding-right:20px;
+#history ul li {
+	line-height:20px;
+}
+
+#history ul li span.date:after {
+	content:"> ";
+	padding-right:12px;
 }
 
 .adversaires {
@@ -455,6 +463,9 @@ div.territoryFrame svg {
 
 div.operationsFrame {
 	text-align:left;
+	color:#222222;
+	font-family: Electrolize;
+	font-size:90%;
 }
 
 div.operationsFrame ul {
@@ -464,6 +475,45 @@ div.operationsFrame ul {
 }
 
 div.operationsFrame ul li {
+	background-color:rgba(255,255,255,0.6);
+	border:1px solid transparent;
+	transition: background-color 0.5s ease;
+	margin:6px 0;
+	line-height:30px;
+}
+
+div.operationsFrame ul li span.operation {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display:block;
+	margin-right:50px;
+	padding-left:6px;
+}
+
+div.operationsFrame ul li.active {
+	border:1px dotted white;
+	border-left:3px solid white;
+	background-color:rgba(255,255,255,0.3);
+}
+
+div.operationsFrame ul li.active span.operation {
+	padding-left:4px;
+}
+
+div.operationsFrame ul li span.cost {
+	float:right;
+	color:#E00000;
+	padding-right:3px;
+}
+
+div.operationsFrame ul li span.cost.negative {
+	text-align:right;
+	color:#368a55;
+}
+
+div.operationsFrame ul li.impossible, div.operationsFrame ul li.impossible span.cost {
+	color:#5e5e5e;
 }
 
 div.effectsFrame {

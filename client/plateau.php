@@ -10,18 +10,23 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 		</svg>
 	</div>
 
-	<div class="row">
-		<div id="header">
-			<p>&nbsp;</p>
-		</div>
+	<div id="history">
+		<ul>
+			<li ng-repeat="msg in game.history.data">
+				<span class="date">{{msg.time}}</span>
+				<span ng-bind-html="msg.content | html"></span>
+			</li>
+		</ul>
 	</div>
+
+	<div id="front"></div>
 
 	<div class="row full-width">
 
 		<div class="large-2 columns" id="mypan">
 			<div class="mypanel mapel">
 			<div ng-show="currentPhase.name == 'jeu'">
-				<h2>Action en cours</h2>
+				<h2>Actions</h2>
 
 				<!-- Who's playing on what -->
 				<div class="currentAction" ng-bind-html="game.currentPlayDescription | html"></div>
@@ -47,7 +52,15 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 				<div class="selectOperation" ng-show="game.choseOperation">
 					<div class="operationsFrame">
 						<ul>
-							<li ng-click="game.setSelectedOperation(id)" ng-class="{active: game.selectedOperation.id == id}" ng-repeat="id in game.currentOperations">{{game.operations.get(id).name}} ({{game.operations.get(id).getCost(game.getOwnerOf(game.concernedTerritory).ideology.id)}} $)</li>
+							<li
+									ng-click="game.setSelectedOperation(id)"
+									ng-class="{active: game.selectedOperation.id == id}"
+									ng-repeat="id in game.currentOperations">
+								<span class="cost" ng-class="{'negative': game.operations.get(id).getCost(game.getOwnerOf(game.concernedTerritory).ideology.id) <= 0}">
+									${{game.operations.get(id).getCost(game.getOwnerOf(game.concernedTerritory).ideology.id)}}
+								</span>
+								<span class="operation">{{game.operations.get(id).name}}</span>
+							</li>
 						</ul>
 					</div>
 
@@ -56,37 +69,32 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 							<button ng-click="trigger('sendOperation', game.selectedOperation.id)">Valider</button>
 						</p>
 
-						<h3>{{game.selectedOperation.name}}</h3>
-						<span>{{game.selectedOperation.getCost(game.getCurrentPlayer().ideology.id)}} $</span>
-						<span>{{game.selectedOperation.desc}}</span>
+						<div class="operationSimulation">
+							<h3>{{game.selectedOperation.name}}</h3>
+							<span>{{game.selectedOperation.getCost(game.getCurrentPlayer().ideology.id)}} $</span>
+							<span>{{game.selectedOperation.desc}}</span>
 
-						<div ng-hide="game.currentSimulation.changeOwnership && game.getOwnerOf(game.concernedTerritory) != game.getMe()">
-							<ul class="barcharts currentSimulation">
-								<li ng-repeat="gauge in game.currentSimulation.gauges.array">
-									<span ng-style="{'height':gauge.currentLevel*100+'%', 'background-color':gauge.getHealthColor().css()}"></span>
-									<span ng-style="{'height':gauge.optimalLevel*100+'%'}" class="optimal"></span>
-									<span class="number">{{gauge.currentLevel*100 | number:0}} %</span>
-									<span class="legend" ng-class="'icon-jauge-'+gauge.slug"></span>
-								</li>
-							</ul>
+							<div ng-hide="game.currentSimulation.changeOwnership && game.getOwnerOf(game.concernedTerritory) != game.getMe()">
+								<ul class="barcharts currentSimulation">
+									<li ng-repeat="gauge in game.currentSimulation.gauges.array">
+										<span ng-style="{'height':gauge.currentLevel*100+'%', 'background-color':gauge.getHealthColor().css()}"></span>
+										<span ng-style="{'height':gauge.optimalLevel*100+'%'}" class="optimal"></span>
+										<span class="number">{{gauge.currentLevel*100 | number:0}} %</span>
+										<span class="legend" ng-class="'icon-jauge-'+gauge.slug"></span>
+									</li>
+								</ul>
 
-							<p>Stabilité : {{game.currentSimulation.evolution}} %</p>
-						</div>
+								<p>Stabilité : {{game.currentSimulation.evolution}} %</p>
+							</div>
 
-						<div ng-show="game.currentSimulation.changeOwnership">
-							Le territoire basculera sous votre égide !
+							<div ng-show="game.currentSimulation.changeOwnership && game.getOwnerOf(game.concernedTerritory) != game.getMe()">
+								Le territoire basculera sous votre égide !
+							</div>
 						</div>
 					</div>
-
-
-					<!-- affichage des effets appliqués (via matrice JSON obtenue en début de partie) -->
 				</div>
 
-				<div id="history" style="display:none;">
-					<ul>
-						<li ng-repeat="msg in game.history.data" title="{{msg.time}}"><span ng-bind-html="msg.content | html"></span> </li>
-					</ul>
-				</div>
+
 			</div>
 			</div>
 		</div>
