@@ -12,7 +12,6 @@ function entete($titre) {
 		<link rel="stylesheet" href="assets/stylesheets/design.css" />
 		<link rel="stylesheet" href="assets/stylesheets/foundation.min.css" />
 		<link rel="stylesheet" href="assets/stylesheets/fonts.css" />
-		<link href="//fonts.googleapis.com/css?family=Cabin:700|Electrolize" rel="stylesheet" type="text/css" />
 
 		<script src="assets/javascripts/vendors/jquery/jquery.min.js"></script>
 	</head>

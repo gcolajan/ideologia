@@ -1,3 +1,8 @@
+@font-face {
+	font-family: "Electrolize";
+	src: url('fonts/Electrolize-Regular.ttf');
+}
+
 body {
 	font-family:Verdana, Tahoma, Helvetica, Arial;
 	margin:0;
