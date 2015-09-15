@@ -19,14 +19,16 @@ class Territoire
 		@joueurPossesseur = joueur
 		@listeJauges = {}
 		for i in (1..3)
-			@listeJauges.merge!(i => Jauge.new(@joueurPossesseur.listeJaugesPourCopie[i.to_s]))
-		end
+			@listeJauges.merge!(i => Jauge.new(@joueurPossesseur.listeJaugesPourCopie[i]))
+    end
 	end
 	
 	# Permet d'appliquer une opération à un territoire
 	# Si c'est une action et que le joueur n'est pas le joueur possesseur on transfère le territoire
 	def recoitOperation(operation, joueur)
-		operation.listeEffet.each{|key, value| @listeJauges[key.to_i].appliquerEffet(value)}
+		operation.listeEffet.each{ |key, value|
+      @listeJauges[key.to_i].appliquerEffet(value)
+    }
 		if(calculerDecalage() > @seuil && joueur != @joueurPossesseur && joueur != nil)
 			transfert(joueur)
 		end
@@ -34,11 +36,19 @@ class Territoire
 	
 	# Permet le transfert d'un territoire à un autre joueur
 	def transfert(joueur)
-		puts @idTerritoire.to_s+" passe de "+@joueurPossesseur.numJoueur.to_s+" -> "+joueur.numJoueur.to_s
 		@joueurPossesseur.listeTerritoires.delete(self)
 		appropriationTerritoire(joueur)
 		joueur.listeTerritoires.push(self)
-	end
+  end
+
+  # Retourne un tableau avec l'état des jauges {1..3 => float}
+  def etatJauges()
+    etats = {}
+    (1..3).each { |i|
+      etats.merge!(i => @listeJauges[i].niveau)
+    }
+    return etats
+  end
 	
 	# Permet de calculer le décalage de chaque jauge
 	# Retourne le décalage total du territoire

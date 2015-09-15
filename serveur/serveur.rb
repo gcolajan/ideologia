@@ -30,14 +30,9 @@ authorizedTypes = %w(pong pseudo join des operation deco rejouer)
 
 # Méthode activé lors de la réception d'une communication signalant que le joueur quitte le salon
 def unjoin_method(client, params)
-	puts 'Executed unjoined method !'
+	$LOGGER.info 'Executed unjoined method !'
 	client.quitSalon
 end
-
-#Types de communication entrantes spéciales utilisant une méthode lors de leur réception
-specialTypes = {
-	'unjoin' => method(:unjoin_method)
-}
 
 EventMachine.run {
 	puts('Server is running at %d' % port)
@@ -47,42 +42,42 @@ EventMachine.run {
 
 		client = nil
 		communication = nil
-		
+    ping = nil
+
 		condVarAttenteDebut = nil
 
 		# Réaction du serveur lors de l'ouverture d'une connexion websocket
 		ws.onopen{
 			client = Client.new(listeSalons)
-			communication = Communication.new(ws, client)
-			communication.setAuthorizedTypes(authorizedTypes)
-			communication.setSpecialTypes(specialTypes)
+			communication = Communication.new(ws, client, authorizedTypes)
+      communication.addAsync('unjoin', method(:unjoin_method))
 
-			# On commence le ping du joueur
-			communication.startPing
-
-			client.com = communication
+      client.com = communication
+      client.launchThread
 
 			nbClients += 1
-			puts 'connexion acceptee'
-			puts ">>> Clients = #{nbClients}"
+      $LOGGER.info ">>> #{nbClients} client(s)"
 
-			client.launchThread
-		}
+      # On commence le ping du joueur
+      ping = EventMachine.add_periodic_timer( $INTERVALLE_PING_SALON ) { ws.ping }
+    }
 
 		# Réaction du serveur sur fermeture de la websocket
-		ws.onclose {
-			nbClients -= 1
-			puts 'Connection closed'
-			puts "<<< Clients = #{nbClients}"
+		ws.onclose { |params|
+      $LOGGER.debug params
 
-			puts ws.to_s
+			nbClients -= 1
+      $LOGGER.info "<<< #{nbClients} client(s)"
+
+			$LOGGER.info ws.to_s
 			# Si le client est encore dans un salon on le déconnecte
 			unless client.salon.nil?
-				client.salon.deconnexionJoueur(client)
+				client.salon.deconnexionJoueur(client, code=params[:code])
 			end
 
-			# On tue son thread
+			# On tue ses threads
 			client.stopThread
+      ping.cancel
 		}
 
 		# Réaction du serveur sur réception d'un message de la websocket
@@ -92,17 +87,16 @@ EventMachine.run {
 			if test['type']  == 'deco'
 				condVarAttenteDebut.signal
 				client.salon.deconnexionJoueur(client)
-			end
-
-			# On traite le message
-			communication.filterReception(msg)
+      else
+        # On traite le message
+        communication.incomingMessage(msg)
+      end
 		}
 
 		#Réaction du serveur en cas d'erreur
 		ws.onerror { |error|
-			puts "websockets error: #{error}"
-			puts error.backtrace
+      $LOGGER.error "websockets error: #{error}"
+      $LOGGER.error error.backtrace
 		}
-		
 	end
 }

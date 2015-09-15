@@ -11,24 +11,24 @@ class ListeSalon
 	end
 
 	def selection(client)
-		begin
-			client.com.send("salons", getListToCommunicate)
-			indexSalon = client.com.receive('join')
 
-			# Si le salon n'existe pas, une exception est levé
-			# Client se débrouille pour notifier le salon de sa venue
-			client.salon = salonAt(indexSalon)
+    salon = nil
+    while salon.nil?
+      client.com.send("salons", getListToCommunicate)
+      idSalon = client.com.receive('join').to_i
+      selectedSalon = salonAt(idSalon)
 
-			if client.salon.full?
-				@listeSalon << Salon.new
-			end
-		rescue => e
-			puts e # Salon does not exist
-			retry
-		end
+      @mutex.synchronize {
+        unless selectedSalon.full?
+          client.com.send('joined')
+          client.com.emitPhase('attente')
+          salon = selectedSalon
+          salon.addPlayer(client)
+        end
+      }
+    end
 
-		client.com.send('joined')
-		puts 'Confirmation "join" envoyee'
+    return salon
 	end
 
 	def getNonEmptySalon

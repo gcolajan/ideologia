@@ -2,3 +2,8 @@
 ConnexionSQL.rb
 connexionSQL.php
 conf.rb
+*.log
+.idea
+serveur/logs
+*.concat.js
+

@@ -1,15 +1,23 @@
 // Idéologies
-function Ideology(name, color) {
+function Ideology(id, name, slug, playerName, color, gaugesSet, confGauges) {
+	this.id = id;
 	this.name = name;
-	this.color = color;
+	this.slug = slug;
+	this.playerName = playerName;
+	this.color = new Color(color);
+	this.optimalGauges = new Set();
 	this.operations = [];
 	this.events = [];
 
-	this.getName = function() {
-		return this.name;
-	}.bind(this);
+	for (var id in confGauges)
+		this.optimalGauges.insert(id, gaugesSet.get(id).cloneAndConfig(confGauges[id]))
 
-	this.getColor = function() {
-		return this.color;
-	}.bind(this);
+	this.getNewGauges = function() {
+		var gauges = new Set();
+
+		for (var id in this.optimalGauges.array)
+			gauges.insert(id, this.optimalGauges.get(id).clone());
+
+		return gauges;
+	}
 }

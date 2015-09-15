@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 class Client
 
 	attr_accessor :com
@@ -20,22 +18,12 @@ class Client
 		}
 	end
 
-	def salon=(salon)
-		unless @salon.nil?
-			puts "Client could have change room without notify him!"
-		end
-
-		salon.join(self)
-
-		@salon = salon
-	end
-
 	def quitSalon
 		unless @salon.nil?
 			# Je notifie le salon que je m'en vais
 			@salon.deconnexionJoueur(self)
 
-			# Je me déréfence
+			# Je me dé-référence
 			@salon = nil
 
 			# Je libère le verroux lié à mon attente de début de partie
@@ -64,8 +52,11 @@ class Client
 	def launchThread
 		@mainThread = Thread.new do
 
+      @com.emitPhase('introduction')
+
 			# Recuperation du pseudo
 			@pseudo = @com.receive('pseudo')
+
 
 			puts "#{@pseudo} vient de se connecter"
 			begin
@@ -73,6 +64,14 @@ class Client
 					# On fait choisir un salon 
 					puts "#{@pseudo} est entrain de choisir un salon"
 					@listeSalons.selection(self)
+
+			$LOGGER.info "#{@pseudo} vient de se connecter"
+
+			begin
+        @com.emitPhase('salons')
+
+				# On fait choisir un salon
+				@salon = @listeSalons.selection(self)
 
 					# Test si la partie n'est pas commencée afin d'endormir le client si besoin
 					if @salon.full?
@@ -88,20 +87,31 @@ class Client
 					# Au réveil, je vérifie que le client ne m'a pas réveillé pour changer de salon
 				end while (@salon.nil?)
 
+<<<<<<< HEAD
 				# On initialise tout un tas de variables pour pouvoir démarrer la partie
 				joueur = @salon.partie.recupererInstanceJoueur(self.num)
+=======
+			joueur.definirPseudo(@pseudo)
+			# À reprendre pour transmettre client et pas les éléments séparément
+			gestionJoueur = GestionJoueur.new(joueur, @com, @salon)
+>>>>>>> 89b0f76cc87070aacc62a5e26620023030d07b64
 
 				joueur.definirPseudo(@pseudo)
 				# À reprendre pour transmettre client et pas les éléments séparément
 				gestionJoueur = GestionJoueur.new(@com, @salon.partie, joueur, @salon)
 
+<<<<<<< HEAD
 				# Le joueur de la partie connait l'instance le gérant
 				joueur.obtenirInstanceGestionJoueur(gestionJoueur)
 
 
+=======
+			@com.emitPhase('jeu')
+>>>>>>> 89b0f76cc87070aacc62a5e26620023030d07b64
 
 				puts 'Debut partie'
 
+<<<<<<< HEAD
 				# Préparation du client pour le début de partie
 
 				puts 'Recuperation des partenaires'
@@ -124,6 +134,21 @@ class Client
 					@com.close
 				end
 			end
+=======
+      # On envoie une synthèse des personnes participant et les idéologies associées
+      @com.send('partenaires', @salon.partie.obtenirTableauPartenaires)
+
+			# Gestion du joueur durant toute la partie
+      while @salon.partie.estDemarree
+			  gestionJoueur.newTurn
+      end
+		
+			# Envoi des scores finaux au client
+			@com.send('score', @salon.partie.obtenirScores)
+
+			# On ferme la ws
+			@com.close(code=4000)
+>>>>>>> 89b0f76cc87070aacc62a5e26620023030d07b64
 		end
 	end
 

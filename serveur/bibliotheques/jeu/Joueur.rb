@@ -78,23 +78,13 @@ class Joueur
 	# Permet de créer les jauges modèles du joueur suivant la base de données
 	# Retourne un dictionnaire contenant les trois jauges
 	def definirJauges
-		begin
-			jauges = {}
-			dbh = Mysql.new($host, $user, $mdp, $bdd)
-			res = dbh.query("SELECT caract_jauge_id, caract_coeff_diminution, caract_coeff_augmentation, caract_ideal
-							FROM ideo_jauge_caracteristique
-							WHERE caract_ideo_id = "+@ideologie.numero.to_s+"
-							ORDER BY caract_jauge_id")
-			while(data = res.fetch_hash())
-				jauge = Jauge.new(data['caract_ideal'].to_f*100, data['caract_coeff_augmentation'].to_f, data['caract_coeff_diminution'].to_f)
-				jauges.merge!(data['caract_jauge_id'] => jauge)
-			end
-		rescue Mysql::Error => e
-			puts e
-		ensure
-			dbh.close if dbh
-		end
-		return jauges
+    jauges = {}
+
+    Datastore.instance.getJaugesInfo(@ideologie.numero).each { |id, info|
+      jauges.merge!(id.to_i => Jauge.new(info['ideal']*100, info['plus'], info['minus']))
+    }
+
+    return jauges
 	end
 	
 	# Permet de synthétiser les jauges du joueur

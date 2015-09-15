@@ -1,5 +1,7 @@
-function Event(name, desc, target, action) {
+function Event(id, name, desc, target, effects) {
+	this.id = id;
 	this.name = name;
 	this.desc = desc;
-	this.action = action;
+	this.target = target; // TODO: make as a player list
+	this.effects = effects;
 }
