@@ -68,55 +68,62 @@ class Client
 			@pseudo = @com.receive('pseudo')
 
 			puts "#{@pseudo} vient de se connecter"
-
 			begin
-				# On fait choisir un salon 
-				puts "#{@pseudo} est entrain de choisir un salon"
-				@listeSalons.selection(self)
+				begin
+					# On fait choisir un salon 
+					puts "#{@pseudo} est entrain de choisir un salon"
+					@listeSalons.selection(self)
 
-				# Test si la partie n'est pas commencée afin d'endormir le client si besoin
-				if @salon.full?
-					# On réveille les amis
-					puts "WAKE UP!"
-					@salon.wakeup()
+					# Test si la partie n'est pas commencée afin d'endormir le client si besoin
+					if @salon.full?
+						# On réveille les amis
+						puts "WAKE UP!"
+						@salon.wakeup()
+					else
+						puts "#{@pseudo} (#{@num}) commence à attendre"
+						wait()
+						puts "#{@pseudo} est réveillé"
+					end
+
+					# Au réveil, je vérifie que le client ne m'a pas réveillé pour changer de salon
+				end while (@salon.nil?)
+
+				# On initialise tout un tas de variables pour pouvoir démarrer la partie
+				joueur = @salon.partie.recupererInstanceJoueur(self.num)
+
+				joueur.definirPseudo(@pseudo)
+				# À reprendre pour transmettre client et pas les éléments séparément
+				gestionJoueur = GestionJoueur.new(@com, @salon.partie, joueur, @salon)
+
+				# Le joueur de la partie connait l'instance le gérant
+				joueur.obtenirInstanceGestionJoueur(gestionJoueur)
+
+
+
+				puts 'Debut partie'
+
+				# Préparation du client pour le début de partie
+
+				puts 'Recuperation des partenaires'
+				gestionJoueur.obtenirPartenaires
+
+				# Gestion du joueur durant toute la partie
+				puts 'Debut tour'
+				gestionJoueur.tourJoueur
+			
+				# Envoi des scores finaux au client
+				puts 'envoi score'
+				@com.send('score', @salon.partie.obtenirScores)
+
+				#ici on doit demander au joueur si il veut rejouer
+				@com.send('rejouer')
+				if(@com.receive('rejouer'))
+					retry
 				else
-					puts "#{@pseudo} (#{@num}) commence à attendre"
-					wait()
-					puts "#{@pseudo} est réveillé"
+					# On ferme la ws
+					@com.close
 				end
-
-				# Au réveil, je vérifie que le client ne m'a pas réveillé pour changer de salon
-			end while (@salon.nil?)
-
-			# On initialise tout un tas de variables pour pouvoir démarrer la partie
-			joueur = @salon.partie.recupererInstanceJoueur(self.num)
-
-			joueur.definirPseudo(@pseudo)
-			# À reprendre pour transmettre client et pas les éléments séparément
-			gestionJoueur = GestionJoueur.new(@com, @salon.partie, joueur, @salon)
-
-			# Le joueur de la partie connait l'instance le gérant
-			joueur.obtenirInstanceGestionJoueur(gestionJoueur)
-
-
-
-			puts 'Debut partie'
-
-			# Préparation du client pour le début de partie
-
-			puts 'Recuperation des partenaires'
-			gestionJoueur.obtenirPartenaires
-
-			# Gestion du joueur durant toute la partie
-			puts 'Debut tour'
-			gestionJoueur.tourJoueur
-		
-			# Envoi des scores finaux au client
-			puts 'envoi score'
-			@com.send('score', @salon.partie.obtenirScores)
-
-			# On ferme la ws
-			@com.close
+			end
 		end
 	end
 

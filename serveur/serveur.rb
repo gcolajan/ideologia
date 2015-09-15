@@ -26,7 +26,7 @@ listeSalons = ListeSalon.new
 nbClients = 0
 
 # Types de communication entrantes autorisées
-authorizedTypes = %w(pong pseudo join des operation deco)
+authorizedTypes = %w(pong pseudo join des operation deco rejouer)
 
 # Méthode activé lors de la réception d'une communication signalant que le joueur quitte le salon
 def unjoin_method(client, params)
