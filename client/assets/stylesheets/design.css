@@ -53,6 +53,7 @@ input, button {
 	font-size:120%;
 	padding:10px 15px;
 	border:1px solid #666666;
+	font-family: Electrolize;
 }
 
 input.button, button.button {
@@ -61,7 +62,6 @@ input.button, button.button {
 	font-size:120%;
 	background:#282828;
 	color:white;
-	font-family: Electrolize;
 	text-transform: uppercase;
 }
 
@@ -83,6 +83,14 @@ div#popunder > div {
 	background-color:rgba(255,255,255,0.6);
 	width:30%;
 	min-width:400px;
+}
+
+div#popunder.intro {
+	padding-top:8vh;
+}
+
+div#popunder.intro > div {
+	width:45%;
 }
 
 div#popunder > div.nobg {
@@ -245,6 +253,25 @@ div#rooms div.details input {
 	float:right;
 }
 
+ul.waitingWith {
+	list-style-type: none;
+	font-family:Electrolize;
+
+}
+
+ul.waitingWith li {
+	background:#222222;
+	border:1px solid white;
+	padding:5px;
+	margin:5px;
+	color:white;
+	font-weight: bold;
+	font-size:120%;
+	width:40%;
+	display:inline-block;
+
+}
+
 /* Panel: left+right */
 
 div.panel {
@@ -342,6 +369,15 @@ ul.barcharts li span.legend {
 
 #header h1 {
 	padding-top:50px;
+	font-size:5em;
+	color:rgba(255,255,255,0.8);
+	font-family: Electrolize;
+	font-variant: small-caps;
+}
+
+#intro {
+	width:80%;
+
 }
 
 #history {
@@ -733,6 +769,13 @@ div.operationsFrame ul li.impossible, div.operationsFrame ul li.impossible span.
 
 div.effectsFrame {
 	margin-top:20px;
+}
+
+div.operationSimulation {
+	border:1px solid white;
+	background:rgba(255,255,255,0.7);
+	padding:5px;
+	text-align:center;
 }
 
 div.hoveredTerritory {

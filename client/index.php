@@ -7,8 +7,8 @@ entete('Ideologia');
 		<h1>Ideologia</h1>
 	</div>
 
-	<div id="startup" class="intro">
-		<div class="conteneur">
+	<div id="popunder" class="intro">
+		<div>
 			<p>Ideologia est un projet initié par 8 étudiants.</p>
 
 			<p>Nous sommes actuellement deux développeurs sur ce projet, les principes sont troubles mais nous tâcherons de vous les fournir sous peu.</p>
@@ -29,7 +29,6 @@ entete('Ideologia');
 				<input type="submit" value="Jouer !" class="button"  />
 			</form>
 		</div>
-
 	</div>
 
 <?php

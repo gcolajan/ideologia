@@ -31,7 +31,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 	</div>
 
 	<!-- Bottom bar -->
-	<div id="bottombar">
+	<div id="bottombar" ng-show="currentPhase.name == 'jeu'">
 
 		<div id="bottomCharts">
 			<div class="globalCharts">
@@ -106,16 +106,9 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			</div>
 
 			<div ng-show="game.selectedOperation !== undefined">
-				<p class="text-center">
-					<button ng-click="trigger('sendOperation', game.selectedOperation.id)">Valider</button>
-				</p>
-
 				<div class="operationSimulation">
-					<h3>{{game.selectedOperation.name}}</h3>
-					<span>{{game.selectedOperation.getCost(game.getCurrentPlayer().ideology.id)}} $</span>
-					<span>{{game.selectedOperation.desc}}</span>
 
-					<div ng-hide="game.currentSimulations.get(game.selectedOperation.id).changeOwnership && game.getOwnerOf(game.concernedTerritory) != game.getMe()">
+					<div ng-hide="game.currentSimulations.get(game.selectedOperation.id).changeOwnership">
 						<ul class="barcharts currentSimulation">
 							<li ng-repeat="gauge in game.currentSimulations.get(game.selectedOperation.id).gauges.array">
 								<span ng-style="{'height':gauge.currentLevel*100+'%', 'background-color':gauge.getHealthColor().css()}"></span>
@@ -128,9 +121,20 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 						<p>Stabilité : {{game.currentSimulations.get(game.selectedOperation.id).evolution}} %</p>
 					</div>
 
-					<div ng-show="game.currentSimulation.changeOwnership && game.getOwnerOf(game.concernedTerritory) != game.getMe()">
-						Le territoire basculera sous votre égide !
+					<span>{{game.selectedOperation.desc}}</span>
+
+
+					<div ng-show="game.currentSimulations.get(game.selectedOperation.id).changeOwnership">
+						<p>
+							<strong>
+								Le territoire est suffisamment faible pour basculer !
+							</strong>
+						</p>
 					</div>
+
+					<p class="text-center">
+						<button ng-click="trigger('sendOperation', game.selectedOperation.id)">Valider</button>
+					</p>
 				</div>
 			</div>
 		</div>
