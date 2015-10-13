@@ -1,5 +1,7 @@
 // Stockage de l'état de la partie
 function Game() {
+	this.started = false;
+
 	this.players = [];
 	this.territories = new Collection();
 	this.gauges = new Set();
@@ -7,7 +9,7 @@ function Game() {
 	this.currentPlayer = undefined;
 	this.me = undefined;
 
-	this.history = new History(8);
+	this.history = new History(100);
 
 	this.events = new Set();
 	this.operations = new Set();
@@ -16,11 +18,10 @@ function Game() {
 	this.concernedTerritory = undefined;
 	this.lastConcernedTerritory = undefined;
 
-	this.selectedOperation = undefined;
-	this.currentSimulation = undefined;
-
 	this.choseOperation = false;
-	this.currentOperations = [];
+	this.selectedOperation = undefined;
+	this.currentOperations = new Set();
+	this.currentSimulations = new Set();
 
 	var that = this; // scope of "this"
 	var $http = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('$http');
@@ -164,8 +165,32 @@ function Game() {
 		return this.territories.get(position, 'position');
 	}.bind(this);
 
+	/**
+	 * Create two list : operations and current territory affected by the operation
+	 * @type {function(this:Game)}
+	 */
 	this.makeUserChose = function(operationsId) {
 		this.currentOperations = operationsId;
+
+		this.currentOperations = new Set();
+		this.currentSimulations = new Set();
+
+		for (var i in operationsId)
+		{
+			var id = operationsId[i];
+			var op = this.operations.get(id);
+			var sim = this.concernedTerritory.getSimulation(
+				op.getEffect(
+					this.getOwnerOf(
+						this.concernedTerritory
+					).ideology.id
+				)
+			);
+
+			this.currentOperations.insert(id, op);
+			this.currentSimulations.insert(id, sim);
+		}
+
 		this.choseOperation = true;
 	}.bind(this);
 
@@ -180,15 +205,8 @@ function Game() {
 
 	}.bind(this);
 
-	this.setSelectedOperation = function(id) {
-		this.selectedOperation = this.operations.get(id);
-		this.currentSimulation = this.concernedTerritory.getSimulation(
-			this.selectedOperation.getEffect(
-				this.getOwnerOf(
-					this.concernedTerritory
-				).ideology.id
-			)
-		);
+	this.setSelectedOperation = function(operation) {
+		this.selectedOperation = operation;
 	}
 }
 

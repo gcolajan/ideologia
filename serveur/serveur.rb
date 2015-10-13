@@ -21,76 +21,31 @@ elsif ARGV.size == 2
 	port = ARGV[1].to_i
 end
 
-listeSalons = ListeSalon.new
-
-nbClients = 0
-
-# Types de communication entrantes autorisées
-authorizedTypes = %w(pong pseudo join des operation deco rejouer)
-
-# Méthode activé lors de la réception d'une communication signalant que le joueur quitte le salon
-def unjoin_method(client, params)
-	$LOGGER.info 'Executed unjoined method !'
-	client.quitSalon
-end
 
 EventMachine.run {
 	puts('Server is running at %d' % port)
 
-
 	EventMachine::WebSocket.start(:host => adresseServeur, :port => port, :debug => false) do |ws| # ecoute des connexions
 
 		client = nil
-		communication = nil
-    ping = nil
-
-		condVarAttenteDebut = nil
 
 		# Réaction du serveur lors de l'ouverture d'une connexion websocket
 		ws.onopen{
-			client = Client.new(listeSalons)
-			communication = Communication.new(ws, client, authorizedTypes)
-      communication.addAsync('unjoin', method(:unjoin_method))
-
-      client.com = communication
-      client.launchThread
-
-			nbClients += 1
-      $LOGGER.info ">>> #{nbClients} client(s)"
-
-      # On commence le ping du joueur
-      ping = EventMachine.add_periodic_timer( $INTERVALLE_PING_SALON ) { ws.ping }
+      client = ServerKnowledge.instance.createClient(ws)
+      client.init
     }
 
 		# Réaction du serveur sur fermeture de la websocket
 		ws.onclose { |params|
       $LOGGER.debug params
 
-			nbClients -= 1
-      $LOGGER.info "<<< #{nbClients} client(s)"
-
-			$LOGGER.info ws.to_s
-			# Si le client est encore dans un salon on le déconnecte
-			unless client.salon.nil?
-				client.salon.deconnexionJoueur(client, code=params[:code])
-			end
-
-			# On tue ses threads
-			client.stopThread
-      ping.cancel
+      ServerKnowledge.instance.destroyClient(client, code=params[:code])
+      $LOGGER.info ws.to_s
 		}
 
 		# Réaction du serveur sur réception d'un message de la websocket
 		ws.onmessage { |msg|
-			test = JSON.parse(msg)
-			# Si on a un message de deco on réveille le joueur et on le déconnecte du salon
-			if test['type']  == 'deco'
-				condVarAttenteDebut.signal
-				client.salon.deconnexionJoueur(client)
-      else
-        # On traite le message
-        communication.incomingMessage(msg)
-      end
+      client.com.incomingMessage(msg)
 		}
 
 		#Réaction du serveur en cas d'erreur

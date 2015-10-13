@@ -1,11 +1,12 @@
-<h1>Salons</h1>
-
-<div id="rooms">
-	<div ng-repeat="(offset, nbplayers) in salons">
-		<h2>Salon #{{offset}}</h2>
-		<div class="row collapse">
-			<div class="columns small-8"><p class="room-detail">{{nbplayers}} joueur(s)</p></div> <!-- ((salon == 0) ? 'Aucun' : salon)+' joueur'+((salon>1)?'s') -->
-			<div class="columns small-4"><input type="button" value="Rejoindre !" class="room-detail" ng-click="trigger('join', offset)" /></div>
+<div class="salons nobg">
+	<div id="rooms">
+		<div ng-repeat="(offset, nbplayers) in salons">
+			<h2>Salon #{{offset}}</h2>
+			<div class="details">
+				<span>{{nbplayers}} joueur(s)</span>
+				<input type="button" value="Rejoindre !" class="room-detail" ng-click="trigger('join', offset)" />
+			</div>
 		</div>
 	</div>
 </div>
+

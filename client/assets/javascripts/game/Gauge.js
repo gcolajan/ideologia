@@ -39,8 +39,6 @@ function Gauge(name, slug, level, minus, plus) {
 	}.bind(this);
 
 	this.applyEffect = function(relative, absolute) {
-		console.log("*"+relative+"  +"+absolute+" ("+this.name+")");
-
 		var level = Math.round(((this.currentLevel * relative) + (absolute / 100.0))*100)/100.0;
 
 		// Application of the coefficients

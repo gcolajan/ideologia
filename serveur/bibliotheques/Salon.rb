@@ -4,6 +4,7 @@ class Salon
 	attr_reader :partie
 	attr_reader :nbJoueur
 	attr_reader :condVariable
+	attr_writer :demo
 
 	class FullSalonException < StandardError
 	end
@@ -19,6 +20,9 @@ class Salon
 
 		@demarree = false
 		@nbJoueur = 0
+
+		# Demo mode, false by default
+		@demo = false
 
 	end
 
@@ -46,6 +50,10 @@ class Salon
 
 			@nbJoueur -= 1
 		}
+	end
+
+	def isDemo?
+		return @demo
 	end
 
 	def full?

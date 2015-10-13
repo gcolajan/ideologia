@@ -17,3 +17,8 @@ attentePhase.userActions.insert('changeRoom', function($scope, args) {
     ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
     ws.emit('unjoin');
 });
+
+attentePhase.userActions.insert('goDemo', function($scope, args) {
+    ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
+    ws.emit('demo');
+});

@@ -5,12 +5,14 @@ require 'logger'
 
 $LOAD_PATH << File.dirname(__FILE__) + "/bibliotheques"
 
+require 'ServerKnowledge'
 require 'Client'
 require 'ListeSalon'
 require 'Salon'
 require 'Partie'
 require 'GestionJoueur'
 require 'Communication'
+require 'MockCommunication'
 require 'Datastore'
 
 $FONDS_INITIAUX = 2500 # Argent au début de la partie

@@ -3,19 +3,22 @@
 	src: url('fonts/Electrolize-Regular.ttf');
 }
 
-body {
-	font-family:Verdana, Tahoma, Helvetica, Arial;
+html,body {
 	margin:0;
 	padding:0;
 	height:100%;
-	/*background:url('../images/fond.png') !important;
-	background-size:cover !important;*/
-	background:url('../images/fond.jpg') !important;
+}
+
+body {
+	font-family: sans-serif;
+	background:url('../images/fond.jpg') fixed;
 	background-size:cover;
 }
 
-h1 {
+h1, h2 {
 	text-align:center;
+	font-family: Electrolize;
+	font-variant: small-caps;
 }
 
 .bold {
@@ -28,9 +31,253 @@ h1 {
 	text-overflow: ellipsis;
 }
 
-/*
-BARCHATS
-*/
+.text-center {
+	text-align:center;
+}
+
+.sep {
+	clear:both;
+}
+
+form.block input {
+	margin:0;
+	width:100%;
+	display:inline-block;
+}
+
+input[type="text"] {
+	box-sizing: border-box;
+}
+
+input, button {
+	font-size:120%;
+	padding:10px 15px;
+	border:1px solid #666666;
+}
+
+input.button, button.button {
+	border:none;
+	padding:10px 15px;
+	font-size:120%;
+	background:#282828;
+	color:white;
+	font-family: Electrolize;
+	text-transform: uppercase;
+}
+
+
+/* Popunder */
+
+div#popunder {
+	text-align:center;
+	padding-top:25vh;
+	position:fixed;
+	width:100%;
+	z-index:10;
+}
+
+div#popunder > div {
+	text-align:left;
+	margin:auto;
+	padding:32px;
+	background-color:rgba(255,255,255,0.6);
+	width:30%;
+	min-width:400px;
+}
+
+div#popunder > div.nobg {
+	background-color:transparent;
+}
+
+div#popunder > div > h1 {
+	color:#161616;
+	font-size:2.2em;
+	text-transform: uppercase;
+}
+
+/* Top bar */
+
+div#topbar {
+	position:fixed;
+	top:0;
+	width:100%;
+	background:#222222;
+	padding:0;
+}
+
+div#topbar h1 {
+	font-family: Electrolize;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size:2rem;
+	line-height:2.5rem;
+	margin:0;
+	padding:0;
+	padding-left:5px;
+	color:rgba(255,255,255,0.8);
+	text-align:left;
+	display:inline-block;
+}
+
+div#topbar h2 {
+	font-size: 1.2rem;
+	display:inline;
+	padding-left:10px;
+	line-height: normal;
+}
+
+div#topbar ul {
+	margin:0;
+	padding:0;
+	list-style-type: none;
+	width:100%;
+}
+
+div#topbar ul li {
+	margin:0;
+	padding:0;
+	display:inline-block;
+	width:33%;
+	text-align:center;
+	color:white;
+}
+
+div#topbar ul li:first-child {
+	text-align:left;
+}
+
+div#topbar ul li:last-child {
+	text-align:right;
+}
+
+/* Bottom bar */
+
+div#bottombar {
+	position:fixed;
+	bottom:0;
+	width:100%;
+	background:#222222;
+	padding:0;
+	color:white;
+}
+
+div#bottomCharts {
+	float:right;
+	width:810px;
+	height:60px;
+}
+
+div.globalCharts {
+	width:400px;
+	display:inline-block;
+}
+
+div.globalCharts h4 {
+	display:inline-block;
+	width:110px;
+	margin:0;
+	line-height:150%;
+	text-align:right;
+	font-family: Electrolize;
+	padding:0;
+	padding-top:5px;
+}
+
+div.globalCharts ul.global {
+	width:280px;
+	height:60px;
+	float:right;
+}
+
+/* Salons */
+div#rooms {
+	margin:0;
+	font-family: Electrolize;
+}
+
+div#rooms > div {
+	background:#222222;
+	color:white;
+	margin-bottom:30px;
+	clear:both;
+}
+
+div#rooms > div > h2 {
+	color:white;
+	font-size:1.5em;
+	margin:0;
+	text-transform: uppercase;
+	line-height:40px;
+	font-weight: normal;
+}
+
+div#rooms div.details {
+	display:block;
+	width:100%;
+	border:none;
+	line-height:40px;
+	height:40px;
+	margin:0;
+	clear:both;
+}
+
+div#rooms div.details span, div#rooms div.details input {
+	height:40px;
+	display:inline-block;
+}
+
+div#rooms div.details span {
+	background:white;
+	text-align:center;
+	font-size:120%;
+	color:black;
+	width:60%;
+	margin:0;
+	float:left;
+}
+
+div#rooms div.details input {
+	display:inline-block;
+	background-color:#008cba;
+	width:40%;
+	border:none;
+	margin:0;
+	float:right;
+}
+
+/* Panel: left+right */
+
+div.panel {
+	width:300px;
+	margin-top:40px;
+	padding:0 10px;
+}
+
+div.panel h2 {
+	margin:0 auto;
+	margin-top:20px;
+}
+
+div.left.panel {
+	float:left;
+}
+
+div.right.panel {
+	float:right;
+}
+
+/* Body */
+
+div.body {
+	position:fixed;
+	left:300px;
+	right:300px;
+	top:80px;
+}
+
+
+
+/* Barcharts */
 
 ul.barcharts {
 	margin:0;
@@ -38,6 +285,7 @@ ul.barcharts {
 	list-style-type: none;
 	height:120px;
 	display: flex;
+	color:white;
 }
 
 ul.barcharts li {
@@ -75,14 +323,13 @@ ul.barcharts li span.legend {
 	text-shadow: 0 0 1px black;
 }
 
+
+/* USED? */
+
+
 /*
 	CSS
 */
-
-.row.full-width {
-	width:99%;
-	max-width:99%;
-}
 
 #accueil {
 	text-align:center;
@@ -92,20 +339,6 @@ ul.barcharts li span.legend {
 	height:16px;
 }
 
-#map {
-	text-align:center;
-	padding:0;
-}
-
-#map div h1, #header h1 {
-	color:rgba(255,255,255,0.66);
-	text-align:center; margin:0;
-	padding:0;
-	text-transform: uppercase;
-	font-weight: bold;
-	font-family: Electrolize;
-	font-size:3.5rem;
-}
 
 #header h1 {
 	padding-top:50px;
@@ -113,27 +346,58 @@ ul.barcharts li span.legend {
 
 #history {
 	font-family: Electrolize;
-	font-size: 50%;
 	text-align:left;
-	position:fixed;
-	bottom:0;
-	z-index:-1;
 }
 
-#history ul {
-	list-style-type: none;
-	font-color:#666666;
-	margin:0;
+#history > div.date {
+	display:block;
+	text-align:center;
+	margin:5px 42px;
+	height:40px;
+	line-height: 40px;
+	color:white;
+	font-size:120%;
+}
+
+#history > div.dir {}
+
+#history > div.dir a {
+	display:block;
+	background:rgba(192,192,192,0.5);
+	border:1px solid rgba(192,192,192,0.8);
+
+	width:32px;
+	line-height:32px;
+	font-size:1.4em;
+
+	text-align:center;
+	border-radius:50%;
 	padding:0;
+	margin:5px;
+
+	text-decoration: none;
+	color:white;
+	font-weight: bold;
 }
 
-#history ul li {
-	line-height:20px;
+#history > div.next {
+	float:right;
 }
 
-#history ul li span.date:after {
-	content:"> ";
-	padding-right:12px;
+#history > div.prev {
+	float:left;
+}
+
+#history > div.msg {
+	display:block;
+	text-align:center;
+	line-height:160%;
+	font-size:90%;
+
+	height:100px;
+
+	border:1px solid white;
+	background:rgba(255,255,255,0.4);
 }
 
 .adversaires {
@@ -176,18 +440,17 @@ ul.barcharts li span.legend {
 	overflow: auto;
 }
 
-.mypanel h2 {
-	text-transform: uppercase;
-	font-weight: bold;
-	font-family: Electrolize;
-	font-size:1.2rem;
-	color:rgba(255,255,255,0.8);
-	text-align:center;
-}
 
 div.menuSep {
 	height:30px;
 	clear:both;
+}
+
+svg#svgmap {
+	position:fixed;
+	top:50%;
+	left:300px;
+	right:300px;
 }
 
 dl#plateau {
@@ -243,68 +506,12 @@ div#timer span {
 	display:inline-block;
 }
 
-div#startup {
-	position:absolute;
-	height:100%;
-	width:100%;
-	height:100%;
-	line-height: 100%;
-}
 
-div#startup div.conteneur {
-	position:absolute;
-	left:20%;
-	top:25%;
-	width:60%;
-	height:50%;
-
-	padding:30px;
-	background:rgba(255,255,255,0.8);
-	border:1px solid rgba(255,255,255,0.6);
-	overflow:auto;
-}
-
-div#startup.intro div.conteneur {
-	top:12%;
-}
-
-div#startup div.conteneur h1 {
-	color:#161616;
-	font-size:2.2em;
-}
 
 div#status {
 	color:red;
 	font-size:110%;
 	padding:20px;
-}
-
-div#rooms {
-	margin:0;
-}
-
-div#rooms>div {
-	background:#222222;
-	color:white;
-	margin-bottom:30px;
-}
-
-div#rooms div h2 {color:white; font-size:1.5em; margin:0; font-family:Electrolize; text-transform: uppercase; line-height:40px;}
-
-.room-detail {
-	width:100%;
-	border:none;
-	line-height:40px;
-	margin:0;
-}
-
-div#rooms div div p {
-	background:#BBBBBB;
-	color:black;
-}
-
-div#rooms div div input {
-	background:#008cba;
 }
 
 ul.territories {
@@ -373,21 +580,25 @@ ul.barcharts.stats li {
 ul.players {
 	list-style-type: none;
 	margin:0;
-	margin:auto;
-	width:320px;
-	margin-top:-5%;
+	padding:0;
 }
 
 ul.players li {
 	transition: background-color 0.5s ease;
-	padding: 8px;
 	display:inline-block;
-	width:50%;
+	text-align:center;
 	font-family: Electrolize;
+	width:180px;
+	padding:5px 2px;
+	border-top:3px solid black;
 }
 
 ul.players li.active {
 	background-color:rgba(255,255,255,0.4);
+}
+
+ul.players li.concerned {
+	border-color:white;
 }
 
 ul.players li i {
@@ -467,54 +678,53 @@ div.territoryFrame svg {
 }
 
 div.operationsFrame {
-	text-align:left;
 	color:#222222;
 	font-family: Electrolize;
-	font-size:90%;
 }
 
-div.operationsFrame ul {
-	list-style-type: none;
-	margin:0;
-	padding:0;
-}
-
-div.operationsFrame ul li {
+div.operationsFrame div.operation {
 	background-color:rgba(255,255,255,0.6);
 	border:1px solid transparent;
 	transition: background-color 0.5s ease;
-	margin:6px 0;
+	margin:5px 0;
+	padding:2px;
 	line-height:30px;
+	cursor: pointer;
 }
 
-div.operationsFrame ul li span.operation {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display:block;
-	margin-right:50px;
-	padding-left:6px;
-}
-
-div.operationsFrame ul li.active {
+div.operationsFrame div.operation.active {
 	border:1px dotted white;
 	border-left:3px solid white;
 	background-color:rgba(255,255,255,0.3);
+	padding-left:0px;
 }
 
-div.operationsFrame ul li.active span.operation {
-	padding-left:4px;
+div.operationsFrame div.operation h3 {
+	font-family: Electrolize;
+	font-size:1.1em;
+	font-variant:small-caps;
+	text-align:center;
+	padding:0;
+	margin:0;
 }
 
-div.operationsFrame ul li span.cost {
+div.operationsFrame div.operation div.descOp {
+	font-size:85%;
+	line-height:110%;
+}
+
+div.operationsFrame div.operation div span:first-child {
+	padding-left:3px;
+}
+
+div.operationsFramediv div span.negative {
+	color:#368a55;
+}
+
+div.operationsFrame div.operation div span:last-child {
 	float:right;
 	color:#E00000;
-	padding-right:3px;
-}
-
-div.operationsFrame ul li span.cost.negative {
-	text-align:right;
-	color:#368a55;
+	padding-left:3px;
 }
 
 div.operationsFrame ul li.impossible, div.operationsFrame ul li.impossible span.cost {
@@ -548,6 +758,7 @@ div.hoveredTerritory span.stability {
 	font-family: Electrolize;
 	text-shadow: 1px 1px 2px black;
 	font-size:0.9em;
+	color:white;
 }
 
 ul.hoveredTerrChart {

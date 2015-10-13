@@ -1,8 +1,14 @@
-<h1>Attente</h1>
+<div class="waiting">
+	<h1>Attente</h1>
 
-<div>
+
+	<p>Joueurs actuellement dans le salon :</p>
 	<ul>
 		<li ng-repeat="joueur in adversaires">{{joueur}}</li>
 	</ul>
-	<button ng-click="trigger('changeRoom')">Changer de salon</button>
+
+	<p class="text-center">
+		<button ng-click="trigger('changeRoom')">Changer de salon</button>
+		<button ng-click="trigger('goDemo')">Mode démonstration</button>
+	</p>
 </div>

@@ -4,7 +4,7 @@ class Communication
 		@ws         = ws
 		@client     = client
 		@data       = {}
-    @pingThread = nil
+    @ping       = nil
 
     # Reception stuff
     @sync = {} # Classical type, for linear exchanges
@@ -139,6 +139,18 @@ class Communication
     type = reception['type']
     data = reception['data']
 
+    # If this is a deconnection message
+
+    if type  == 'deco'
+      ServerKnowledge.instance.voluntaryDeconnection(@client)
+      return
+    end
+
+    if type == 'demo'
+      ServerKnowledge.instance.askingDemo(@client)
+      return
+    end
+
     # If the operation is unknown, we refuse it
     if not hasReceptionType?(type)
       $LOGGER.error "Reception unauthorized: #{msg}"
@@ -162,6 +174,16 @@ class Communication
       params = @async[type][1]
 
       block.call(@client, params)
+    end
+  end
+
+  def startPing
+    @ping = EventMachine.add_periodic_timer( $INTERVALLE_PING_SALON ) { @ws.ping }
+  end
+
+  def stopPing
+    unless @ping.nil?
+      @ping.cancel
     end
   end
 end

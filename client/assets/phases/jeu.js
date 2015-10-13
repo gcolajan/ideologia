@@ -3,6 +3,7 @@ var jeuPhase = new Phase('jeu',
     function(scope) {
     },
     function(scope) {
+        scope.game.started = true;
     },
     function(scope) {
     });
@@ -33,12 +34,8 @@ jeuPhase.operations.insert('joueurCourant', function($scope, currentPlayer) {
 jeuPhase.operations.insert('playersData', function($scope, data) {
     // When we receive an update about player's data, if we haven't chosen our operation, it's too late...
     $scope.game.choseOperation = false;
-    $scope.game.currentOperations = [];
-
-    // The choice/simulation is over
     $scope.game.selectedOperation = undefined;
-    $scope.game.currentSimulation = undefined;
-
+    $scope.game.currentOperations = new Set(); // Emptying the operations
 
     for (var i = 0 ; i < data.length ; ++i)
     {
@@ -62,7 +59,7 @@ jeuPhase.operations.insert('playersData', function($scope, data) {
 
                 // We give the territory to that player
                 player.addTerritory(territory)
-                $scope.game.history.add(territory.name+' : '+curPlayer.getColoured()+" => "+player.getColoured());
+                //$scope.game.history.add(territory.name+' : '+curPlayer.getColoured()+" => "+player.getColoured());
             }
 
             // Updating health of the territory
@@ -72,7 +69,7 @@ jeuPhase.operations.insert('playersData', function($scope, data) {
 });
 
 jeuPhase.operations.insert('evenement', function($scope, event) {
-    //console.log("Event has been encountered: "+event);
+    console.log("Event has been encountered: "+event);
 });
 
 jeuPhase.operations.insert('des', function($scope, des) {
@@ -130,10 +127,20 @@ jeuPhase.operations.insert('operations', function($scope, operations) {
 });
 
 jeuPhase.operations.insert('appliedOperation', function($scope, operationId) {
-    $scope.game.history.add(
-        '<span style="color:'+$scope.game.getOwnerOf($scope.game.concernedTerritory).ideology.color.css()+';">'+$scope.game.concernedTerritory.name+'</span> :' +
-        ' «&nbsp;'+$scope.game.operations.get(operationId, 'id').name+'&nbsp;» '+
-        $scope.game.getCurrentPlayer().getIconified()
+
+    var playerDest = $scope.game.getOwnerOf($scope.game.concernedTerritory);
+    var operation = $scope.game.operations.get(operationId, 'id');
+    var simulation = $scope.game.concernedTerritory.getSimulation(
+        operation.getEffect(playerDest.ideology.id)
+    );
+
+    $scope.game.history.addOperation(
+        $scope.game.getCurrentPlayer(),
+        playerDest,
+        operation,
+        $scope.game.concernedTerritory,
+        (simulation.evolution > 0 ? 1 : (simulation.evolution < 0 ? -1 : 0)),
+        simulation.changeOwnership
     );
 });
 

@@ -10,28 +10,11 @@ function entete($titre) {
 		
 		<link rel="stylesheet" href="assets/stylesheets/normalize.css" />
 		<link rel="stylesheet" href="assets/stylesheets/design.css" />
-		<link rel="stylesheet" href="assets/stylesheets/foundation.min.css" />
 		<link rel="stylesheet" href="assets/stylesheets/fonts.css" />
 
 		<script src="assets/javascripts/vendors/jquery/jquery.min.js"></script>
 	</head>
-	<body ng-app="myGame">
-
-	<nav class="top-bar" data-topbar>
-		<ul class="title-area">
-			<li class="name">
-				<h1><a href="#">Ideologia</a></h1>
-			</li>
-			<li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
-		</ul>
-
-		<section class="top-bar-section">
-			<ul class="right">
-				<li><a href="https://github.com/gcolajan/ideologia">GitHub</a></li>
-			</ul>
-		</section>
-	</nav>
-';
+	<body ng-app="myGame">';
 }
 
 function pied() {
@@ -45,21 +28,18 @@ function pied() {
 	<script src="assets/phases/phases.concat.js"></script>
 	<script src="assets/javascripts/app.concat.js"></script>
 
+
 	<script>
-		function Equilibre(Indentifier){
-			$(Indentifier).each(function(){
-				var h=0;
-				$(">*", this);
-				$(Indentifier).each(function(){ h=Math.max(h,this.offsetHeight); }).css({\'height\': h+\'px\'});
-			});
+		function FixedMap(){
+			var map = $("#svgmap");
+			var height = map.height();
+			map.css("margin-top", -Math.round(height/2));
 		}
-
 		$(document).ready(function() {
-			Equilibre(".mapel");
+			FixedMap();
 		});
-
 		$(window).resize(function() {
-			Equilibre(".mapel");
+			FixedMap();
 		});
 	</script>
 

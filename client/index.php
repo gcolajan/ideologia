@@ -20,6 +20,11 @@ entete('Ideologia');
 				<li>prévalence idéologique</li>
 			</ul>
 
+			<p>
+				Retrouvrez le projet sur <a href="https://github.com/gcolajan/ideologia">github</a>.
+
+			</p>
+
 			<form method="get" action="plateau.php" class="text-center">
 				<input type="submit" value="Jouer !" class="button"  />
 			</form>

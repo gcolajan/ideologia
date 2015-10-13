@@ -55,6 +55,10 @@ class ListeSalon
 		return salon
 	end
 
+	def indexOf(salon)
+		@listeSalon.index(salon)
+	end
+
 	def couldBeJoined(index)
 		return (not @listeSalon[index].full?)
 	end

@@ -64,6 +64,10 @@ function Player(pseudo, ideology) {
 		this.territories.insert(territory.id, territory);
 	}.bind(this);
 
+	this.getNbTerritories = function() {
+		return this.territories.length();
+	}.bind(this);
+
 	this.losingTerritory = function(id) {
 		// We delete it from his list
 		this.territories.unset(id);

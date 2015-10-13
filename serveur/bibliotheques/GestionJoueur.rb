@@ -26,7 +26,6 @@ class GestionJoueur
       currentPlayerTurn
       @partie.finTour # Fin du tour du joueur courant
     else
-      puts "#{@joueur.pseudo} attend" # DEBUG
       @partie.attendreFinTour # Attendre la fin du tour
     end
   end
@@ -52,7 +51,6 @@ class GestionJoueur
 	end
 
 	def currentPlayerTurn
-
 		# On attend le lance de des
 		@com.receive('des',10)
 		# On calcule les des
