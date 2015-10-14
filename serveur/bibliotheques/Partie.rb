@@ -54,7 +54,6 @@ class Partie
 	end
 
   # Permet de savoir si le temps est dépassé
-  # Retourne la durée restante
   def timeOver?
 		if started?
     	return (Time.now > @heureDebut + $TEMPS_JEU)
@@ -63,6 +62,7 @@ class Partie
 		end
 	end
 
+	# Retourne la durée restante
 	def timeLeft
 		unless started?
 			$TEMPS_JEU
