@@ -36,9 +36,8 @@ class GestionJoueur
 	def updatePlayerData
 
     # First, we synchronize both client & server
-    if @partie.started?
-      @com.send('temps', @salon.partie.timeLeft.to_i.to_s)
-    end
+    @com.send('temps', @salon.partie.timeLeft.to_i.to_s)
+
 
     playerData = []
     @partie.listeJoueurs.each { |joueur|

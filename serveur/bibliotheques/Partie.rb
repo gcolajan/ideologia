@@ -50,7 +50,7 @@ class Partie
 	end
 
 	def started?
-		return @heureDebut.nil?
+		return (not @heureDebut.nil?)
 	end
 
   # Permet de savoir si le temps est dépassé
