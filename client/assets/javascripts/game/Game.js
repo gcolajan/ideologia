@@ -195,7 +195,7 @@ function Game() {
 	}.bind(this);
 
 	this.getShownTerritory = function() {
-		if (typeof this.hoveredTerritory !== 'undefined')
+		if (typeof this.hoveredTerritory !== 'undefined' && this.hoveredTerritory != 'NO')
 			return this.hoveredTerritory;
 		else if (typeof this.lastConcernedTerritory !== 'undefined')
 			return this.lastConcernedTerritory;

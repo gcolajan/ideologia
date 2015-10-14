@@ -27,7 +27,7 @@ Set.prototype.insert = function(key, value) {
 
 Set.prototype.get = function(key) {
     if (!this.exists(key)) {
-        console.log("Set::get: "+key+" doesn\'t exists.");
+        return;
     }
 
     return this.array[key];

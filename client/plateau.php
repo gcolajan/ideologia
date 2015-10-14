@@ -195,7 +195,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 					ng-repeat="terr in game.territories.list"
 					fill="{{(terr.id == game.hoveredTerritory.id) ? 'rgba(255,255,255,0.33)' : (terr.id == game.concernedTerritory.id ? '#222222' : terr.color.css())}}"
 					ng-mouseenter="game.hoveredTerritory = terr"
-					ng-mouseleave="game.hoveredTerritory = undefined"
+					ng-mouseleave="game.hoveredTerritory = 'NO'"
 					stroke="{{terr.id == game.concernedTerritory.id ? 'red' : 'black'}}" stroke-width="{{(terr.id == game.hoveredTerritory.id || terr.id == game.concernedTerritory.id) ? 3 : 1}}" stroke-linecap="round">
 				<path ng-repeat="d in terr.path" d="{{d}}" />
 			</g>
