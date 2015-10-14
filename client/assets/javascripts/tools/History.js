@@ -101,6 +101,25 @@ function History(limit) {
         this.add(phrase);
     }.bind(this);
 
+    this.addEvent = function(playerSrc, event) {
+        var phrase = "Un événement a été déclenché par "+playerSrc.getColoured()+".<br />";
+
+        switch (event.target) {
+            case -1: // Except me
+                phrase += playerSrc.getColoured()+" est épargné !";
+                break;
+            case 0: // Only me
+                phrase += "Seul "+playerSrc.getColoured()+" est touché.";
+                break;
+            case 1: // Everybody
+                phrase += "Tout le monde est impacté !";
+                break;
+        }
+
+        phrase += '<p class="def" title="'+event.name+'">&mdash; '+event.desc+'</p>';
+        this.add(phrase);
+    }.bind(this);
+
     this.reset = function() {
         this.limitReached = false;
         this.data = [];

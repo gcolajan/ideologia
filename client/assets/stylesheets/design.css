@@ -436,6 +436,12 @@ ul.barcharts li span.legend {
 	background:rgba(255,255,255,0.4);
 }
 
+#history p.def {
+	color: #282828;
+	padding-top:15px;
+	padding-left:10px;
+}
+
 .adversaires {
 	background:rgba(255,255,255,0.4);
 	position:absolute;

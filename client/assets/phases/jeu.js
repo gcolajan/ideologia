@@ -74,8 +74,9 @@ jeuPhase.operations.insert('playersData', function($scope, data) {
     $scope.game.getMe().afterRefreshingTerritories();
 });
 
-jeuPhase.operations.insert('evenement', function($scope, event) {
-    console.log("Event has been encountered: "+event);
+jeuPhase.operations.insert('evenement', function($scope, eventId) {
+    var event = $scope.game.events.get(eventId, 'id');
+    $scope.game.history.addEvent($scope.game.getCurrentPlayer(), event);
 });
 
 jeuPhase.operations.insert('des', function($scope, des) {
