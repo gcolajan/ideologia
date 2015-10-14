@@ -28,6 +28,7 @@ class Salon
 
 	# On réveille tous les clients, la partie va démarrer
 	def wakeup
+		@partie.start
 		@demarree = true
 		@clients.each { |client| client.signal }
 	end

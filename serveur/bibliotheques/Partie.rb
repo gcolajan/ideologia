@@ -29,7 +29,7 @@ class Partie
 		@sem = Mutex.new # Sémaphore globale
 		@semFinTour = Mutex.new # Sémaphore fin de tour
 		@finTour = ConditionVariable.new
-		@heureDebut = Time.now
+		@heureDebut = nil
 		
 		@nbAppelObtenirEvenement = 0
 		
@@ -45,6 +45,10 @@ class Partie
 		@joueurCourant = @listeJoueurs[0]
 	end
 
+	def start
+		@heureDebut = Time.now
+	end
+
   # Permet de savoir si le temps est dépassé
   # Retourne la durée restante
   def timeOver?
@@ -54,8 +58,6 @@ class Partie
 	def timeLeft
 		$TEMPS_JEU - (Time.now - @heureDebut)
 	end
-
-	
 	
 	# Retourne l'instance du joueur correspondant au thread appelant
 	def recupererInstanceJoueur(numero)
@@ -77,7 +79,6 @@ class Partie
       finPartie()
     end
   end
-	
 	
 	
 	# Fais progresser le joueur de la somme des dés
