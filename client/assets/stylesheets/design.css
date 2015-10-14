@@ -438,8 +438,7 @@ ul.barcharts li span.legend {
 
 #history p.def {
 	color: #282828;
-	padding-top:15px;
-	padding-left:10px;
+	margin-top:5px;
 }
 
 .adversaires {
