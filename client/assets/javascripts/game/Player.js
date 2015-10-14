@@ -60,6 +60,9 @@ function Player(pseudo, ideology) {
 		territory.color.hueVariation();
 		territory.color.alpha = 0.5;
 
+		// We set the previous health to 0 (wasn't our, so we prevent any glitch)
+		territory.previousHealth = 0.0;
+
 		// We add it to our list
 		this.territories.insert(territory.id, territory);
 	}.bind(this);
@@ -71,5 +74,15 @@ function Player(pseudo, ideology) {
 	this.losingTerritory = function(id) {
 		// We delete it from his list
 		this.territories.unset(id);
+	}.bind(this);
+
+	this.beforeRefreshingTerritories = function() {
+		for (var id in this.territories.array)
+			this.territories.get(id).saveHealth();
+	}.bind(this);
+
+	this.afterRefreshingTerritories = function() {
+		for (var id in this.territories.array)
+			this.territories.get(id).refreshDiff();
 	}.bind(this);
 }

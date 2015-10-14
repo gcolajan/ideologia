@@ -9,6 +9,8 @@ function Territory(id, name, position, path) {
 	this.color = new Color(Math.round(Math.random()*255), 0.5);
 	this.gauges = new Set();
 	this.shift = 0;
+	this.previousHealth = 0.0;
+	this.showingDiff = '';
 
 	this.updateState = function(gaugesState) {
 		this.shift = 0;
@@ -30,6 +32,29 @@ function Territory(id, name, position, path) {
 
 	this.getHealthColor = function() {
 		return Health2Color(this.getHealth());
+	}.bind(this);
+
+	this.getHealthDiff = function() {
+		return this.getHealth() - this.previousHealth;
+	}.bind(this);
+
+	this.getHealthDiffColor = function() {
+		var diff = Math.round(this.getHealthDiff()*100);
+		if (diff > 0)
+			return '<span title="'+diff+' %" style="color:green"><i class="icon-increase"></i></span>';
+		else if (diff == 0.0)
+			return '<span title="'+diff+' %" style="color:blue"><i class="icon-equal"></i></span>';
+		else
+			return '<span title="'+diff+' %" style="color:red"><i class="icon-decrease"></i></span>';
+	}.bind(this);
+
+	// We store our current health into the previous health attribute
+	this.saveHealth = function() {
+		this.previousHealth = this.getHealth();
+	}.bind(this);
+
+	this.refreshDiff = function() {
+		this.showingDiff = this.getHealthDiffColor();
 	}.bind(this);
 
 	this.getViewBox = function() {

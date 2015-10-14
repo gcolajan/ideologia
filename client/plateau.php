@@ -108,29 +108,22 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			<div ng-show="game.selectedOperation !== undefined">
 				<div class="operationSimulation">
 
-					<div ng-hide="game.currentSimulations.get(game.selectedOperation.id).changeOwnership">
-						<ul class="barcharts currentSimulation">
-							<li ng-repeat="gauge in game.currentSimulations.get(game.selectedOperation.id).gauges.array">
-								<span ng-style="{'height':gauge.currentLevel*100+'%', 'background-color':gauge.getHealthColor().css()}"></span>
-								<span ng-style="{'height':gauge.optimalLevel*100+'%'}" class="optimal"></span>
-								<span class="number">{{gauge.currentLevel*100 | number:0}} %</span>
-								<span class="legend" ng-class="'icon-jauge-'+gauge.slug"></span>
-							</li>
-						</ul>
+					<p class="desc">{{game.selectedOperation.desc}}</p>
 
-						<p>Stabilité : {{game.currentSimulations.get(game.selectedOperation.id).evolution}} %</p>
-					</div>
+					<div style="clear:both;"></div>
 
-					<span>{{game.selectedOperation.desc}}</span>
+					<ul class="barcharts currentSimulation" ng-hide="game.currentSimulations.get(game.selectedOperation.id).changeOwnership" style="width:200px;">
+						<li ng-repeat="gauge in game.currentSimulations.get(game.selectedOperation.id).gauges.array">
+							<span ng-style="{'height':gauge.currentLevel*100+'%', 'background-color':gauge.getHealthColor().css()}"></span>
+							<span ng-style="{'height':gauge.optimalLevel*100+'%'}" class="optimal"></span>
+							<span class="number">{{gauge.currentLevel*100 | number:0}} %</span>
+							<span class="legend" ng-class="'icon-jauge-'+gauge.slug"></span>
+						</li>
+					</ul>
 
-
-					<div ng-show="game.currentSimulations.get(game.selectedOperation.id).changeOwnership">
-						<p>
-							<strong>
-								Le territoire est suffisamment faible pour basculer !
-							</strong>
-						</p>
-					</div>
+					<p ng-show="game.currentSimulations.get(game.selectedOperation.id).changeOwnership"><strong>
+						Le territoire est suffisamment faible pour basculer !
+					</strong></p>
 
 					<p class="text-center">
 						<button ng-click="trigger('sendOperation', game.selectedOperation.id)">Valider</button>
@@ -188,11 +181,9 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 					ng-mouseenter="game.hoveredTerritory = territory"
 					ng-mouseleave="game.hoveredTerritory = undefined"
 					ng-style="{'color':territory.getHealthColor().css()}">
-				{{territory.name}}
+				{{territory.name}} <span ng-bind-html="territory.showingDiff | html"></span>
 			</li>
 		</ul>
-
-		+ indicateur évolution
 	</div>
 
 

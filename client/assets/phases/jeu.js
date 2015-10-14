@@ -37,6 +37,9 @@ jeuPhase.operations.insert('playersData', function($scope, data) {
     $scope.game.selectedOperation = undefined;
     $scope.game.currentOperations = new Set(); // Emptying the operations
 
+    // Before refreshing our list of territories, we want to set the current health as the previous
+    $scope.game.getMe().beforeRefreshingTerritories();
+
     for (var i = 0 ; i < data.length ; ++i)
     {
         var player = $scope.game.players[i];
@@ -66,6 +69,9 @@ jeuPhase.operations.insert('playersData', function($scope, data) {
             territory.updateState(data[i][id]);
         }
     }
+
+    // After refreshing our list of territories, we want to "publish" the diff
+    $scope.game.getMe().afterRefreshingTerritories();
 });
 
 jeuPhase.operations.insert('evenement', function($scope, event) {

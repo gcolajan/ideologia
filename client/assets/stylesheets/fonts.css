@@ -44,3 +44,14 @@
 .icon-capitalism:before {
 	content: "\e606";
 }
+
+
+.icon-increase:before {
+	content: "\e800";
+}
+.icon-equal:before {
+	content: "\e801";
+}
+.icon-decrease:before {
+	content: "\e802";
+}
