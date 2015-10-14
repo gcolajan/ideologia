@@ -47,8 +47,8 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 			<div class="globalCharts">
 				<h4>Respect idéologie</h4>
 				<ul class="barcharts global">
-					<li ng-repeat="player in game.players" title="{{(player.getGlobalHealth()/game.territories.length)*100 | number:0}} %">
-						<span ng-style="{'height':(player.getGlobalHealth()/game.territories.length)*100+'%', 'background-color':player.ideology.color.css()}"></span>
+					<li ng-repeat="player in game.players" title="{{player.getGlobalHealth()*100 | number:0}} %">
+						<span ng-style="{'height':(player.getGlobalHealth()*100)+'%', 'background-color':player.ideology.color.css()}"></span>
 						<span class="legend" ng-class="'icon-'+player.ideology.slug"></span>
 					</li>
 				</ul>
