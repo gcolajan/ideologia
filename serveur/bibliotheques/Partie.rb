@@ -49,14 +49,26 @@ class Partie
 		@heureDebut = Time.now
 	end
 
+	def started?
+		return @heureDebut.nil?
+	end
+
   # Permet de savoir si le temps est dépassé
   # Retourne la durée restante
   def timeOver?
-    return (Time.now > @heureDebut + $TEMPS_JEU)
+		if started?
+    	return (Time.now > @heureDebut + $TEMPS_JEU)
+		else
+			return false
+		end
 	end
 
 	def timeLeft
-		$TEMPS_JEU - (Time.now - @heureDebut)
+		unless started?
+			$TEMPS_JEU
+		else
+			$TEMPS_JEU - (Time.now - @heureDebut)
+		end
 	end
 	
 	# Retourne l'instance du joueur correspondant au thread appelant

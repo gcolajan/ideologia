@@ -55,7 +55,6 @@ class ServerKnowledge
 
     # Si le client est encore dans un salon on le déconnecte
     unless client.salon.nil?
-      put client.salon.nbJoueur
       client.salon.deconnexionJoueur(client, code)
     end
 
