@@ -15,6 +15,10 @@ class MockCommunication < Communication
     return
   end
 
+  def close(code=nil)
+    return
+  end
+
   def incomingMessage(msg)
     return
   end
