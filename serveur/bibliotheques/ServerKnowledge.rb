@@ -3,6 +3,8 @@ require 'singleton'
 class ServerKnowledge
   include Singleton
 
+  attr_reader :listeSalons
+
   def initialize
     @nbPlayers = 4
     @nbClientConnected = 0
@@ -51,9 +53,9 @@ class ServerKnowledge
     @nbClientConnected -= 1
     $LOGGER.info "<<< #{@nbClientConnected} clients"
 
-    puts client
     # Si le client est encore dans un salon on le déconnecte
     unless client.salon.nil?
+      put client.salon.nbJoueur
       client.salon.deconnexionJoueur(client, code)
     end
 
@@ -85,5 +87,4 @@ class ServerKnowledge
 
     $LOGGER.info "Demo mode has been set on salon ##{indexSalon}"
   end
-
 end

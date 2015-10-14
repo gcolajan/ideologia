@@ -7,6 +7,10 @@ class MockCommunication < Communication
     @salonId = salonId
   end
 
+  def bot?
+    return true
+  end
+
   def startPing
     return
   end

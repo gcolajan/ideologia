@@ -11,7 +11,6 @@ class ListeSalon
 	end
 
 	def selection(client)
-
     salon = nil
     while salon.nil?
       client.com.send("salons", getListToCommunicate)
@@ -29,10 +28,6 @@ class ListeSalon
     end
 
     return salon
-	end
-
-	def getNonEmptySalon
-		return (@listeSalon.select { |salon| not salon.full?})
 	end
 
 	def getListToCommunicate
@@ -63,7 +58,10 @@ class ListeSalon
 		return (not @listeSalon[index].full?)
 	end
 
-	# Doit être exécuté par partie pour s'assurer qu'il ne soit pas appelé plusieurs fois
+	def addOne
+		@listeSalon << Salon.new
+	end
+
 	def unsetSalon(salon)
 		@listeSalon.delete(salon)
 	end

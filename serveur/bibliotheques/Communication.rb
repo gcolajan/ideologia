@@ -15,6 +15,10 @@ class Communication
     }
   end
 
+  # Permit to identify easily if it's a player or a bot
+  def bot?
+    return false
+  end
 
   # Closing the communication channel with that client
   def close(code=nil)

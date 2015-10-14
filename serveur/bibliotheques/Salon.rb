@@ -26,11 +26,6 @@ class Salon
 
 	end
 
-	#Destruction du salon
-	def destruction
-		@partie = nil
-	end
-
 	# On réveille tous les clients, la partie va démarrer
 	def wakeup
 		@demarree = true
@@ -39,17 +34,29 @@ class Salon
 
 	# Sur déconnexion du salon on envoie les pseudo des personnes restantes et on mets à jour les tableaux
 	def deconnexionJoueur(client, code=nil)
-
+		put "DECO J"
 		@semaphoreControle.synchronize{
-
 			@clients[@clients.index(client)] = nil
 			if(code != 4000)
 				transmissionPseudo()
 			end
 
-
 			@nbJoueur -= 1
 		}
+
+		put "bot? #{client.bot?}"
+		if fullOfBots? or @nbJoueur == 0
+			close()
+		end
+	end
+
+	def fullOfBots?
+		@clients.each{ |client|
+			unless client.com.bot?
+				return false
+			end
+		}
+		return true
 	end
 
 	def isDemo?
@@ -58,6 +65,21 @@ class Salon
 
 	def full?
 		return (@nbJoueur == 4)
+	end
+
+	def close
+		unless @demarree
+			ServerKnowledge.instance.listeSalons.addOne
+		end
+		@partie = nil
+		ServerKnowledge.instance.listeSalon.unsetSalon(self)
+	end
+
+	def safeDelete
+		@clients.each{	|client|
+			client.close
+		}
+		close()
 	end
 
 	# Connexion d'un joueur au salon
@@ -80,8 +102,14 @@ class Salon
 				@clients.each { |client|
 					unless client.nil?
 					  client.signal
+					else
+						safeDelete()
+						return
           end
 				}
+
+				# Le salon est plein, on va pouvoir démarrer la partie, on ajoute donc une instance
+				ServerKnowledge.instance.listeSalons.addOne
 			end
 
 			# On indique son numéro au client/joueur
