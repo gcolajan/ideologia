@@ -1,4 +1,4 @@
-app.controller('IdeologiaCtrl', function($scope, $http, ws) {
+app.controller('IdeologiaCtrl', function($scope, $http, $interval, ws) {
 
     $scope.pseudo = undefined;
 
@@ -10,6 +10,11 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
     $scope.salons = [];
     $scope.adversaires = [];
     $scope.ideologies = [];
+
+    $scope.operationTimer = 0;
+    $scope.timeLeft = 300;
+    $scope.formattedOperationTimer = "--";
+    $scope.formattedTimeLeft = "--:--";
 
     $scope.wsInfo = true;
     $scope.wsMsg = "Ouverture de la connexion en cours...";
@@ -120,4 +125,51 @@ app.controller('IdeologiaCtrl', function($scope, $http, ws) {
     $scope.showPopunder = function() {
         return $scope.currentPhase !== undefined && $scope.currentPhase.hasPopunder;
     };
+
+    var doubleCar = function(value) {
+        return (value < 10) ? "0"+value : value;
+    };
+
+    $scope.readableTime = function(secs) {
+        var minutes = Math.floor(secs/60);
+        var seconds = secs - (minutes*60);
+        return doubleCar(minutes)+":"+doubleCar(seconds);
+    };
+
+    $scope.startOperationTimer = function() {
+        $scope.operationTimer = 30;
+    }
+
+    var stop;
+    $scope.startCounters = function() {
+        // Don't start a new one if already one is running
+        if ( angular.isDefined(stop) ) return;
+
+        stop = $interval(function() {
+            if ($scope.operationTimer > 0)
+            {
+                $scope.operationTimer -= 1;
+                $scope.formattedOperationTimer = doubleCar($scope.operationTimer);
+            }
+
+            if ($scope.timeLeft > 0)
+                $scope.timeLeft -= 1;
+            else
+                $scope.stopTimers();
+
+            $scope.formattedTimeLeft = $scope.readableTime($scope.timeLeft);
+        }, 1000);
+    };
+
+    $scope.stopTimers = function() {
+        if (angular.isDefined(stop)) {
+            $interval.cancel(stop);
+            stop = undefined;
+        }
+    };
+
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        $scope.stopTimers();
+    });
 });

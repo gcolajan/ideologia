@@ -110,6 +110,7 @@ div#topbar {
 	top:0;
 	width:100%;
 	background:#222222;
+	margin:0;
 	padding:0;
 }
 
@@ -531,22 +532,29 @@ dl#plateau dt span.case.danger {
 }
 
 
-div#timer {
-	text-align:center;
-	margin:10px 0;
-}
-
-div#timer span {
+span.timer {
 	font-family:Electrolize;
 	text-align:center;
 	color:#E00000;
 	font-size:1.5rem;
-	padding:7px;
-	background:#161616;
-	box-shadow:1px 1px 1px rgba(200,200,200,0.5);
+	width:5rem;
 	display:inline-block;
+	line-height:2.5rem;
 }
 
+span.opTimer {
+	font-family:Electrolize;
+	text-align:center;
+	width:80px;
+	color:#E00000;
+	font-size:1.2em;
+	font-weight:bold;
+	text-align:center;
+	padding:4px;
+	background:rgba(0,0,0,0.5);
+	border:1px dotted rgba(0,0,0,0.9);
+	display:inline-block;
+}
 
 
 div#status {

@@ -4,9 +4,15 @@ var jeuPhase = new Phase('jeu',
     },
     function(scope) {
         scope.game.started = true;
+        scope.startCounters();
     },
     function(scope) {
     });
+
+jeuPhase.operations.insert('temps', function($scope, time) {
+    // Syncronize time left with server
+    $scope.timeLeft = time;
+});
 
 jeuPhase.operations.insert('partenaires', function($scope, partners) {
     for (var p in partners)
@@ -130,6 +136,7 @@ jeuPhase.operations.insert('operations', function($scope, operations) {
     //ws = angular.element(document.querySelector('#IdeologiaCtrl')).injector().get('ws');
     //ws.emit('operation', operations[0]);
 
+    $scope.startOperationTimer();
     $scope.game.makeUserChose(operations);
 });
 

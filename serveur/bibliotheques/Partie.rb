@@ -49,7 +49,12 @@ class Partie
   # Retourne la durée restante
   def timeOver?
     return (Time.now > @heureDebut + $TEMPS_JEU)
-  end
+	end
+
+	def timeLeft
+		$TEMPS_JEU - (Time.now - @heureDebut)
+	end
+
 	
 	
 	# Retourne l'instance du joueur correspondant au thread appelant

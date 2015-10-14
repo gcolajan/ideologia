@@ -24,8 +24,7 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 				<span ng-bind-html="game.currentPlayDescription | html"></span>
 			</li>
 			<li ng-show="game.started">
-				<span>TIMER</span>
-				<span>{{game.getMe().funds}}&nbsp;$</span>
+				<span class="timer">{{formattedTimeLeft}}</span>
 			</li>
 		</ul>
 	</div>
@@ -90,6 +89,8 @@ $pseudo = (isset($_POST['pseudo']) ? $_POST['pseudo'] : 'pseudo unspecified');
 
 		<!-- Select operation -->
 		<div class="selectOperation" ng-show="game.choseOperation">
+			<p class="text-center"><span class="opTimer">00:{{formattedOperationTimer}}</span></p>
+
 			<div class="operationsFrame">
 				<div class="operation"
 					 ng-click="game.setSelectedOperation(op)"
